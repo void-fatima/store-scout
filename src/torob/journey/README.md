@@ -22,6 +22,14 @@ The current catalog query cannot represent city/area constraints. A future
 prepared request must retain these constraints and identify that gap rather than
 silently dispatching a broader query or inventing coordinates.
 
+`intake.start_journey({"request_id": "sample-1", "criteria": {...}})` returns a
+`JourneyOutcome`. Absent/blank `q` or `city` creates `needs_information` with an
+identified state; a complete brief creates `criteria_ready`. Missing identity is
+reported without generating one or creating a state. Malformed input returns an
+existing-format `error` (`code`, `message`, `details`) instead of an exception.
+Pydantic input/context objects are excluded from errors to keep output JSON-safe.
+Use `.model_dump(mode="json")` or `.model_dump_json()` for application output.
+
 From the repository root, after the existing `uv sync --locked` setup:
 
 ```powershell
