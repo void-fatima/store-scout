@@ -1,14 +1,14 @@
-# Recommendation input/output contracts — Task 01
+# Recommendation contracts and deterministic ranking
 
 Setayesh owns this module. The active package is `torob.recommend` under
 `C:\git\shared\store-scout\src\torob\recommend`. It uses the existing
 Python 3.12+ project and Pydantic v2 environment. No extra dependencies or shared
 configuration changes are required.
 
-This delivery contains models, validation, mock examples and tests. It does not
-publish an API route, retrieval client, ranking algorithm, alternatives, follow-up,
-or UI integration. The untracked local `catalog.py`, `ranking.py` and
-`service.py` belong to unfinished Task 02 and are not imported by `__init__.py`.
+Task 01 supplies the canonical models, validation and mock examples. Task 02 adds
+bounded Catalog retrieval, deterministic ranking, Persian explanations and an
+in-process service. No new API route, alternatives, follow-up or UI integration
+is included. Implementation modules are not imported by `__init__.py`.
 
 ## Models
 
@@ -97,15 +97,13 @@ from pathlib import Path
 from torob.recommend import RecommendationResponse, ShoppingCriteria
 
 examples = Path("src/torob/recommend/examples")
-request_data = json.loads(
-    (examples / "shopping_request.json").read_text(encoding="utf-8")
-)["data"]
+request_data = json.loads((examples / "shopping_request.json").read_text(encoding="utf-8"))["data"]
 request = ShoppingCriteria.model_validate(request_data)
 assert request.budget_toman == 25000000
 
-response_data = json.loads(
-    (examples / "recommendation_response.json").read_text(encoding="utf-8")
-)["data"]
+response_data = json.loads((examples / "recommendation_response.json").read_text(encoding="utf-8"))[
+    "data"
+]
 response = RecommendationResponse.model_validate(response_data)
 assert RecommendationResponse.model_validate_json(response.model_dump_json()) == response
 schema = RecommendationResponse.model_json_schema()
@@ -131,7 +129,7 @@ uv run python scripts/export_contracts.py --check
 An environment already installed from `uv.lock` can use `uv run --no-sync`
 for the same commands. Tests use the existing small sample fixtures and temporary
 databases; no external service or original dataset is required. Importing this
-package does not require the unfinished Task 02 implementation.
+contract package does not load retrieval, ranking or service implementation modules.
 
 Untracked legacy or unfinished source may fail whole-workspace lint locally.
 Keep it unchanged and outside Task 01 commits; validate the tracked project plus
@@ -153,7 +151,147 @@ not an installed package or an import dependency of this canonical module.
 | Unknown or independently verified stock states | Canonical fixed `availability=unconfirmed`; no verified-stock claims |
 | Results without Catalog provenance | Required `context` and explicit candidate/query coverage |
 
-Before Task 02, confirm supported interpretations of raw hours/payment data and
-review the provisional score names, weights and version metadata with the team.
-Continue on `feat/torob-rec-ranking` only after safely bringing these contract
-commits onto that branch while preserving its untracked implementation files.
+Review supported interpretations of raw hours/payment data and the explicit
+scoring policy with the team. Task 03 can build structured follow-up and a
+before-visit verification checklist on these results; it must retain provenance,
+coverage and inventory uncertainty.
+
+## Task 02 — deterministic ranking and Catalog retrieval
+
+Use explicit implementation imports; package initialization remains model-only:
+
+```python
+from torob.recommend import ShoppingCriteria
+from torob.recommend.service import RecommendationServiceError, recommend
+
+
+def shopping_recommendations(source):
+    criteria = ShoppingCriteria(
+        query="گوشی سامسونگ Galaxy A55",
+        max_budget="25000000",
+        price_unit="TOMAN",
+        latitude=35.7,
+        longitude=51.4,
+    )
+    try:
+        result = recommend(source, criteria)
+    except RecommendationServiceError as exc:
+        return exc.response.model_dump(mode="json")
+    return result.model_dump(mode="json")
+```
+
+`source` can be the existing `CatalogRepository`, or
+`CatalogAPIClient(transport, timeout_seconds=5)` with an HTTP client configured
+for the Catalog base URL. The client calls only `GET /api/v1/catalog/offers`.
+The caller owns the transport lifecycle. No new API routes, Journey dependencies,
+seller contact calls or production dependencies are added.
+
+### Scoring policy: lexical-v1
+
+Results sort by **product relevance descending, weighted score descending,
+offer ID ascending**. Consumers should preserve that order rather than sorting
+by `overall_score` alone. Both strategy version and weights are returned.
+
+| Component | Normalization | Default weight |
+| --- | --- | --- |
+| Product relevance | Prefix token matches in normalized product title/brand/model get 1; product-category-only matches get 0.5; divide by unique query token count | 0.60 |
+| Budget fit | `1 - price_toman / budget_toman`, after excluding missing or over-budget prices | 0.20 |
+| Distance fit | `max(0, 1 - straight_line_km / scale)`; scale is the requested radius, otherwise 10 km | 0.15 |
+| Opening hours | 1 for a supported declared shift containing the requested time, 0 outside known shifts; otherwise null | 0.025 |
+| Purchase preferences | A supported payment-code match divided by the number of requested preference dimensions; unsupported dimensions get no bonus | 0.025 |
+
+A small documented Persian/English noun vocabulary distinguishes known primary
+products from accessories. A phone query excludes a case, charger or other known
+incompatible product type even when every query token appears in its title.
+The first recognized product noun also permits a phone bundled with a case.
+For ambiguous brand/model-only queries, accessories receive 25% of their lexical
+relevance rather than being assumed to be the requested main product.
+This is a conservative lexical heuristic, not semantic identification or a
+complete product taxonomy. Partial matches remain possible and are explained.
+
+Only the **product's** recorded category contributes to relevance; shop activity
+categories, seller descriptions and seller titles do not. Descriptions remain
+untrusted data in the preserved canonical candidate and never become instructions.
+
+Budgets are inclusive and use the validated whole-toman limit. Unknown prices
+cannot qualify for a budget. Radius is a hard filter and uses recomputed full
+precision geographic distance, not the rounded Catalog `distance_km`. With a
+radius, missing coordinates exclude an offer; without one, unknown distance stays
+null and receives no bonus. Distance is not road distance or travel time.
+
+Missing components remain null and contribute zero to the weighted total;
+weights are never renormalized over the available data. Unknown stock and
+price-change timestamps never earn a freshness/availability bonus.
+
+Only exact recorded payment tokens `cash`, `card` and `installments` support a
+preference match. Raw Persian payment prose, warranty descriptions and return
+windows are not inferred. For hours, only `status=declared` day records with
+nonempty, valid same-day `start_time`/`end_time` shifts are supported; closing
+times are exclusive. Omitted days, overnight/offset conventions and unsupported
+records stay unknown. Tehran time conversion uses the IANA timezone database;
+if unavailable, the hours component stays unknown. Recorded hours and payment
+terms never guarantee the shop's actual state at a future visit.
+
+### Retrieval and coverage
+
+Defaults are 3 pages of 100 candidates, with hard configuration bounds of 10 pages
+and 100 candidates per page. Queries use the user's exact product search terms,
+inclusive maximum price, optional location/radius, and Catalog `price_asc` order.
+There is no automatic query broadening or alternative search. The HTTP adapter
+passes a finite timeout (default 5 seconds, configurable up to 30) to each request;
+there are no automatic retries.
+
+Retrieval validates schema version, pagination/counts, ascending price/ID order,
+unique offer IDs and consistent Catalog context across pages. A changed snapshot,
+malformed page or failed later request discards the whole batch. Partial results
+are never presented as a successful complete retrieval.
+
+Coverage describes the **retrieved price-sorted prefix of a filtered query**,
+not the whole dataset. A page cap may hide stronger matches, including main
+products behind cheaper accessories. Empty ranked results under a page cap do
+not establish that no qualifying products exist elsewhere. Dataset coverage
+remains incomplete even when all pages of one query have been retrieved.
+Exclusion counters describe retrieved candidates and their first failed guard;
+records filtered upstream by Catalog are not counted as locally excluded.
+
+### Errors, empty results and uncertainty
+
+`recommend` returns the canonical recommendation response on success, including
+valid empty results. `no_eligible_offers` and coverage notices describe empty
+results; `catalog_has_no_imported_dataset` distinguishes an empty/uninitialized
+Catalog from a known imported dataset.
+
+Failures raise `RecommendationServiceError` with a canonical
+`ErrorResponse` at `exc.response`. Public messages are Persian and do not echo
+raw upstream errors or descriptions.
+
+| Error code | Retryable |
+| --- | --- |
+| `invalid_recommendation_input` | false |
+| `catalog_unavailable` | true |
+| `catalog_snapshot_changed` | true; start a fresh bounded request |
+| `catalog_invalid_response` | false |
+| `invalid_recommendation_data` | false |
+
+Persian reasons cite recorded product text matches, recorded prices, computed
+straight-line distance and supported recorded terms. Every result keeps
+`availability=unconfirmed`, requires before-visit verification, and discloses
+price/inventory limitations. Canonical candidates and source context are retained;
+the engine creates no new offers, seller identities or contact details.
+
+Run focused behavior tests with:
+
+```powershell
+uv run pytest tests/recommend
+uv run pytest
+uv run ruff check .
+uv run ruff format --check .
+uv run python scripts/export_contracts.py --check
+```
+
+The historical `apps/torob/recommend/` snapshot remains untracked and untouched.
+For local whole-workspace Ruff commands, use
+`--exclude apps/torob/recommend` when that preserved snapshot is present.
+CI on the published branch checks the full tracked project without that snapshot.
+The existing Starlette/httpx deprecation warnings belong to the current locked
+test environment; this module does not change shared dependencies.
