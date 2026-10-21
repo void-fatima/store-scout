@@ -87,6 +87,19 @@ def retrieve_candidates(
         sort="price_asc",
         page_size=policy.page_size,
     )
+    return retrieve_catalog_query(source, base_query, policy)
+
+
+def retrieve_catalog_query(
+    source: CatalogSource,
+    query: CatalogQuery,
+    policy: RetrievalPolicy | None = None,
+) -> CandidateBatch:
+    """Reuse the validated pagination path for explicit, bounded diagnostic queries."""
+    policy = RetrievalPolicy.model_validate((policy or RetrievalPolicy()).model_dump())
+    base_query = CatalogQuery.model_validate(
+        query.model_dump() | {"page": 1, "page_size": policy.page_size, "sort": "price_asc"}
+    )
     candidates = []
     seen = set()
     first_page = None

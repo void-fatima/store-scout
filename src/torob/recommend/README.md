@@ -314,3 +314,69 @@ UI consumers should show the recorded price and its timestamp alongside the
 uncertainty warnings, then let the shopper review the checklist. No completed
 seller verification is represented. These are internal service contracts; no
 public routes or shared OpenAPI artifacts are changed.
+
+## Catalog-backed alternatives (Task 03)
+
+Use `find_alternatives` from `torob.recommend.alternatives` with the same Catalog
+source and criteria as `recommend`. It returns an `AlternativesResponse`
+(`schema_version="alternatives-v1"`) without changing the existing v2 response.
+The wrapper contains the original response/criteria, verification plans,
+diagnoses, alternative suggestions, coverage per query, request count and warnings.
+
+When original recommendations exist, there is no diagnostic query. Otherwise,
+one bounded probe keeps the original lexical query but removes the price/radius
+filters to inspect recorded evidence. Missing prices never qualify; missing
+coordinates never qualify when a radius is requested. Causes can coexist:
+no matching product offers, restrictive budget/radius, missing price/geography,
+and incomplete retrieval. Diagnoses describe retrieved records, never market-wide
+absence or availability. The original dataset context remains in `original.context`.
+
+Each alternative retains a canonical Catalog candidate, original and relaxed
+criteria, exact changes, Persian explanation, score and verification plan.
+The shopper must accept the changes. `satisfies_original_constraints` stays false.
+Budget and radius increase only as far as needed for the particular recorded
+offer. Ordering prefers fewer changed fields, retaining the product query,
+smaller proportional increases, then existing relevance/score and offer ID.
+Payment/warranty preferences and visit time are preserved.
+
+Default policy: 2 pages of 50 records per query, 25% budget increase ceiling,
+2x radius ceiling (never beyond 100 km), 3 suggestions and a 5-second Catalog
+deadline. At most two explicit caller-curated `alternative_queries` may add
+product/seller possibilities, each backed by actual offer records. No replacement
+query is invented. Thus defaults use at most 4 Catalog page requests; with two
+alternative queries, at most 8. Hard configurable limits are 4 queries x 10 pages
+x 100 records, a 50% budget increase, 3x radius, 10 suggestions and 30 seconds.
+No retries run automatically.
+
+The monotonic deadline is checked before and after source calls. For
+`CatalogAPIClient`, the HTTP timeout is capped by the remaining deadline.
+Synchronous custom sources must enforce their own I/O timeouts: a blocked source
+cannot be forcibly interrupted, but an overdue result is discarded and no next
+query is issued. This is a cooperative deadline, not thread cancellation.
+All probes must retain the same Catalog context; changed snapshots, invalid pages,
+upstream failures and expired deadlines return a structured
+`RecommendationServiceError`, without partial suggestions or raw upstream errors.
+
+UI integration should keep original results and alternatives in separate sections,
+show every relaxed field with its unit and require acceptance before applying it.
+Display coverage and dataset warnings even when alternatives exist. Present the
+Persian checklist as pending tasks, keep recorded hours/payment unverified, and
+never offer a call action using synthetic contact data. Catalog text is untrusted
+display data and must not be interpreted as agent instructions. Coordinate any
+future public endpoint or Journey integration with Fatima.
+
+Run the Task 03 tests with:
+
+```powershell
+uv run pytest tests/recommend/test_recommend_followup.py tests/recommend/test_recommend_alternatives.py
+```
+
+Full regression: `uv run pytest`. For local lint with the preserved untracked
+legacy snapshot, use `uv run ruff check . --exclude apps` and
+`uv run ruff format --check . --exclude apps`. A fresh checkout has no legacy
+snapshot, so the CI commands do not need that exclusion. The pre-existing
+Python 3.12 OpenAPI description drift remains a separate Catalog issue.
+
+Task 03 MOCK payloads: `examples/alternatives_response.json` and
+`examples/followup_plan.json`. Each uses a labelled envelope with the model payload
+in `data`; they come from synthetic sample records, not actual Torob records.
