@@ -30,6 +30,15 @@ existing-format `error` (`code`, `message`, `details`) instead of an exception.
 Pydantic input/context objects are excluded from errors to keep output JSON-safe.
 Use `.model_dump(mode="json")` or `.model_dump_json()` for application output.
 
+`updates.update_criteria(state, {"max_price_toman": 25000000})` merges a flat
+criteria patch into a new immutable state. It preserves identity and all omitted
+criteria, including query and selected area. The whole merged budget is checked;
+invalid patches return `invalid_update` and the unchanged accepted state. Check
+`error` before using an update. Explicit `None` clears an optional value; clearing
+query/city returns to `needs_information`. Identity and workflow flags are not
+criteria and cannot be patched. No state or query is cached. A changed city does
+not silently reset the selected area; geographic consistency is not asserted.
+
 From the repository root, after the existing `uv sync --locked` setup:
 
 ```powershell
