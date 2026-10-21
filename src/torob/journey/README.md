@@ -39,6 +39,22 @@ query/city returns to `needs_information`. Identity and workflow flags are not
 criteria and cannot be patched. No state or query is cached. A changed city does
 not silently reset the selected area; geographic consistency is not asserted.
 
+`prepare_catalog_request(state)` prepares a `CatalogRequest` and changes the
+returned state's status to `catalog_request_prepared`. The whole original
+criteria object and identity are retained. `parameters` contains only the
+explicit `q` and non-null budget bounds, validated with the existing read-only
+draft `CatalogQuery`. No sort, pagination, location, or budget defaults are added.
+Catalog-specific invalid text returns `invalid_query` without rewriting the need.
+
+This is a **prepared request, not search results**. City and selected area remain
+in `criteria` and are listed in `unresolved_filters`, with `handoff_ready=false`.
+The current catalog has no textual city/area filter. Do not dispatch the partial
+`parameters` alone: doing so would discard user location constraints. No dataset
+is opened, readiness assumed, coordinates generated, or ranking performed.
+`search_performed=false` appears on the outcome, state, and prepared request.
+The dataset/catalog implementation exists upstream, but its readiness is not
+inspected here; the unresolved location interface is explicitly a Roham dependency.
+
 From the repository root, after the existing `uv sync --locked` setup:
 
 ```powershell
