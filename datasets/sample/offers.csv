@@ -1,0 +1,6 @@
+description,last_price_changed_at,offer_id,price_toman,product_id,seller_title,shop_id,warranty
+null,2026-09-14T10:00:00+03:30,sample_offer_1,20000000,sample_product_phone,عنوان نمونه فروشنده,sample_shop_center,null
+null,2026-09-15T10:00:00+00:00,sample_offer_2,19000000,sample_product_phone,عنوان نمونه فروشنده,sample_shop_far,null
+null,2026-09-16T10:00:00+00:00,sample_offer_3,20000000,sample_product_same_title,عنوان نمونه فروشنده,sample_shop_center,null
+null,null,sample_offer_4,null,sample_product_phone,عنوان نمونه فروشنده,sample_shop_no_geo,null
+null,2026-09-14T10:00:00+00:00,sample_offer_5,1500000,sample_product_kettle,عنوان نمونه فروشنده,sample_shop_center,null

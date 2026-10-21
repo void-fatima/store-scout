@@ -1,0 +1,5 @@
+brand_name,category_name,image_urls,model,persian_title,product_id,specs
+سامسونگ,گوشی موبایل,[],null,گوشی سامسونگ Galaxy A55 ۲۵۶,sample_product_phone,"[{""section"":""نمونه"",""key"":""داده"",""value"":""ساختگی""}]"
+سامسونگ,گوشی موبایل,[],null,گوشی سامسونگ Galaxy A55 ۲۵۶,sample_product_same_title,"[{""section"":""نمونه"",""key"":""داده"",""value"":""ساختگی""}]"
+null,لوازم خانگی,[],null,کتری برقی نمونه,sample_product_kettle,"[{""section"":""نمونه"",""key"":""داده"",""value"":""ساختگی""}]"
+لنوو,لپ تاپ,[],null,لپ تاپ لنوو نمونه,sample_product_no_offer,"[{""section"":""نمونه"",""key"":""داده"",""value"":""ساختگی""}]"
