@@ -295,3 +295,22 @@ For local whole-workspace Ruff commands, use
 CI on the published branch checks the full tracked project without that snapshot.
 The existing Starlette/httpx deprecation warnings belong to the current locked
 test environment; this module does not change shared dependencies.
+
+## Before-visit verification (Task 03)
+
+Import `plan_before_visit` from `torob.recommend.followup` and pass a canonical
+Catalog `OfferCandidate`, `ShoppingCriteria`, and optionally its `CatalogContext`.
+It returns a serializable `FollowupPlan` with Persian questions about exact stock,
+recorded price, opening hours, payment and warranty; requested return terms add
+another question. The planner performs no I/O.
+
+The state is always `awaiting_user_verification`; inventory remains `unconfirmed`.
+Recorded information is preserved as unverified evidence. Missing price, hours,
+payment or warranty data stays unknown. Last price change is not a verification
+timestamp. Synthetic contacts are omitted from the plan and must not be used as
+real seller contacts. Checklist items describe work still pending.
+
+UI consumers should show the recorded price and its timestamp alongside the
+uncertainty warnings, then let the shopper review the checklist. No completed
+seller verification is represented. These are internal service contracts; no
+public routes or shared OpenAPI artifacts are changed.
