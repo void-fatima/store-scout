@@ -17,7 +17,10 @@ from torob.catalog.repository import CatalogRepository
 router = APIRouter(
     prefix="/api/v1/catalog",
     tags=["catalog"],
-    responses={422: {"model": ErrorResponse}, 503: {"model": ErrorResponse}},
+    responses={
+        422: {"model": ErrorResponse, "description": "Unprocessable Content"},
+        503: {"model": ErrorResponse},
+    },
 )
 
 
