@@ -1,0 +1,10 @@
+{
+  "lat": 35.7,
+  "lon": 51.4,
+  "max_price_toman": 25000000,
+  "page": 1,
+  "page_size": 2,
+  "q": "گوشی",
+  "radius_km": 5,
+  "sort": "distance"
+}

@@ -1,0 +1,179 @@
+{
+  "context": {
+    "contract_version": "1.0.0-draft.1",
+    "currency": "toman",
+    "dataset": {
+      "counts": {
+        "offers": 5,
+        "products": 4,
+        "shops": 4
+      },
+      "coverage": "Tehran dataset; coverage is incomplete",
+      "dataset_id": "torob-5a1a259eea5ba2cf",
+      "imported_at": "2026-10-01T00:00:00Z",
+      "source_kind": "sample",
+      "source_sha256": "5a1a259eea5ba2cf1a015b49b746cf5ecfcec7132986dc8fee77809edf4ca3e0"
+    },
+    "notices": [
+      "offer_does_not_confirm_stock",
+      "price_timestamp_is_last_change_not_last_verification",
+      "shop_names_synthetic_or_unverified",
+      "contact_numbers_synthetic",
+      "tehran_coverage_incomplete"
+    ]
+  },
+  "has_next": false,
+  "items": [
+    {
+      "distance_km": null,
+      "evidence": "shop_record_only",
+      "product_availability": "not_established",
+      "shop": {
+        "address": "نشانی ساختگی برای تست",
+        "category_names": [
+          "گوشی موبایل",
+          "لپ تاپ"
+        ],
+        "contacts": [],
+        "contacts_status": "synthetic",
+        "identity_status": "synthetic_or_unverified",
+        "instagram": null,
+        "lat": 35.7002,
+        "location_label": "محدوده نمونه تهران",
+        "lon": 51.4002,
+        "name": "فروشگاه نمونه فقط دسته",
+        "payment_options": [
+          "پرداخت در محل"
+        ],
+        "shop_id": "sample_shop_category_only",
+        "supports_fast_delivery": null,
+        "website_url": null,
+        "weekly_hours": {
+          "sat": {
+            "shifts": [
+              {
+                "end_time": "18:00:00",
+                "start_time": "09:00:00"
+              }
+            ],
+            "status": "declared"
+          }
+        }
+      }
+    },
+    {
+      "distance_km": null,
+      "evidence": "shop_record_only",
+      "product_availability": "not_established",
+      "shop": {
+        "address": "نشانی ساختگی برای تست",
+        "category_names": [
+          "گوشی موبایل",
+          "لپ تاپ"
+        ],
+        "contacts": [],
+        "contacts_status": "synthetic",
+        "identity_status": "synthetic_or_unverified",
+        "instagram": null,
+        "lat": 35.7,
+        "location_label": "محدوده نمونه تهران",
+        "lon": 51.4,
+        "name": "فروشگاه نمونه مرکز",
+        "payment_options": [
+          "پرداخت در محل"
+        ],
+        "shop_id": "sample_shop_center",
+        "supports_fast_delivery": null,
+        "website_url": null,
+        "weekly_hours": {
+          "sat": {
+            "shifts": [
+              {
+                "end_time": "18:00:00",
+                "start_time": "09:00:00"
+              }
+            ],
+            "status": "declared"
+          }
+        }
+      }
+    },
+    {
+      "distance_km": null,
+      "evidence": "shop_record_only",
+      "product_availability": "not_established",
+      "shop": {
+        "address": "نشانی ساختگی برای تست",
+        "category_names": [
+          "گوشی موبایل",
+          "لپ تاپ"
+        ],
+        "contacts": [],
+        "contacts_status": "synthetic",
+        "identity_status": "synthetic_or_unverified",
+        "instagram": null,
+        "lat": 35.8,
+        "location_label": "محدوده نمونه تهران",
+        "lon": 51.5,
+        "name": "فروشگاه نمونه دور",
+        "payment_options": [
+          "پرداخت در محل"
+        ],
+        "shop_id": "sample_shop_far",
+        "supports_fast_delivery": null,
+        "website_url": null,
+        "weekly_hours": {
+          "sat": {
+            "shifts": [
+              {
+                "end_time": "18:00:00",
+                "start_time": "09:00:00"
+              }
+            ],
+            "status": "declared"
+          }
+        }
+      }
+    },
+    {
+      "distance_km": null,
+      "evidence": "shop_record_only",
+      "product_availability": "not_established",
+      "shop": {
+        "address": "نشانی ساختگی برای تست",
+        "category_names": [
+          "گوشی موبایل",
+          "لپ تاپ"
+        ],
+        "contacts": [],
+        "contacts_status": "synthetic",
+        "identity_status": "synthetic_or_unverified",
+        "instagram": null,
+        "lat": null,
+        "location_label": "محدوده نمونه تهران",
+        "lon": null,
+        "name": "فروشگاه نمونه بدون مختصات",
+        "payment_options": [
+          "پرداخت در محل"
+        ],
+        "shop_id": "sample_shop_no_geo",
+        "supports_fast_delivery": null,
+        "website_url": null,
+        "weekly_hours": {
+          "sat": {
+            "shifts": [
+              {
+                "end_time": "18:00:00",
+                "start_time": "09:00:00"
+              }
+            ],
+            "status": "declared"
+          }
+        }
+      }
+    }
+  ],
+  "page": 1,
+  "page_size": 20,
+  "total": 4
+}

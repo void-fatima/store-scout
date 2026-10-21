@@ -1,0 +1,338 @@
+{
+  "$defs": {
+    "JsonValue": {},
+    "ProductSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "brand_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Brand Name"
+        },
+        "category_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Category Name"
+        },
+        "image_urls": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Image Urls",
+          "type": "array"
+        },
+        "model": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model"
+        },
+        "persian_title": {
+          "minLength": 1,
+          "title": "Persian Title",
+          "type": "string"
+        },
+        "product_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Product Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "product_id",
+        "persian_title"
+      ],
+      "title": "ProductSummary",
+      "type": "object"
+    },
+    "Shop": {
+      "additionalProperties": false,
+      "properties": {
+        "address": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Address"
+        },
+        "category_names": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Category Names",
+          "type": "array"
+        },
+        "contacts": {
+          "items": {
+            "additionalProperties": {
+              "$ref": "#/$defs/JsonValue"
+            },
+            "type": "object"
+          },
+          "title": "Contacts",
+          "type": "array"
+        },
+        "contacts_status": {
+          "const": "synthetic",
+          "default": "synthetic",
+          "title": "Contacts Status",
+          "type": "string"
+        },
+        "identity_status": {
+          "const": "synthetic_or_unverified",
+          "default": "synthetic_or_unverified",
+          "title": "Identity Status",
+          "type": "string"
+        },
+        "instagram": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Instagram"
+        },
+        "lat": {
+          "anyOf": [
+            {
+              "maximum": 90,
+              "minimum": -90,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lat"
+        },
+        "location_label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Location Label"
+        },
+        "lon": {
+          "anyOf": [
+            {
+              "maximum": 180,
+              "minimum": -180,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lon"
+        },
+        "name": {
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "payment_options": {
+          "items": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Payment Options",
+          "type": "array"
+        },
+        "shop_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Shop Id",
+          "type": "string"
+        },
+        "supports_fast_delivery": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Supports Fast Delivery"
+        },
+        "website_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Website Url"
+        },
+        "weekly_hours": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Weekly Hours",
+          "type": "object"
+        }
+      },
+      "required": [
+        "shop_id",
+        "name"
+      ],
+      "title": "Shop",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "availability": {
+      "const": "unconfirmed",
+      "default": "unconfirmed",
+      "title": "Availability",
+      "type": "string"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Description"
+    },
+    "distance_km": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Distance Km"
+    },
+    "evidence": {
+      "const": "offer_record",
+      "default": "offer_record",
+      "title": "Evidence",
+      "type": "string"
+    },
+    "last_price_changed_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Last Price Changed At"
+    },
+    "offer_id": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Offer Id",
+      "type": "string"
+    },
+    "price_toman": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "maximum": 9000000000000,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Price Toman"
+    },
+    "product": {
+      "$ref": "#/$defs/ProductSummary"
+    },
+    "requires_verification_before_visit": {
+      "const": true,
+      "default": true,
+      "title": "Requires Verification Before Visit",
+      "type": "boolean"
+    },
+    "seller_title": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Seller Title"
+    },
+    "shop": {
+      "$ref": "#/$defs/Shop"
+    },
+    "warranty": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Warranty"
+    }
+  },
+  "required": [
+    "offer_id",
+    "product",
+    "shop",
+    "price_toman",
+    "last_price_changed_at",
+    "seller_title",
+    "description",
+    "warranty",
+    "distance_km"
+  ],
+  "title": "OfferCandidate",
+  "type": "object"
+}
