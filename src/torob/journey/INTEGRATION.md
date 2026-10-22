@@ -1,5 +1,9 @@
 # Journey / Recommendation integration proposal
 
+Application integration now registers the Journey POST router. The current
+[public contract](../../../contracts/README.md) and
+[API handoff status](API_HANDOFF.md) supersede the pre-registration statements below.
+
 This branch reuses Catalog and Recommendation implementations in `src/torob/`.
 There is no dependency on the historical `apps/torob/recommend` snapshot.
 All new implementation, tests and documentation are Journey-owned. No shared
