@@ -54,6 +54,12 @@ in `src/journey/`; mount the future teammate component with
 the disposable real backend (`npm run dev:sample-api`) and opt-in HTTP test
 (`npm run test:live` with `STORE_SCOUT_LIVE_API` set).
 
+Use the shell's **مقایسه** link (`#comparison`) to compare current selected
+offers, and `#search` to return without resetting Journey state. The controlled
+view is in `src/journey/comparison/`; selection still comes from the existing
+controller and future Recommendation panel. Until that component is published,
+selection entry is exercised only by a test consumer outside its owned directory.
+
 Tool references: [Vite setup](https://vite.dev/guide/),
 [Vitest environments](https://vitest.dev/guide/environment.html), and
 [Testing Library setup](https://testing-library.com/docs/react-testing-library/setup/).
