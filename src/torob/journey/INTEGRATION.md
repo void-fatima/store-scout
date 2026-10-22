@@ -125,31 +125,38 @@ an in-process helper, not an acceptance endpoint or a server-side consent log.
 
 ## Source ancestry and review bases
 
-Refreshed sources (full SHAs):
+Original integration sources (full SHAs):
 
-- `main` / `origin/main`: `876ec67c194267e3bc473dfa089d39d7ec94f1fd`.
+- Initial main: `876ec67c194267e3bc473dfa089d39d7ec94f1fd`.
 - Preserved Journey tip: `87287668ec37e7b648c7cd49b45d458d70fa7d82`.
 - Required Recommendation Task 03 tip: `4410a2774cdf17be7b7ca06a2d825535914b1d65`.
 - Their prior common base: `a8f64ed96223984e8f62a10a7bb71925b0edc69e`.
 
-`feat/journey-recommendation-adapter` starts at current main, merges the preserved
+`feat/journey-recommendation-adapter` starts at that initial main, merges the preserved
 Journey tip (`3929622fd0726cfd62e1cff075c51b11b1dc0d31`), then the required
 Recommendation head (`730c3ab797b3197eaf9906e1041c25e50402e3cd`), before adding
-Journey-only changes. Existing topic tips and main are not rewritten. Names
-containing the personal token were already renamed locally at unchanged SHAs;
-the original Journey branches are unpublished and have no upstream.
+Journey-only changes. Existing topic tips and main are not rewritten. Historical
+Journey refs retain their original commits.
 
-The adapter draft targets `feat/torob-rec-followup` and depends on PR #3 (which
-depends on #2 and #1). This excludes Recommendation's implementation from the
-review diff. The already-merged main Catalog 422-description fix is necessarily
-also present in that comparison; it was brought in by merging current main,
-not edited here. After the upstream stack lands, coordinate retargeting this
-Journey draft to main. Do not merge or retarget teammates' PRs in this task.
+PRs #1, #2 and #3 merged before adapter PR #5. For its review against main,
+`cb9c83fb90c33463162b8051ba8679d418b0bbd3` was incorporated with a normal
+merge, preserving published history. This removed the ambiguous multiple merge
+bases and retained Recommendation's current README through the automatic merge.
+The adapter diff contained only `src/torob/journey/` changes.
 
-`feat/journey-recommendation-api` stacks on adapter commit
-`c0734bef1b36c5f318d3662343e106c5fc86cb82`.
-Only these two integration branches are intended for publication. The historical
-Journey refs and all teammate refs remain untouched.
+PR #5 is merged into main at `e50c25ba32e06c18ad9bd596fcb1d56c1498525a`.
+`feat/journey-recommendation-api` originally stacked on adapter commit
+`c0734bef1b36c5f318d3662343e106c5fc86cb82`; it now incorporates that main
+through a normal merge, preserving published history. PR #6 targets main for
+review. Its diff contains only Journey-owned files; shared application wiring,
+Catalog, Recommendation, contracts, dependencies and CI match main.
+
+The integration order is #5 (merged), then #6, then Roham's #7
+(`feat/journey-app-integration`). PR #7 has incorporated main and remains based
+on #6 until that dependency lands. After #6 merges, retarget #7 to main and rerun
+verification. No teammate branch or PR is changed while preparing #6.
+The standalone router belongs to #6. Production endpoint registration, POST
+CORS support and shared OpenAPI integration belong to Roham's #7.
 
 ## Checks
 
@@ -161,11 +168,16 @@ uv run --no-sync ruff check .
 uv run --no-sync ruff format --check .
 uv run --no-sync python scripts/export_contracts.py --check
 uv run --no-sync python -m torob.journey.example
+git diff --check origin/main HEAD
 ```
 
 Journey integration tests import only `datasets/sample` into per-test temporary
 databases, exercise the actual Recommendation service and canonical serialization,
 and verify that a missing database is never created by the adapter. The legacy
-four-step preparation example remains deliberately offline and blocked. See
-[API_HANDOFF.md](API_HANDOFF.md) for the tested, unregistered POST router,
-unapplied shared wiring patch and Persian UI coordination handoff on the API branch.
+four-step preparation example remains deliberately offline and blocked.
+`recommendation_example.py`, introduced by #6, demonstrates sample recommendations,
+explicit scripted acceptance and a fresh search. See [API_HANDOFF.md](API_HANDOFF.md)
+for the tested, unregistered POST router and Persian UI coordination handoff.
+The handoff's original ancestry and verification results are historical. Its
+unapplied `shared-wiring.patch` is malformed (`git apply --check` reports a corrupt
+patch at line 9); #7 applies the three intended wiring changes directly.
