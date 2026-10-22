@@ -1,20 +1,30 @@
 /* Shared semantic tokens. Use logical CSS properties for RTL layout. */
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('/fonts/Vazirmatn-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
 :root {
   color-scheme: light;
-  --font-body: Tahoma, "Segoe UI", Arial, sans-serif;
+  --font-body: 'Vazirmatn', Tahoma, "Segoe UI", Arial, sans-serif;
   --font-size-sm: 0.875rem;
   --font-size-body: 1rem;
-  --font-size-heading: clamp(1.625rem, 4vw, 2.25rem);
+  --font-size-heading: clamp(2rem, 3.2vw, 3rem);
   --line-height-body: 1.9;
 
-  --color-page: #f7f7f8;
+  --color-page: #fffdfa;
   --color-surface: #ffffff;
-  --color-text: #24262b;
-  --color-text-muted: #5c6069;
-  --color-accent: #c52031;
-  --color-accent-hover: #a81828;
-  --color-accent-soft: #fff2f3;
-  --color-border: #dedfe3;
+  --color-text: #101b3d;
+  --color-text-muted: #59657e;
+  --color-accent: #e91947;
+  --color-accent-hover: #c71038;
+  --color-accent-soft: #fff0f3;
+  --color-border: #dfe3ee;
+  --color-lavender-soft: #f2efff;
+  --color-mint-soft: #edf7ee;
+  --shadow-surface: 0 12px 40px #3d2a1510;
   --color-focus: #175bc2;
   --color-success: #16633c;
   --color-warning: #825100;
@@ -28,8 +38,9 @@
   --space-8: 2rem;
   --space-12: 3rem;
   --space-16: 4rem;
-  --radius-sm: 0.375rem;
-  --radius-md: 0.75rem;
+  --radius-sm: 0.75rem;
+  --radius-md: 1.25rem;
+  --radius-lg: 1.75rem;
   --border-default: 1px solid var(--color-border);
-  --content-max: 68rem;
+  --content-max: 82rem;
 }
