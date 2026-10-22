@@ -1,0 +1,141 @@
+{
+  "fixture_metadata": {
+    "is_mock": true,
+    "description": "MOCK ONLY. Not actual Torob records. Published synthetic sample CatalogPage, not actual shop records."
+  },
+  "data": {
+    "items": [
+      {
+        "offer_id": "sample_offer_1",
+        "evidence": "offer_record",
+        "product": {
+          "product_id": "sample_product_phone",
+          "persian_title": "گوشی سامسونگ Galaxy A55 ۲۵۶",
+          "category_name": "گوشی موبایل",
+          "brand_name": "سامسونگ",
+          "model": null,
+          "image_urls": []
+        },
+        "shop": {
+          "shop_id": "sample_shop_center",
+          "name": "فروشگاه نمونه مرکز",
+          "address": "نشانی ساختگی برای تست",
+          "location_label": "محدوده نمونه تهران",
+          "lat": 35.7,
+          "lon": 51.4,
+          "category_names": [
+            "گوشی موبایل",
+            "لپ تاپ"
+          ],
+          "contacts": [],
+          "instagram": null,
+          "website_url": null,
+          "payment_options": [
+            "پرداخت در محل"
+          ],
+          "supports_fast_delivery": null,
+          "weekly_hours": {
+            "sat": {
+              "shifts": [
+                {
+                  "end_time": "18:00:00",
+                  "start_time": "09:00:00"
+                }
+              ],
+              "status": "declared"
+            }
+          },
+          "identity_status": "synthetic_or_unverified",
+          "contacts_status": "synthetic"
+        },
+        "price_toman": 20000000,
+        "last_price_changed_at": "2026-09-14T06:30:00Z",
+        "seller_title": "عنوان نمونه فروشنده",
+        "description": null,
+        "warranty": null,
+        "distance_km": 0.0,
+        "availability": "unconfirmed",
+        "requires_verification_before_visit": true
+      },
+      {
+        "offer_id": "sample_offer_3",
+        "evidence": "offer_record",
+        "product": {
+          "product_id": "sample_product_same_title",
+          "persian_title": "گوشی سامسونگ Galaxy A55 ۲۵۶",
+          "category_name": "گوشی موبایل",
+          "brand_name": "سامسونگ",
+          "model": null,
+          "image_urls": []
+        },
+        "shop": {
+          "shop_id": "sample_shop_center",
+          "name": "فروشگاه نمونه مرکز",
+          "address": "نشانی ساختگی برای تست",
+          "location_label": "محدوده نمونه تهران",
+          "lat": 35.7,
+          "lon": 51.4,
+          "category_names": [
+            "گوشی موبایل",
+            "لپ تاپ"
+          ],
+          "contacts": [],
+          "instagram": null,
+          "website_url": null,
+          "payment_options": [
+            "پرداخت در محل"
+          ],
+          "supports_fast_delivery": null,
+          "weekly_hours": {
+            "sat": {
+              "shifts": [
+                {
+                  "end_time": "18:00:00",
+                  "start_time": "09:00:00"
+                }
+              ],
+              "status": "declared"
+            }
+          },
+          "identity_status": "synthetic_or_unverified",
+          "contacts_status": "synthetic"
+        },
+        "price_toman": 20000000,
+        "last_price_changed_at": "2026-09-16T10:00:00Z",
+        "seller_title": "عنوان نمونه فروشنده",
+        "description": null,
+        "warranty": null,
+        "distance_km": 0.0,
+        "availability": "unconfirmed",
+        "requires_verification_before_visit": true
+      }
+    ],
+    "total": 2,
+    "page": 1,
+    "page_size": 2,
+    "has_next": false,
+    "context": {
+      "contract_version": "1.0.0-draft.1",
+      "dataset": {
+        "dataset_id": "torob-5a1a259eea5ba2cf",
+        "source_kind": "sample",
+        "imported_at": "2026-10-01T00:00:00Z",
+        "source_sha256": "5a1a259eea5ba2cf1a015b49b746cf5ecfcec7132986dc8fee77809edf4ca3e0",
+        "counts": {
+          "offers": 5,
+          "products": 4,
+          "shops": 4
+        },
+        "coverage": "Tehran dataset; coverage is incomplete"
+      },
+      "currency": "toman",
+      "notices": [
+        "offer_does_not_confirm_stock",
+        "price_timestamp_is_last_change_not_last_verification",
+        "shop_names_synthetic_or_unverified",
+        "contact_numbers_synthetic",
+        "tehran_coverage_incomplete"
+      ]
+    }
+  }
+}
