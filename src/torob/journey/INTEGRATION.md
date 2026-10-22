@@ -146,7 +146,8 @@ also present in that comparison; it was brought in by merging current main,
 not edited here. After the upstream stack lands, coordinate retargeting this
 Journey draft to main. Do not merge or retarget teammates' PRs in this task.
 
-`feat/journey-recommendation-api` will stack on the completed adapter branch.
+`feat/journey-recommendation-api` stacks on adapter commit
+`c0734bef1b36c5f318d3662343e106c5fc86cb82`.
 Only these two integration branches are intended for publication. The historical
 Journey refs and all teammate refs remain untouched.
 
@@ -165,6 +166,6 @@ uv run --no-sync python -m torob.journey.example
 Journey integration tests import only `datasets/sample` into per-test temporary
 databases, exercise the actual Recommendation service and canonical serialization,
 and verify that a missing database is never created by the adapter. The legacy
-four-step preparation example remains deliberately offline and blocked. The
-public router, wiring patch and Persian UI coordination handoff belong to the
-next stacked API branch.
+four-step preparation example remains deliberately offline and blocked. See
+[API_HANDOFF.md](API_HANDOFF.md) for the tested, unregistered POST router,
+unapplied shared wiring patch and Persian UI coordination handoff on the API branch.

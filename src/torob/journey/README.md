@@ -5,6 +5,8 @@ Read [INTEGRATION.md](INTEGRATION.md) for current interfaces, revision/compariso
 rules, source ancestry and coordination requirements. The original offline
 preparation functions remain available; `prepare_catalog_request` is still a
 blocked legacy preparation envelope, never the dispatcher for recommendations.
+The stacked API branch adds [API_HANDOFF.md](API_HANDOFF.md) with the proposed
+POST router, exact unapplied wiring patch and Persian controlled-props handoff.
 
 ## Historical Stage 1 record
 
