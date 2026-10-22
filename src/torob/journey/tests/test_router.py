@@ -1,4 +1,4 @@
-"""The router runs in a test-owned app; production registration stays coordinated."""
+"""Isolated Journey boundary checks; main-app integration is tested under tests/."""
 
 import pytest
 from fastapi import FastAPI
@@ -227,9 +227,7 @@ def test_unconfigured_source_and_unexpected_failures_are_canonical(
     assert "private implementation" not in response.text
 
 
-def test_proposed_wiring_supports_post_preflight_and_production_remains_unregistered(
-    journey_repository,
-):
+def test_router_supports_post_preflight_and_is_registered_in_the_main_app(journey_repository):
     with TestClient(test_app(journey_repository, cors=True)) as client:
         response = client.options(
             PATH,
@@ -246,4 +244,4 @@ def test_proposed_wiring_supports_post_preflight_and_production_remains_unregist
         schema["paths"][PATH]["post"]["responses"]["422"]["description"] == "Unprocessable Content"
     )
     assert "AlternativesResponse" in schema["components"]["schemas"]
-    assert PATH not in create_app().openapi()["paths"]
+    assert PATH in create_app().openapi()["paths"]
