@@ -12,7 +12,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "contracts:generate": "node scripts/generate-contracts.mjs",
-    "contracts:check": "node scripts/generate-contracts.mjs --check"
+    "contracts:check": "node scripts/generate-contracts.mjs --check",
+    "dev:sample-api": "uv run --project .. --frozen --no-dev python scripts/sample_api.py",
+    "test:live": "vitest run src/journey/journey.live.test.tsx"
   },
   "dependencies": {
     "ajv": "^8.20.0",
