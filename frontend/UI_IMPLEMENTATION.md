@@ -1,4 +1,53 @@
-﻿# Stage 1 visual implementation
+# Complete frontend implementation — 2026-10-23
+
+## Updated authorization and scope
+
+The user explicitly authorizes all frontend implementation, including
+src/features/recommendation/**. This supersedes Stage 1's task-specific exclusive
+ownership and waiting notes. Backend services, wiring, contracts and all paths
+outside frontend/ remain outside ownership. No compatible published feature
+implementation exists in the freshly fetched refs. Every existing worktree was
+clean; preserve all published history and the PR #8–#13 dependency chain.
+
+Base: 7d786ed3f10b83c8a2ec134615f3daed4dcc07f6, PR #13.
+First topic: feat/ui-recommendation-experience. Completion/verification will
+stack on it. Main remains e105558 with PR #7 merged. Its runtime Python source
+matches the existing contract pin; no regeneration/source change is needed.
+
+## Visual and contract adaptations
+
+All desktop 01–09 and mobile 10–13 images were opened. Keep the existing warm
+canvas, Persian typography, horizontal header, native hero/search and pastel
+surfaces. Results use ordered three-column desktop cards and stacked mobile
+cards, with a navy controlled comparison tray. Explanation and alternative
+views pair the current offer with reasons/constraint changes. Checklist uses
+canonical pending questions. Comparison retains its scrollable native table.
+
+Images come only from the matched product's image_urls; absent/broken images
+use a neutral package illustration, never the example phone. Canonical reasons,
+limitations, diagnoses, warnings, provenance and coverage are displayed. Budget
+strings are formatted exactly without numeric monetary conversion. No browser
+ranking, invented policies, generated explanations or assumed stock.
+
+Presentation routes store only view/key in URL fragments; current response
+resolves every key. Browser Back, focus restoration and response invalidation
+must work without another request/comparison store. Acceptance requires explicit
+consent to all returned changes before the existing parent callback/fresh POST.
+Checklist marks are local reminders only; all canonical states stay pending.
+
+## Ordered implementation checkpoints
+
+A. Production RecommendationPanel, safe media, original order, canonical reasons,
+provenance and controlled selections; explanation navigation.
+B. Returned alternatives with complete original/proposed criteria and explicit
+acceptance; canonical before-visit checklist through the existing callback.
+C. Reference comparison, persistent navigation and production request states.
+D. Clean install, unit/contracts/build checks, actual disposable API HTTP and
+browser journey, deterministic intercepted edge states, all viewport screenshots,
+accessibility and final source/run handoff. Continue through completion.
+
+---
+# Stage 1 visual implementation
 
 ## Design brief (before component edits)
 
