@@ -1,0 +1,264 @@
+{
+  "fixture_metadata": {
+    "is_mock": true,
+    "description": "MOCK ONLY. Not actual Torob records. Hand-authored placeholder scores; no ranking algorithm ran."
+  },
+  "data": {
+    "schema_version": "2.0",
+    "strategy": {
+      "version": "lexical-v1",
+      "relevance_weight": 0.6,
+      "price_weight": 0.2,
+      "distance_weight": 0.15,
+      "opening_hours_weight": 0.025,
+      "purchase_conditions_weight": 0.025,
+      "distance_scale_km": 10.0,
+      "max_results": 10,
+      "ordering": "product_match_desc,overall_score_desc,offer_id_asc"
+    },
+    "context": {
+      "contract_version": "1.0.0-draft.1",
+      "dataset": {
+        "dataset_id": "torob-5a1a259eea5ba2cf",
+        "source_kind": "sample",
+        "imported_at": "2026-10-01T00:00:00Z",
+        "source_sha256": "5a1a259eea5ba2cf1a015b49b746cf5ecfcec7132986dc8fee77809edf4ca3e0",
+        "counts": {
+          "offers": 5,
+          "products": 4,
+          "shops": 4
+        },
+        "coverage": "Tehran dataset; coverage is incomplete"
+      },
+      "currency": "toman",
+      "notices": [
+        "offer_does_not_confirm_stock",
+        "price_timestamp_is_last_change_not_last_verification",
+        "shop_names_synthetic_or_unverified",
+        "contact_numbers_synthetic",
+        "tehran_coverage_incomplete"
+      ]
+    },
+    "coverage": {
+      "query": {
+        "lat": 35.7,
+        "lon": 51.4,
+        "radius_km": 5.0,
+        "page": 1,
+        "page_size": 2,
+        "q": "گوشی سامسونگ Galaxy A55 ۲۵۶",
+        "category": null,
+        "shop_id": null,
+        "product_id": null,
+        "min_price_toman": null,
+        "max_price_toman": 25000000,
+        "sort": "price_asc"
+      },
+      "pages_fetched": 1,
+      "retrieved_count": 2,
+      "catalog_total": 2,
+      "complete_for_query": true,
+      "stop_reason": "exhausted",
+      "ranking_scope": "retrieved_candidates",
+      "full_dataset_ranking": false
+    },
+    "considered_count": 2,
+    "eligible_count": 2,
+    "excluded_counts": {
+      "irrelevant": 0,
+      "unknown_price": 0,
+      "over_budget": 0,
+      "unknown_distance": 0,
+      "outside_radius": 0
+    },
+    "recommendations": [
+      {
+        "offer_id": "sample_offer_1",
+        "product_id": "sample_product_phone",
+        "shop_id": "sample_shop_center",
+        "candidate": {
+          "offer_id": "sample_offer_1",
+          "evidence": "offer_record",
+          "product": {
+            "product_id": "sample_product_phone",
+            "persian_title": "گوشی سامسونگ Galaxy A55 ۲۵۶",
+            "category_name": "گوشی موبایل",
+            "brand_name": "سامسونگ",
+            "model": null,
+            "image_urls": []
+          },
+          "shop": {
+            "shop_id": "sample_shop_center",
+            "name": "فروشگاه نمونه مرکز",
+            "address": "نشانی ساختگی برای تست",
+            "location_label": "محدوده نمونه تهران",
+            "lat": 35.7,
+            "lon": 51.4,
+            "category_names": [
+              "گوشی موبایل",
+              "لپ تاپ"
+            ],
+            "contacts": [],
+            "instagram": null,
+            "website_url": null,
+            "payment_options": [
+              "پرداخت در محل"
+            ],
+            "supports_fast_delivery": null,
+            "weekly_hours": {
+              "sat": {
+                "shifts": [
+                  {
+                    "end_time": "18:00:00",
+                    "start_time": "09:00:00"
+                  }
+                ],
+                "status": "declared"
+              }
+            },
+            "identity_status": "synthetic_or_unverified",
+            "contacts_status": "synthetic"
+          },
+          "price_toman": 20000000,
+          "last_price_changed_at": "2026-09-14T06:30:00Z",
+          "seller_title": "عنوان نمونه فروشنده",
+          "description": null,
+          "warranty": null,
+          "distance_km": 0.0,
+          "availability": "unconfirmed",
+          "requires_verification_before_visit": true
+        },
+        "overall_score": 0.64,
+        "score_breakdown": {
+          "product_match": 1.0,
+          "budget_fit": 0.2,
+          "distance_fit": null,
+          "opening_hours_fit": null,
+          "purchase_conditions_fit": null,
+          "price_freshness": null
+        },
+        "explanation_reasons": [
+          {
+            "code": "within_budget",
+            "message": "MOCK recorded price 20000000 toman is below the mock budget of 25000000 toman."
+          }
+        ],
+        "data_limitations": [
+          {
+            "code": "inventory_not_verified",
+            "message": "Stock is unconfirmed; verify before visiting."
+          },
+          {
+            "code": "recorded_price_not_live",
+            "message": "This sample price is not a live shop quote."
+          },
+          {
+            "code": "price_freshness_unknown",
+            "message": "Last price change does not establish current price or stock."
+          }
+        ],
+        "before_visit_verification": {
+          "status": "unverified",
+          "availability": "unconfirmed",
+          "requires_verification_before_visit": true
+        }
+      },
+      {
+        "offer_id": "sample_offer_3",
+        "product_id": "sample_product_same_title",
+        "shop_id": "sample_shop_center",
+        "candidate": {
+          "offer_id": "sample_offer_3",
+          "evidence": "offer_record",
+          "product": {
+            "product_id": "sample_product_same_title",
+            "persian_title": "گوشی سامسونگ Galaxy A55 ۲۵۶",
+            "category_name": "گوشی موبایل",
+            "brand_name": "سامسونگ",
+            "model": null,
+            "image_urls": []
+          },
+          "shop": {
+            "shop_id": "sample_shop_center",
+            "name": "فروشگاه نمونه مرکز",
+            "address": "نشانی ساختگی برای تست",
+            "location_label": "محدوده نمونه تهران",
+            "lat": 35.7,
+            "lon": 51.4,
+            "category_names": [
+              "گوشی موبایل",
+              "لپ تاپ"
+            ],
+            "contacts": [],
+            "instagram": null,
+            "website_url": null,
+            "payment_options": [
+              "پرداخت در محل"
+            ],
+            "supports_fast_delivery": null,
+            "weekly_hours": {
+              "sat": {
+                "shifts": [
+                  {
+                    "end_time": "18:00:00",
+                    "start_time": "09:00:00"
+                  }
+                ],
+                "status": "declared"
+              }
+            },
+            "identity_status": "synthetic_or_unverified",
+            "contacts_status": "synthetic"
+          },
+          "price_toman": 20000000,
+          "last_price_changed_at": "2026-09-16T10:00:00Z",
+          "seller_title": "عنوان نمونه فروشنده",
+          "description": null,
+          "warranty": null,
+          "distance_km": 0.0,
+          "availability": "unconfirmed",
+          "requires_verification_before_visit": true
+        },
+        "overall_score": 0.64,
+        "score_breakdown": {
+          "product_match": 1.0,
+          "budget_fit": 0.2,
+          "distance_fit": null,
+          "opening_hours_fit": null,
+          "purchase_conditions_fit": null,
+          "price_freshness": null
+        },
+        "explanation_reasons": [
+          {
+            "code": "within_budget",
+            "message": "MOCK recorded price 20000000 toman is below the mock budget of 25000000 toman."
+          }
+        ],
+        "data_limitations": [
+          {
+            "code": "inventory_not_verified",
+            "message": "Stock is unconfirmed; verify before visiting."
+          },
+          {
+            "code": "recorded_price_not_live",
+            "message": "This sample price is not a live shop quote."
+          },
+          {
+            "code": "price_freshness_unknown",
+            "message": "Last price change does not establish current price or stock."
+          }
+        ],
+        "before_visit_verification": {
+          "status": "unverified",
+          "availability": "unconfirmed",
+          "requires_verification_before_visit": true
+        }
+      }
+    ],
+    "notices": [
+      "ranking_is_limited_to_retrieved_candidates",
+      "catalog_query_is_lexical_AND_not_semantic_search",
+      "catalog_dataset_coverage_is_incomplete"
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "fixture_metadata": {
+    "is_mock": true,
+    "description": "MOCK ONLY. Not actual Torob records. Fictional shopping request; no real user."
+  },
+  "data": {
+    "query": "گوشی سامسونگ Galaxy A55 ۲۵۶",
+    "max_budget": "25000000",
+    "price_unit": "TOMAN",
+    "latitude": 35.7,
+    "longitude": 51.4,
+    "max_distance_km": 5.0,
+    "preferred_purchase_conditions": {
+      "payment_methods": [
+        "card"
+      ],
+      "warranty_available": null,
+      "return_window_days": null
+    },
+    "shopping_time": "2026-10-24T10:00:00+03:30"
+  }
+}

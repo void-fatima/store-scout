@@ -1,0 +1,43 @@
+{
+  "fixture_metadata": {
+    "is_mock": true,
+    "description": "MOCK ONLY. Not actual Torob records. Fictional offer preserving unknown price, coordinates, hours and terms."
+  },
+  "data": {
+    "offer_id": "mock-offer-minimal",
+    "evidence": "offer_record",
+    "product": {
+      "product_id": "mock-product-minimal",
+      "persian_title": "گوشی سامسونگ Galaxy A55 ۲۵۶",
+      "category_name": null,
+      "brand_name": null,
+      "model": null,
+      "image_urls": []
+    },
+    "shop": {
+      "shop_id": "mock-shop-minimal",
+      "name": "MOCK shop with unknown optional data",
+      "address": null,
+      "location_label": null,
+      "lat": null,
+      "lon": null,
+      "category_names": [],
+      "contacts": [],
+      "instagram": null,
+      "website_url": null,
+      "payment_options": [],
+      "supports_fast_delivery": null,
+      "weekly_hours": {},
+      "identity_status": "synthetic_or_unverified",
+      "contacts_status": "synthetic"
+    },
+    "price_toman": null,
+    "last_price_changed_at": null,
+    "seller_title": null,
+    "description": null,
+    "warranty": null,
+    "distance_km": null,
+    "availability": "unconfirmed",
+    "requires_verification_before_visit": true
+  }
+}
