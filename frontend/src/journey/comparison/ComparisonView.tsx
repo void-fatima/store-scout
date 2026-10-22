@@ -67,6 +67,7 @@ export function ComparisonView({ response, selections, status, onComparisonChang
     {!entries.length && <p role="status">{status === 'loading' ? 'جست‌وجوی تازه در حال انجام است؛ انتخاب‌های قبلی نمایش داده نمی‌شوند.'
       : status === 'error' ? 'نتیجهٔ معتبری برای مقایسه در دسترس نیست. به جست‌وجو برگردید و دوباره تلاش کنید.'
         : 'هنوز انتخاب معتبری برای مقایسه ندارید. از نتایج جست‌وجو آفرهای مورد نظر را انتخاب کنید.'}</p>}
+    {!entries.length && <p className="muted">با تغییر معیارها یا داده‌ها، انتخاب‌های قبلی پاک می‌شوند.</p>}
     {entries.length === 1 && <p role="status">یک آفر انتخاب شده است؛ برای مقایسه، آفر دیگری از نتایج جست‌وجو اضافه کنید.</p>}
     {entries.length > 0 && <>
       <aside className="comparison-warning" aria-label="محدودیت‌های اطلاعات">
@@ -76,16 +77,16 @@ export function ComparisonView({ response, selections, status, onComparisonChang
       </aside>
       <p id="comparison-scroll-help" className="muted">برای دیدن همهٔ ستون‌ها، جدول را در همین کادر افقی جابه‌جا کنید. با صفحه‌کلید، کادر جدول را انتخاب و از کلیدهای جهت استفاده کنید.</p>
       <div ref={tableRegion} className="comparison-scroll" role="region" aria-label="جدول مقایسهٔ آفرها" aria-describedby="comparison-scroll-help" tabIndex={0}>
-        <table className="comparison-table" style={{ minInlineSize: `${11 + entries.length * 17}rem` }}>
+        <table className="comparison-table" style={{ minInlineSize: `calc(var(--comparison-label-width) + ${entries.length} * var(--comparison-offer-width))` }}>
           <caption>اطلاعات ثبت‌شدهٔ آفرهای انتخابی؛ ترتیب انتخاب‌ها حفظ شده است.</caption>
-          <thead><tr><th scope="col">ویژگی</th>{entries.map(entry => <th scope="col" key={entry.key.offer_id}>
+          <thead><tr><th scope="col">ویژگی</th>{entries.map(entry => <th scope="col" key={JSON.stringify(entry.key)}>
             <p>{entry.result.candidate.product.persian_title}</p>
             <p>آفر: <bdi>{entry.key.offer_id}</bdi></p>
             <button data-remove-comparison className="secondary-button" aria-label={`حذف ${entry.result.candidate.product.persian_title}، آفر ${entry.key.offer_id} از مقایسه`}
               onClick={() => remove(entry.key)}>حذف از مقایسه</button>
           </th>)}</tr></thead>
           <tbody>{rows.map(row => <tr key={row.label}><th scope="row">{row.label}</th>{entries.map(entry =>
-            <td key={entry.key.offer_id}>{row.value(entry)}</td>)}</tr>)}</tbody>
+            <td key={JSON.stringify(entry.key)}>{row.value(entry)}</td>)}</tr>)}</tbody>
         </table>
       </div>
       {dataset && <section className="comparison-provenance" aria-labelledby="comparison-source-title">

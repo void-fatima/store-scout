@@ -65,11 +65,11 @@ button:disabled { opacity: 0.65; cursor: wait; }
 .comparison-view h2, .comparison-view h3 { overflow-wrap: anywhere; }
 .comparison-warning { padding: var(--space-4); margin-block: var(--space-4); border: var(--border-default); border-radius: var(--radius-sm); background: var(--color-accent-soft); }
 .comparison-warning p:last-child { margin-block-end: 0; }
-.comparison-scroll { inline-size: 100%; max-inline-size: 100%; min-inline-size: 0; overflow-x: auto; border: var(--border-default); border-radius: var(--radius-sm); overscroll-behavior-inline: contain; }
+.comparison-scroll { --comparison-label-width: 11rem; --comparison-offer-width: 17rem; inline-size: 100%; max-inline-size: 100%; min-inline-size: 0; overflow-x: auto; border: var(--border-default); border-radius: var(--radius-sm); overscroll-behavior-inline: contain; }
 .comparison-table { inline-size: 100%; border-collapse: collapse; table-layout: fixed; background: var(--color-surface); }
 .comparison-table caption { text-align: start; padding: var(--space-4); color: var(--color-text-muted); }
 .comparison-table th, .comparison-table td { text-align: start; vertical-align: top; padding: var(--space-4); border-block-end: var(--border-default); border-inline-end: var(--border-default); overflow-wrap: anywhere; }
-.comparison-table tr > :first-child { inline-size: 11rem; position: sticky; inset-inline-start: 0; background: var(--color-surface); }
+.comparison-table tr > :first-child { inline-size: var(--comparison-label-width); position: sticky; inset-inline-start: 0; background: var(--color-surface); }
 .comparison-table p { margin-block-end: var(--space-2); }
 .comparison-table bdi, .comparison-provenance bdi { overflow-wrap: anywhere; }
 .comparison-hours { margin: 0; padding-inline-start: var(--space-4); }
@@ -80,6 +80,7 @@ button:disabled { opacity: 0.65; cursor: wait; }
 .comparison-provenance summary { min-block-size: 2.75rem; padding-block: var(--space-2); }
 
 @media (max-width: 36rem) {
+  .comparison-scroll { --comparison-label-width: 7rem; --comparison-offer-width: 11rem; }
   .main-content { padding-block: var(--space-8); }
   .header-inner { align-items: flex-start; flex-direction: column; gap: var(--space-1); }
   .foundation-note { padding: var(--space-4); }
