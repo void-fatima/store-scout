@@ -77,7 +77,7 @@ h2 { font-size: 1.125rem; line-height: 1.8; }
 .criteria-form legend { padding: 0; margin-block-end: var(--space-2); }
 .payment-options { display: flex; flex-wrap: wrap; gap: 6px; }
 .payment-options label { display: inline-flex; gap: 5px; align-items: center; min-block-size: 48px; padding-inline: var(--space-2); background: #f5f6fa; border: 1px solid transparent; border-radius: 999px; color: var(--color-text); cursor: pointer; }
-.payment-options label:has(:checked) { background: var(--color-accent-soft); border-color: var(--color-accent); color: var(--color-accent); }
+.payment-options label:has(:checked) { background: var(--color-accent-soft); border-color: var(--color-accent); color: var(--color-accent-hover); }
 .payment-options input { accent-color: var(--color-accent); inline-size: 16px; block-size: 16px; margin: 0; }
 .primary-button, .secondary-button { min-block-size: 48px; padding: var(--space-2) var(--space-6); border: var(--border-default); border-radius: var(--radius-sm); font-weight: 700; }
 .primary-button { background: var(--color-accent); color: var(--color-surface); border-color: var(--color-accent); }

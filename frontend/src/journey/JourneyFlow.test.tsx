@@ -45,7 +45,7 @@ it('wires the Persian form, mocked HTTP and all four unchanged panel callbacks',
   await user.selectOptions(screen.getByLabelText('واحد بودجه'), 'TOMAN')
   await user.type(screen.getByLabelText('عرض جغرافیایی محل انتخابی'), '۳۵٫۷')
   await user.type(screen.getByLabelText('طول جغرافیایی محل انتخابی'), '۵۱٫۴')
-  await user.click(screen.getByRole('button', { name: 'جست‌وجوی پیشنهادها' }))
+  await user.click(screen.getByRole('button', { name: 'دیدن پیشنهادها' }))
   await waitFor(() => expect(screen.getByRole('button', { name: 'انتخاب مقایسه در تست' })).toBeEnabled())
   expect(fetcher.mock.calls[0]?.[1]?.body).toContain('"max_budget":"17000000.123456789"')
   await user.click(screen.getByRole('button', { name: 'انتخاب مقایسه در تست' }))
