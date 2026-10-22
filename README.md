@@ -30,3 +30,7 @@ uv run python scripts/export_contracts.py --check
 The test command includes Catalog, Recommendation, Journey and application integration tests.
 Tests use temporary databases. To regenerate contracts after a reviewed API change, run
 `uv run python scripts/export_contracts.py`.
+
+With the sample API running, `uv run python scripts/smoke_journey.py` checks the live
+HTTP flow, comparison, explicit sample alternative acceptance, validation and CORS.
+The report is saved to `var/reports/latest-journey-smoke.json`.
