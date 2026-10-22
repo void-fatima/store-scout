@@ -374,8 +374,9 @@ uv run pytest tests/recommend/test_recommend_followup.py tests/recommend/test_re
 Full regression: `uv run pytest`. For local lint with the preserved untracked
 legacy snapshot, use `uv run ruff check . --exclude apps` and
 `uv run ruff format --check . --exclude apps`. A fresh checkout has no legacy
-snapshot, so the CI commands do not need that exclusion. The pre-existing
-Python 3.12 OpenAPI description drift remains a separate Catalog issue.
+snapshot, so the CI commands do not need that exclusion. Main now includes the
+Catalog fix for Python 3.12/3.13 HTTP 422 descriptions; OpenAPI verification
+uses the same committed contract on both versions.
 
 Task 03 MOCK payloads: `examples/alternatives_response.json` and
 `examples/followup_plan.json`. Each uses a labelled envelope with the model payload
