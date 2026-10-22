@@ -47,6 +47,13 @@ reduced-motion rules are shared. The shell reserves `#recommendation-root` for
 the future RecommendationPanel; its feature directory is exclusively owned
 by Setayesh and is intentionally absent from this foundation.
 
+The parent Journey flow is now wired into the shell. Its form and controller live
+in `src/journey/`; mount the future teammate component with
+`<JourneyFlow Panel={RecommendationPanel} />`. The controller exposes the existing
+`RecommendationPanelProps` without modifying that interface. See the handoff for
+the disposable real backend (`npm run dev:sample-api`) and opt-in HTTP test
+(`npm run test:live` with `STORE_SCOUT_LIVE_API` set).
+
 Tool references: [Vite setup](https://vite.dev/guide/),
 [Vitest environments](https://vitest.dev/guide/environment.html), and
 [Testing Library setup](https://testing-library.com/docs/react-testing-library/setup/).

@@ -13,7 +13,10 @@ boundary and readonly wrappers around the owning backend types.
   `45cfe9815ebfd78b0423ca321c2f61e51ea7fbdd`, on
   `feat/journey-app-integration` ([PR #7](https://github.com/void-fatima/store-scout/pull/7)).
   Its `API_HANDOFF.md` supersedes the pre-registration header on the API branch.
-  PRs #5, #6 and #7 remain pending; no backend branch was merged here.
+  PR #5 landed during parent-flow work; PRs #6 and #7 remain open. Latest reviewed
+  integration head `a3b94e2f06e51d7f06aa6998e9ff362c527771a3` has identical runtime
+  models/code to this pin (only documentation changed). No backend branch was
+  merged or retargeted by this frontend task.
 
 From the repository root, fetch the source objects if needed:
 
@@ -98,4 +101,7 @@ The parent must check current request/revision/dataset, validate updated criteri
 increment revision, clear comparison and old results, and POST a fresh complete
 request. There is no HTTP acceptance endpoint or persisted server consent store.
 Discard stale responses and clear visible results/comparison on snapshot errors.
-Those parent state/API behaviors are later integration work.
+Those parent state/API behaviors now live in `src/journey/` and `src/api/`;
+see `frontend/HANDOFF.md` for the controller and mounting boundary. The panel
+props interface itself is unchanged. The post-acceptance test fixture is also
+derived through the owning helper and a fresh service call.
