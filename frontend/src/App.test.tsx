@@ -6,9 +6,9 @@ import App from './App'
 
 it('renders semantic Persian navigation, content and the empty feature mount', () => {
   render(<App />)
-  expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('با آگاهی بیشتر')
+  expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('قبل از رفتن، هوشمندانه انتخاب کن')
   expect(within(screen.getByRole('navigation', { name: 'ناوبری اصلی' }))
-    .getByRole('link', { name: 'راهنمای خرید' })).toHaveAttribute('aria-current', 'page')
+    .getByRole('link', { name: 'پیشنهادها' })).toHaveAttribute('aria-current', 'page')
   expect(screen.getByRole('main')).toHaveAttribute('id', 'main-content')
   expect(document.getElementById('recommendation-root')).toBeEmptyDOMElement()
   expect(screen.getByRole('contentinfo')).toBeInTheDocument()

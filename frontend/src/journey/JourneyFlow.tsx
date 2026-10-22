@@ -6,10 +6,21 @@ import { CriteriaForm } from './CriteriaForm'
 import { useJourneyController } from './useJourneyController'
 import { ComparisonView } from './comparison/ComparisonView'
 import { useJourneyView } from './useJourneyView'
+import { BuyingGuide, LandingHero } from '../shell/Landing'
+
+type Controller = ReturnType<typeof useJourneyController>
+type FlowProps = { Panel?: ComponentType<RecommendationPanelProps>; client?: JourneyClient; controller?: Controller }
 
 /** Pass Setayesh's exported component as Panel when it is published. */
-export function JourneyFlow({ Panel, client }: { Panel?: ComponentType<RecommendationPanelProps>; client?: JourneyClient }) {
-  const { state, panelProps, changeDraft, submit, clearVerification } = useJourneyController(client ? { client } : {})
+export function JourneyFlow(props: FlowProps) {
+  return props.controller ? <JourneyRoutes {...props} controller={props.controller} /> : <StandaloneJourneyFlow {...props} />
+}
+function StandaloneJourneyFlow(props: FlowProps) {
+  const controller = useJourneyController(props.client ? { client: props.client } : {})
+  return <JourneyRoutes {...props} controller={controller} />
+}
+function JourneyRoutes({ Panel, controller }: FlowProps & { controller: Controller }) {
+  const { state, panelProps, changeDraft, submit, clearVerification } = controller
   const view = useJourneyView()
   const searchRegion = useRef<HTMLElement>(null)
   const comparisonRegion = useRef<HTMLElement>(null)
@@ -23,8 +34,10 @@ export function JourneyFlow({ Panel, client }: { Panel?: ComponentType<Recommend
   return <>
     {/* Keep both subtrees and this single controller mounted across navigation. */}
     <section id="search" className="journey-route" ref={searchRegion} tabIndex={-1} hidden={view !== 'search'} aria-label="جست‌وجوی خرید">
+    <LandingHero />
     <CriteriaForm draft={state.draft} errors={state.fieldErrors} loading={state.status === 'loading'} onChange={changeDraft} onSubmit={submit} />
-    <section className="foundation-note" aria-labelledby="results-title" aria-busy={state.status === 'loading'}>
+    <BuyingGuide />
+    <section className="foundation-note search-results" hidden={state.status === 'idle' && !Panel && !state.notice} aria-labelledby="results-title" aria-busy={state.status === 'loading'}>
       <h2 id="results-title">نتیجهٔ جست‌وجو</h2>
       <p><a href="#comparison">مقایسهٔ انتخاب‌ها ({new Intl.NumberFormat('fa-IR').format(state.comparison.length)})</a></p>
       <p role="status">{state.status === 'loading' ? 'در حال دریافت پیشنهادها…'
