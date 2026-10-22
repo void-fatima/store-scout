@@ -97,15 +97,13 @@ from pathlib import Path
 from torob.recommend import RecommendationResponse, ShoppingCriteria
 
 examples = Path("src/torob/recommend/examples")
-request_data = json.loads(
-    (examples / "shopping_request.json").read_text(encoding="utf-8")
-)["data"]
+request_data = json.loads((examples / "shopping_request.json").read_text(encoding="utf-8"))["data"]
 request = ShoppingCriteria.model_validate(request_data)
 assert request.budget_toman == 25000000
 
-response_data = json.loads(
-    (examples / "recommendation_response.json").read_text(encoding="utf-8")
-)["data"]
+response_data = json.loads((examples / "recommendation_response.json").read_text(encoding="utf-8"))[
+    "data"
+]
 response = RecommendationResponse.model_validate(response_data)
 assert RecommendationResponse.model_validate_json(response.model_dump_json()) == response
 schema = RecommendationResponse.model_json_schema()
