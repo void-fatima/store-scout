@@ -44,6 +44,23 @@ nav [aria-current='page'] { color: var(--color-accent); font-weight: 700; }
 .skip-link { position: absolute; z-index: 1; inset-block-start: var(--space-2); inset-inline-start: var(--space-4); padding: var(--space-3) var(--space-4); border: var(--border-default); border-radius: var(--radius-sm); background: var(--color-surface); transform: translateY(-200%); }
 .skip-link:focus { transform: translateY(0); }
 
+.criteria-form { padding: var(--space-6); background: var(--color-surface); border: var(--border-default); border-radius: var(--radius-md); margin-block-end: var(--space-8); }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: var(--space-4); }
+.form-field { display: flex; flex-direction: column; gap: var(--space-2); }
+.form-field input, .form-field select { inline-size: 100%; min-block-size: 2.75rem; padding: var(--space-2) var(--space-3); border: var(--border-default); border-radius: var(--radius-sm); background: var(--color-surface); color: var(--color-text); }
+.form-field [aria-invalid='true'] { border-color: var(--color-error); }
+.field-error { color: var(--color-error); font-size: var(--font-size-sm); }
+.criteria-form fieldset { min-inline-size: 0; border: var(--border-default); border-radius: var(--radius-sm); margin: var(--space-4) 0; padding: var(--space-4); }
+.criteria-form legend { padding-inline: var(--space-2); }
+.payment-options { display: flex; flex-wrap: wrap; gap: var(--space-4); }
+.payment-options label { display: inline-flex; gap: var(--space-2); align-items: center; min-block-size: 2.75rem; }
+.primary-button, .secondary-button { min-block-size: 2.75rem; padding: var(--space-2) var(--space-6); border: var(--border-default); border-radius: var(--radius-sm); font-weight: 700; }
+.primary-button { background: var(--color-accent); color: var(--color-surface); border-color: var(--color-accent); }
+.primary-button:hover:not(:disabled) { background: var(--color-accent-hover); }
+.secondary-button { background: var(--color-surface); color: var(--color-accent); }
+button:disabled { opacity: 0.65; cursor: wait; }
+.journey-notice { margin-block: var(--space-4); }
+
 @media (max-width: 36rem) {
   .main-content { padding-block: var(--space-8); }
   .header-inner { align-items: flex-start; flex-direction: column; gap: var(--space-1); }
