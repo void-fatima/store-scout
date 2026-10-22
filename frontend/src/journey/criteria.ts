@@ -70,6 +70,7 @@ export function fieldErrorsFromApi(error: ErrorResponse): FieldErrors {
     const parts = typeof location === 'string' ? location.split(/[./]/) : Array.isArray(location) ? location : []
     for (const part of parts) {
       if (typeof part !== 'string') continue
+      if (!Object.hasOwn(fields, part)) continue
       const field = fields[part]
       if (field) result[field] = 'این مقدار از سوی سرویس پذیرفته نشد؛ آن را بررسی کنید.'
     }

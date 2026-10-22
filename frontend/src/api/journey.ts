@@ -80,5 +80,6 @@ export function userError(error: ErrorResponse): ErrorResponse {
     network_unavailable: 'ارتباط با سرویس برقرار نشد. دوباره تلاش کنید.',
     invalid_api_configuration: 'نشانی سرویس درست تنظیم نشده است.',
   }
-  return localError(error.error.code, messages[error.error.code] ?? 'درخواست انجام نشد. دوباره تلاش کنید.')
+  const fallback = 'درخواست انجام نشد. دوباره تلاش کنید.'
+  return localError(error.error.code, Object.hasOwn(messages, error.error.code) ? messages[error.error.code] ?? fallback : fallback)
 }

@@ -1,3 +1,5 @@
+import { JourneyFlow } from './journey'
+
 export default function App() {
   return (
     <div className="app-shell">
@@ -21,12 +23,7 @@ export default function App() {
           <p className="muted">کالاها و فروشگاه‌ها را با معیارهای خود بررسی کنید و پیش از مراجعه، اطلاعات را تأیید کنید.</p>
         </section>
 
-        <section className="foundation-note" aria-labelledby="preparation-title">
-          <h2 id="preparation-title">راهنمای خرید در حال آماده‌سازی است</h2>
-          <p>در مرحلهٔ بعد، جست‌وجو و پیشنهادهای متناسب با نیاز شما به این صفحه اضافه می‌شوند.</p>
-          {/* Mount the future RecommendationPanel here. Setayesh owns its feature directory. */}
-          <div id="recommendation-root" />
-        </section>
+        <JourneyFlow />
 
         <section id="about" className="about" aria-labelledby="about-title" tabIndex={-1}>
           <h2 id="about-title">پیش از مراجعه بررسی کنید</h2>

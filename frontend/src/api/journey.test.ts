@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { journeyFixture, requestFixture, errorFixture } from '../test/fixtures/contracts'
-import { createJourneyClient } from './journey'
+import { createJourneyClient, userError } from './journey'
 
 const signal = () => new AbortController().signal
 const json = (data: unknown, status = 200) => new Response(JSON.stringify(data), { status })
@@ -66,5 +66,11 @@ describe('Journey HTTP boundary', () => {
     expect(await createJourneyClient({ baseUrl: 'http://user:password@localhost', fetcher })(requestFixture, signal()))
       .toMatchObject({ ok: false, failure: { kind: 'configuration' } })
     expect(fetcher).not.toHaveBeenCalled()
+  })
+
+  it('uses safe local UI messages even for unknown error codes', () => {
+    const error = userError({ error: { code: 'constructor', message: 'private traceback', details: [] } })
+    expect(typeof error.error.message).toBe('string')
+    expect(error.error.message).not.toContain('traceback')
   })
 })
