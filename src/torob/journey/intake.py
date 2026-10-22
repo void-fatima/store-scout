@@ -43,10 +43,13 @@ def _collect(request: ShoppingRequest) -> JourneyOutcome:
         MissingInformation(field=f"criteria.{field}", message=f"Provide {field}.")
         for field in ("q", "city")
         if (value := getattr(request.criteria, field)) is None or not value.strip()
+        if field != "city" or request.criteria.latitude is None
     )
     state = ShoppingState(
         request_id=request.request_id,
+        revision=request.revision,
         criteria=request.criteria,
+        comparison=request.comparison,
         status="needs_information" if missing else "criteria_ready",
     )
     return JourneyOutcome(state=state, missing_information=missing)
@@ -55,7 +58,7 @@ def _collect(request: ShoppingRequest) -> JourneyOutcome:
 def start_journey(payload: object) -> JourneyOutcome:
     """Validate request_id/criteria and create an identified shopping state.
 
-    Query and city are locally required; budget and area are optional. Invalid
+    Query and city or coordinates are locally required; budget and area are optional. Invalid
     shapes and values return structured errors. Missing identity creates no state.
     """
     try:

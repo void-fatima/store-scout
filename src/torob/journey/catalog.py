@@ -18,7 +18,14 @@ def prepare_catalog_request(state: ShoppingState) -> JourneyOutcome:
         return JourneyOutcome(
             error=ErrorDetail(code="invalid_state", message="Expected a ShoppingState.")
         )
-    collected = _collect(ShoppingRequest(request_id=state.request_id, criteria=state.criteria))
+    collected = _collect(
+        ShoppingRequest(
+            request_id=state.request_id,
+            revision=state.revision,
+            criteria=state.criteria,
+            comparison=state.comparison,
+        )
+    )
     if collected.missing_information:
         return collected
 
@@ -39,7 +46,19 @@ def prepare_catalog_request(state: ShoppingState) -> JourneyOutcome:
         catalog_contract_version=CONTRACT_VERSION,
         parameters=query.model_dump(mode="json", exclude_unset=True),
         unresolved_filters=tuple(
-            key for key in ("city", "area") if getattr(state.criteria, key) is not None
+            key
+            for key in (
+                "city",
+                "area",
+                "max_budget",
+                "price_unit",
+                "latitude",
+                "longitude",
+                "max_distance_km",
+                "preferred_purchase_conditions",
+                "shopping_time",
+            )
+            if getattr(state.criteria, key) is not None
         ),
         limitations=(
             "The current draft catalog query has no city/area filter; Roham's location "
