@@ -1,4 +1,16 @@
-# Shopping Journey — Stage 1 (Fatima)
+# Shopping Journey
+
+Journey now maps validated requests to the actual Recommendation Task 03 service.
+Read [INTEGRATION.md](INTEGRATION.md) for current interfaces, revision/comparison
+rules, source ancestry and coordination requirements. The original offline
+preparation functions remain available; `prepare_catalog_request` is still a
+blocked legacy preparation envelope, never the dispatcher for recommendations.
+
+## Historical Stage 1 record
+
+The following records the original offline foundation. Its capability statements,
+verification counts and branch publication status describe that checkpoint;
+the integration handoff supersedes them for current work.
 
 This is a module-local proposal inside the existing StoreScout Python package.
 It reuses Pydantic and pytest from the repository; it introduces no dependencies,
