@@ -142,19 +142,17 @@ Recommendation head (`730c3ab797b3197eaf9906e1041c25e50402e3cd`), before adding
 Journey-only changes. Existing topic tips and main are not rewritten. Historical
 Journey refs retain their original commits.
 
-PRs #1 through #5 are merged. Main `e50c25b` incorporates adapter PR #5 and is
-included in the application integration branch through a normal merge. The
-documentation conflict was resolved while preserving the published branch history.
+PRs #1 through #6 are merged. Main `2e16a88` incorporates adapter PR #5 and
+standalone API PR #6. The application integration branch includes that main
+through a normal merge, preserving published history and resolving the
+documentation conflict.
 
-`feat/journey-recommendation-api` originally stacks on adapter commit
-`c0734bef1b36c5f318d3662343e106c5fc86cb82`. Its PR #6 must be updated against
-current main and reviewed before landing. PR #7 (`feat/journey-app-integration`)
-remains based on #6 until that dependency lands. No upstream branch or PR is
-modified by the application integration work.
-
-The standalone router belongs to #6. Application registration, POST CORS support
-and shared OpenAPI integration belong to #7. After #6 lands, retarget #7 to main
-and rerun verification before review and merge.
+`feat/journey-recommendation-api` originally stacked on adapter commit
+`c0734bef1b36c5f318d3662343e106c5fc86cb82` and later incorporated main in
+`1b18068` before PR #6 landed. The standalone router belongs to #6. Application
+registration, POST CORS support and shared OpenAPI integration belong to PR #7
+(`feat/journey-app-integration`), now targeting main for review. No upstream
+branch or PR is modified by the application integration work.
 
 ## Checks
 
