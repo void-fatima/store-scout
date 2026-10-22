@@ -1,6 +1,8 @@
 # StoreScout frontend
 
 React + TypeScript + Vite. All frontend commands run from this directory.
+See [HANDOFF.md](HANDOFF.md) for ownership, contract imports, source pins and
+remaining integration work.
 Supported runtime: Node 24 LTS, version 24.21.0 or newer within major 24;
 npm 11. The lockfile is authoritative. On Windows with restricted PowerShell
 execution policy, use `npm.cmd` in place of `npm`.
