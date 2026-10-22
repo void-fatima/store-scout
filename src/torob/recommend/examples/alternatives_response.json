@@ -1,0 +1,890 @@
+{
+  "fixture_kind": "MOCK",
+  "description": "Synthetic repository sample only; not actual Torob records. No seller contact occurred.",
+  "data": {
+    "schema_version": "alternatives-v1",
+    "original_constraints": {
+      "query": "گوشی",
+      "max_budget": "17000000",
+      "price_unit": "TOMAN",
+      "latitude": null,
+      "longitude": null,
+      "max_distance_km": null,
+      "preferred_purchase_conditions": null,
+      "shopping_time": null
+    },
+    "policy": {
+      "retrieval": {
+        "max_pages": 2,
+        "page_size": 50
+      },
+      "max_budget_increase_fraction": 0.25,
+      "max_radius_multiplier": 2.0,
+      "max_total_seconds": 5.0,
+      "max_suggestions": 3,
+      "alternative_queries": []
+    },
+    "original": {
+      "schema_version": "2.0",
+      "strategy": {
+        "version": "lexical-v1",
+        "relevance_weight": 0.6,
+        "price_weight": 0.2,
+        "distance_weight": 0.15,
+        "opening_hours_weight": 0.025,
+        "purchase_conditions_weight": 0.025,
+        "distance_scale_km": 10.0,
+        "max_results": 10,
+        "ordering": "product_match_desc,overall_score_desc,offer_id_asc"
+      },
+      "context": {
+        "contract_version": "1.0.0-draft.1",
+        "dataset": {
+          "dataset_id": "torob-5a1a259eea5ba2cf",
+          "source_kind": "sample",
+          "imported_at": "2026-10-01T00:00:00Z",
+          "source_sha256": "5a1a259eea5ba2cf1a015b49b746cf5ecfcec7132986dc8fee77809edf4ca3e0",
+          "counts": {
+            "shops": 4,
+            "products": 4,
+            "offers": 5
+          },
+          "coverage": "Tehran dataset; coverage is incomplete"
+        },
+        "currency": "toman",
+        "notices": [
+          "offer_does_not_confirm_stock",
+          "price_timestamp_is_last_change_not_last_verification",
+          "shop_names_synthetic_or_unverified",
+          "contact_numbers_synthetic",
+          "tehran_coverage_incomplete"
+        ]
+      },
+      "coverage": {
+        "query": {
+          "lat": null,
+          "lon": null,
+          "radius_km": null,
+          "page": 1,
+          "page_size": 50,
+          "q": "گوشی",
+          "category": null,
+          "shop_id": null,
+          "product_id": null,
+          "min_price_toman": null,
+          "max_price_toman": 17000000,
+          "sort": "price_asc"
+        },
+        "pages_fetched": 1,
+        "retrieved_count": 0,
+        "catalog_total": 0,
+        "complete_for_query": true,
+        "stop_reason": "exhausted",
+        "ranking_scope": "retrieved_candidates",
+        "full_dataset_ranking": false
+      },
+      "considered_count": 0,
+      "eligible_count": 0,
+      "excluded_counts": {
+        "irrelevant": 0,
+        "unknown_price": 0,
+        "over_budget": 0,
+        "unknown_distance": 0,
+        "outside_radius": 0
+      },
+      "recommendations": [],
+      "notices": [
+        "ranking_is_limited_to_retrieved_candidates",
+        "catalog_query_is_lexical_AND_not_semantic_search",
+        "catalog_dataset_coverage_is_incomplete",
+        "lexical_matching_does_not_confirm_exact_product_identity",
+        "no_eligible_offers"
+      ]
+    },
+    "original_verification": [],
+    "diagnoses": [
+      {
+        "code": "missing_price_data",
+        "message": "قیمت برخی آفرهای مرتبط نامشخص است؛ در بودجه تأیید نمی‌شوند.",
+        "scope": "retrieved_catalog_records",
+        "evidence_offer_ids": [
+          "sample_offer_4"
+        ]
+      },
+      {
+        "code": "budget_too_restrictive",
+        "message": "قیمت ثبت‌شدهٔ برخی آفرهای مرتبط از بودجه بیشتر است.",
+        "scope": "retrieved_catalog_records",
+        "evidence_offer_ids": [
+          "sample_offer_2",
+          "sample_offer_1",
+          "sample_offer_3"
+        ]
+      },
+      {
+        "code": "missing_geographic_data",
+        "message": "مختصات کاربر یا برخی فروشگاه‌ها نامشخص است؛ فاصله قابل تأیید نیست.",
+        "scope": "retrieved_catalog_records",
+        "evidence_offer_ids": [
+          "sample_offer_2",
+          "sample_offer_1",
+          "sample_offer_3",
+          "sample_offer_4"
+        ]
+      }
+    ],
+    "suggestions": [
+      {
+        "suggestion_type": "budget_increase",
+        "original_constraints": {
+          "query": "گوشی",
+          "max_budget": "17000000",
+          "price_unit": "TOMAN",
+          "latitude": null,
+          "longitude": null,
+          "max_distance_km": null,
+          "preferred_purchase_conditions": null,
+          "shopping_time": null
+        },
+        "relaxed_constraints": {
+          "query": "گوشی",
+          "max_budget": "19000000",
+          "price_unit": "TOMAN",
+          "latitude": null,
+          "longitude": null,
+          "max_distance_km": null,
+          "preferred_purchase_conditions": null,
+          "shopping_time": null
+        },
+        "changes": [
+          {
+            "field": "max_budget",
+            "original": "17000000",
+            "relaxed": "19000000"
+          }
+        ],
+        "satisfies_original_constraints": false,
+        "requires_user_acceptance": true,
+        "evidence": "catalog_offer_record",
+        "explanation": "این جایگزین با فیلترهای اولیه تأیید نشده است؛ تغییر لازم: بودجه (تومان) از «17000000» به «19000000». پذیرش این تغییرها با شماست. پیشنهاد فقط بر پایهٔ رکورد آفر کاتالوگ است.",
+        "result": {
+          "offer_id": "sample_offer_2",
+          "product_id": "sample_product_phone",
+          "shop_id": "sample_shop_far",
+          "candidate": {
+            "offer_id": "sample_offer_2",
+            "evidence": "offer_record",
+            "product": {
+              "product_id": "sample_product_phone",
+              "persian_title": "گوشی سامسونگ Galaxy A55 ۲۵۶",
+              "category_name": "گوشی موبایل",
+              "brand_name": "سامسونگ",
+              "model": null,
+              "image_urls": []
+            },
+            "shop": {
+              "shop_id": "sample_shop_far",
+              "name": "فروشگاه نمونه دور",
+              "address": "نشانی ساختگی برای تست",
+              "location_label": "محدوده نمونه تهران",
+              "lat": 35.8,
+              "lon": 51.5,
+              "category_names": [
+                "گوشی موبایل",
+                "لپ تاپ"
+              ],
+              "contacts": [],
+              "instagram": null,
+              "website_url": null,
+              "payment_options": [
+                "پرداخت در محل"
+              ],
+              "supports_fast_delivery": null,
+              "weekly_hours": {
+                "sat": {
+                  "status": "declared",
+                  "shifts": [
+                    {
+                      "start_time": "09:00:00",
+                      "end_time": "18:00:00"
+                    }
+                  ]
+                }
+              },
+              "identity_status": "synthetic_or_unverified",
+              "contacts_status": "synthetic"
+            },
+            "price_toman": 19000000,
+            "last_price_changed_at": "2026-09-15T10:00:00Z",
+            "seller_title": "عنوان نمونه فروشنده",
+            "description": null,
+            "warranty": null,
+            "distance_km": null,
+            "availability": "unconfirmed",
+            "requires_verification_before_visit": true
+          },
+          "overall_score": 0.6,
+          "score_breakdown": {
+            "product_match": 1.0,
+            "budget_fit": 0.0,
+            "distance_fit": null,
+            "opening_hours_fit": null,
+            "purchase_conditions_fit": null,
+            "price_freshness": null
+          },
+          "explanation_reasons": [
+            {
+              "code": "product_match",
+              "message": "در عنوان، برند، مدل یا دستهٔ ثبت‌شدهٔ محصول، 1 از 1 واژهٔ جست‌وجو پیدا شد؛ یکسان بودن دقیق مدل تضمین نمی‌شود."
+            },
+            {
+              "code": "within_budget",
+              "message": "قیمت ثبت‌شدهٔ 19,000,000 تومان از سقف 19,000,000 تومان بیشتر نیست؛ قیمت فعلی باید بررسی شود."
+            }
+          ],
+          "data_limitations": [
+            {
+              "code": "inventory_not_verified",
+              "message": "آفر ثبت‌شده اثبات موجودی نیست؛ پیش از مراجعه موجودی را بررسی کنید."
+            },
+            {
+              "code": "recorded_price_not_live",
+              "message": "قیمت ثبت‌شده ممکن است با قیمت فعلی فروشگاه تفاوت داشته باشد."
+            },
+            {
+              "code": "price_freshness_unknown",
+              "message": "زمان تغییر قیمت، زمان تأیید قیمت فعلی یا موجودی نیست."
+            },
+            {
+              "code": "user_location_unknown",
+              "message": "فاصله نامشخص است و امتیاز مثبت دریافت نمی‌کند."
+            },
+            {
+              "code": "shopping_time_unknown",
+              "message": "ساعت کاری در زمان درخواستی روشن نیست؛ امتیاز آن نامشخص است."
+            }
+          ],
+          "before_visit_verification": {
+            "status": "unverified",
+            "availability": "unconfirmed",
+            "requires_verification_before_visit": true
+          }
+        },
+        "verification": {
+          "offer_id": "sample_offer_2",
+          "product_id": "sample_product_phone",
+          "shop_id": "sample_shop_far",
+          "state": "awaiting_user_verification",
+          "availability": "unconfirmed",
+          "requires_verification_before_visit": true,
+          "contact_attempted": false,
+          "contact_policy": "synthetic_contacts_not_for_contact",
+          "recorded_price_toman": 19000000,
+          "last_price_changed_at": "2026-09-15T10:00:00Z",
+          "price_verification_status": "unknown",
+          "shopping_time": null,
+          "requested_purchase_conditions": null,
+          "opening_hours_status": "recorded_unverified",
+          "recorded_weekly_hours": {
+            "sat": {
+              "status": "declared",
+              "shifts": [
+                {
+                  "start_time": "09:00:00",
+                  "end_time": "18:00:00"
+                }
+              ]
+            }
+          },
+          "payment_status": "recorded_unverified",
+          "recorded_payment_options": [
+            "پرداخت در محل"
+          ],
+          "warranty_status": "unknown",
+          "recorded_warranty": null,
+          "checklist": [
+            {
+              "topic": "inventory",
+              "question": "آیا همین کالای ثبت‌شده با عنوان «گوشی سامسونگ Galaxy A55 ۲۵۶» و مدل دقیق مورد نظر موجود است؟",
+              "evidence_paths": [
+                "candidate.offer_id",
+                "candidate.product"
+              ],
+              "state": "pending"
+            },
+            {
+              "topic": "price",
+              "question": "آیا قیمت ثبت‌شدهٔ 19,000,000 تومان برای همین کالا هنوز معتبر است؟",
+              "evidence_paths": [
+                "candidate.price_toman",
+                "candidate.last_price_changed_at"
+              ],
+              "state": "pending"
+            },
+            {
+              "topic": "opening_hours",
+              "question": "آیا فروشگاه در زمان مراجعهٔ مورد نظر باز است؟ ساعات کاری باید تأیید شود.",
+              "evidence_paths": [
+                "criteria.shopping_time",
+                "candidate.shop.weekly_hours"
+              ],
+              "state": "pending"
+            },
+            {
+              "topic": "payment",
+              "question": "چه روش‌های پرداختی برای همین کالا پذیرفته می‌شود و شرایط هر روش چیست؟",
+              "evidence_paths": [
+                "criteria.preferred_purchase_conditions",
+                "candidate.shop.payment_options"
+              ],
+              "state": "pending"
+            },
+            {
+              "topic": "warranty",
+              "question": "آیا همین کالا گارانتی معتبر دارد؟ شرکت، مدت و شرایط گارانتی چیست؟",
+              "evidence_paths": [
+                "candidate.warranty",
+                "criteria.preferred_purchase_conditions"
+              ],
+              "state": "pending"
+            }
+          ],
+          "warnings": [
+            "offer_does_not_confirm_stock",
+            "price_timestamp_is_last_change_not_last_verification",
+            "shop_names_synthetic_or_unverified",
+            "contact_numbers_synthetic",
+            "tehran_coverage_incomplete",
+            "inventory_not_verified",
+            "recorded_price_is_not_live",
+            "price_timestamp_is_last_change_not_verification",
+            "opening_hours_and_purchase_conditions_require_verification",
+            "synthetic_contacts_not_for_contact",
+            "no_seller_contact_or_verification_has_occurred"
+          ]
+        }
+      },
+      {
+        "suggestion_type": "budget_increase",
+        "original_constraints": {
+          "query": "گوشی",
+          "max_budget": "17000000",
+          "price_unit": "TOMAN",
+          "latitude": null,
+          "longitude": null,
+          "max_distance_km": null,
+          "preferred_purchase_conditions": null,
+          "shopping_time": null
+        },
+        "relaxed_constraints": {
+          "query": "گوشی",
+          "max_budget": "20000000",
+          "price_unit": "TOMAN",
+          "latitude": null,
+          "longitude": null,
+          "max_distance_km": null,
+          "preferred_purchase_conditions": null,
+          "shopping_time": null
+        },
+        "changes": [
+          {
+            "field": "max_budget",
+            "original": "17000000",
+            "relaxed": "20000000"
+          }
+        ],
+        "satisfies_original_constraints": false,
+        "requires_user_acceptance": true,
+        "evidence": "catalog_offer_record",
+        "explanation": "این جایگزین با فیلترهای اولیه تأیید نشده است؛ تغییر لازم: بودجه (تومان) از «17000000» به «20000000». پذیرش این تغییرها با شماست. پیشنهاد فقط بر پایهٔ رکورد آفر کاتالوگ است.",
+        "result": {
+          "offer_id": "sample_offer_1",
+          "product_id": "sample_product_phone",
+          "shop_id": "sample_shop_center",
+          "candidate": {
+            "offer_id": "sample_offer_1",
+            "evidence": "offer_record",
+            "product": {
+              "product_id": "sample_product_phone",
+              "persian_title": "گوشی سامسونگ Galaxy A55 ۲۵۶",
+              "category_name": "گوشی موبایل",
+              "brand_name": "سامسونگ",
+              "model": null,
+              "image_urls": []
+            },
+            "shop": {
+              "shop_id": "sample_shop_center",
+              "name": "فروشگاه نمونه مرکز",
+              "address": "نشانی ساختگی برای تست",
+              "location_label": "محدوده نمونه تهران",
+              "lat": 35.7,
+              "lon": 51.4,
+              "category_names": [
+                "گوشی موبایل",
+                "لپ تاپ"
+              ],
+              "contacts": [],
+              "instagram": null,
+              "website_url": null,
+              "payment_options": [
+                "پرداخت در محل"
+              ],
+              "supports_fast_delivery": null,
+              "weekly_hours": {
+                "sat": {
+                  "status": "declared",
+                  "shifts": [
+                    {
+                      "start_time": "09:00:00",
+                      "end_time": "18:00:00"
+                    }
+                  ]
+                }
+              },
+              "identity_status": "synthetic_or_unverified",
+              "contacts_status": "synthetic"
+            },
+            "price_toman": 20000000,
+            "last_price_changed_at": "2026-09-14T06:30:00Z",
+            "seller_title": "عنوان نمونه فروشنده",
+            "description": null,
+            "warranty": null,
+            "distance_km": null,
+            "availability": "unconfirmed",
+            "requires_verification_before_visit": true
+          },
+          "overall_score": 0.6,
+          "score_breakdown": {
+            "product_match": 1.0,
+            "budget_fit": 0.0,
+            "distance_fit": null,
+            "opening_hours_fit": null,
+            "purchase_conditions_fit": null,
+            "price_freshness": null
+          },
+          "explanation_reasons": [
+            {
+              "code": "product_match",
+              "message": "در عنوان، برند، مدل یا دستهٔ ثبت‌شدهٔ محصول، 1 از 1 واژهٔ جست‌وجو پیدا شد؛ یکسان بودن دقیق مدل تضمین نمی‌شود."
+            },
+            {
+              "code": "within_budget",
+              "message": "قیمت ثبت‌شدهٔ 20,000,000 تومان از سقف 20,000,000 تومان بیشتر نیست؛ قیمت فعلی باید بررسی شود."
+            }
+          ],
+          "data_limitations": [
+            {
+              "code": "inventory_not_verified",
+              "message": "آفر ثبت‌شده اثبات موجودی نیست؛ پیش از مراجعه موجودی را بررسی کنید."
+            },
+            {
+              "code": "recorded_price_not_live",
+              "message": "قیمت ثبت‌شده ممکن است با قیمت فعلی فروشگاه تفاوت داشته باشد."
+            },
+            {
+              "code": "price_freshness_unknown",
+              "message": "زمان تغییر قیمت، زمان تأیید قیمت فعلی یا موجودی نیست."
+            },
+            {
+              "code": "user_location_unknown",
+              "message": "فاصله نامشخص است و امتیاز مثبت دریافت نمی‌کند."
+            },
+            {
+              "code": "shopping_time_unknown",
+              "message": "ساعت کاری در زمان درخواستی روشن نیست؛ امتیاز آن نامشخص است."
+            }
+          ],
+          "before_visit_verification": {
+            "status": "unverified",
+            "availability": "unconfirmed",
+            "requires_verification_before_visit": true
+          }
+        },
+        "verification": {
+          "offer_id": "sample_offer_1",
+          "product_id": "sample_product_phone",
+          "shop_id": "sample_shop_center",
+          "state": "awaiting_user_verification",
+          "availability": "unconfirmed",
+          "requires_verification_before_visit": true,
+          "contact_attempted": false,
+          "contact_policy": "synthetic_contacts_not_for_contact",
+          "recorded_price_toman": 20000000,
+          "last_price_changed_at": "2026-09-14T06:30:00Z",
+          "price_verification_status": "unknown",
+          "shopping_time": null,
+          "requested_purchase_conditions": null,
+          "opening_hours_status": "recorded_unverified",
+          "recorded_weekly_hours": {
+            "sat": {
+              "status": "declared",
+              "shifts": [
+                {
+                  "start_time": "09:00:00",
+                  "end_time": "18:00:00"
+                }
+              ]
+            }
+          },
+          "payment_status": "recorded_unverified",
+          "recorded_payment_options": [
+            "پرداخت در محل"
+          ],
+          "warranty_status": "unknown",
+          "recorded_warranty": null,
+          "checklist": [
+            {
+              "topic": "inventory",
+              "question": "آیا همین کالای ثبت‌شده با عنوان «گوشی سامسونگ Galaxy A55 ۲۵۶» و مدل دقیق مورد نظر موجود است؟",
+              "evidence_paths": [
+                "candidate.offer_id",
+                "candidate.product"
+              ],
+              "state": "pending"
+            },
+            {
+              "topic": "price",
+              "question": "آیا قیمت ثبت‌شدهٔ 20,000,000 تومان برای همین کالا هنوز معتبر است؟",
+              "evidence_paths": [
+                "candidate.price_toman",
+                "candidate.last_price_changed_at"
+              ],
+              "state": "pending"
+            },
+            {
+              "topic": "opening_hours",
+              "question": "آیا فروشگاه در زمان مراجعهٔ مورد نظر باز است؟ ساعات کاری باید تأیید شود.",
+              "evidence_paths": [
+                "criteria.shopping_time",
+                "candidate.shop.weekly_hours"
+              ],
+              "state": "pending"
+            },
+            {
+              "topic": "payment",
+              "question": "چه روش‌های پرداختی برای همین کالا پذیرفته می‌شود و شرایط هر روش چیست؟",
+              "evidence_paths": [
+                "criteria.preferred_purchase_conditions",
+                "candidate.shop.payment_options"
+              ],
+              "state": "pending"
+            },
+            {
+              "topic": "warranty",
+              "question": "آیا همین کالا گارانتی معتبر دارد؟ شرکت، مدت و شرایط گارانتی چیست؟",
+              "evidence_paths": [
+                "candidate.warranty",
+                "criteria.preferred_purchase_conditions"
+              ],
+              "state": "pending"
+            }
+          ],
+          "warnings": [
+            "offer_does_not_confirm_stock",
+            "price_timestamp_is_last_change_not_last_verification",
+            "shop_names_synthetic_or_unverified",
+            "contact_numbers_synthetic",
+            "tehran_coverage_incomplete",
+            "inventory_not_verified",
+            "recorded_price_is_not_live",
+            "price_timestamp_is_last_change_not_verification",
+            "opening_hours_and_purchase_conditions_require_verification",
+            "synthetic_contacts_not_for_contact",
+            "no_seller_contact_or_verification_has_occurred"
+          ]
+        }
+      },
+      {
+        "suggestion_type": "budget_increase",
+        "original_constraints": {
+          "query": "گوشی",
+          "max_budget": "17000000",
+          "price_unit": "TOMAN",
+          "latitude": null,
+          "longitude": null,
+          "max_distance_km": null,
+          "preferred_purchase_conditions": null,
+          "shopping_time": null
+        },
+        "relaxed_constraints": {
+          "query": "گوشی",
+          "max_budget": "20000000",
+          "price_unit": "TOMAN",
+          "latitude": null,
+          "longitude": null,
+          "max_distance_km": null,
+          "preferred_purchase_conditions": null,
+          "shopping_time": null
+        },
+        "changes": [
+          {
+            "field": "max_budget",
+            "original": "17000000",
+            "relaxed": "20000000"
+          }
+        ],
+        "satisfies_original_constraints": false,
+        "requires_user_acceptance": true,
+        "evidence": "catalog_offer_record",
+        "explanation": "این جایگزین با فیلترهای اولیه تأیید نشده است؛ تغییر لازم: بودجه (تومان) از «17000000» به «20000000». پذیرش این تغییرها با شماست. پیشنهاد فقط بر پایهٔ رکورد آفر کاتالوگ است.",
+        "result": {
+          "offer_id": "sample_offer_3",
+          "product_id": "sample_product_same_title",
+          "shop_id": "sample_shop_center",
+          "candidate": {
+            "offer_id": "sample_offer_3",
+            "evidence": "offer_record",
+            "product": {
+              "product_id": "sample_product_same_title",
+              "persian_title": "گوشی سامسونگ Galaxy A55 ۲۵۶",
+              "category_name": "گوشی موبایل",
+              "brand_name": "سامسونگ",
+              "model": null,
+              "image_urls": []
+            },
+            "shop": {
+              "shop_id": "sample_shop_center",
+              "name": "فروشگاه نمونه مرکز",
+              "address": "نشانی ساختگی برای تست",
+              "location_label": "محدوده نمونه تهران",
+              "lat": 35.7,
+              "lon": 51.4,
+              "category_names": [
+                "گوشی موبایل",
+                "لپ تاپ"
+              ],
+              "contacts": [],
+              "instagram": null,
+              "website_url": null,
+              "payment_options": [
+                "پرداخت در محل"
+              ],
+              "supports_fast_delivery": null,
+              "weekly_hours": {
+                "sat": {
+                  "status": "declared",
+                  "shifts": [
+                    {
+                      "start_time": "09:00:00",
+                      "end_time": "18:00:00"
+                    }
+                  ]
+                }
+              },
+              "identity_status": "synthetic_or_unverified",
+              "contacts_status": "synthetic"
+            },
+            "price_toman": 20000000,
+            "last_price_changed_at": "2026-09-16T10:00:00Z",
+            "seller_title": "عنوان نمونه فروشنده",
+            "description": null,
+            "warranty": null,
+            "distance_km": null,
+            "availability": "unconfirmed",
+            "requires_verification_before_visit": true
+          },
+          "overall_score": 0.6,
+          "score_breakdown": {
+            "product_match": 1.0,
+            "budget_fit": 0.0,
+            "distance_fit": null,
+            "opening_hours_fit": null,
+            "purchase_conditions_fit": null,
+            "price_freshness": null
+          },
+          "explanation_reasons": [
+            {
+              "code": "product_match",
+              "message": "در عنوان، برند، مدل یا دستهٔ ثبت‌شدهٔ محصول، 1 از 1 واژهٔ جست‌وجو پیدا شد؛ یکسان بودن دقیق مدل تضمین نمی‌شود."
+            },
+            {
+              "code": "within_budget",
+              "message": "قیمت ثبت‌شدهٔ 20,000,000 تومان از سقف 20,000,000 تومان بیشتر نیست؛ قیمت فعلی باید بررسی شود."
+            }
+          ],
+          "data_limitations": [
+            {
+              "code": "inventory_not_verified",
+              "message": "آفر ثبت‌شده اثبات موجودی نیست؛ پیش از مراجعه موجودی را بررسی کنید."
+            },
+            {
+              "code": "recorded_price_not_live",
+              "message": "قیمت ثبت‌شده ممکن است با قیمت فعلی فروشگاه تفاوت داشته باشد."
+            },
+            {
+              "code": "price_freshness_unknown",
+              "message": "زمان تغییر قیمت، زمان تأیید قیمت فعلی یا موجودی نیست."
+            },
+            {
+              "code": "user_location_unknown",
+              "message": "فاصله نامشخص است و امتیاز مثبت دریافت نمی‌کند."
+            },
+            {
+              "code": "shopping_time_unknown",
+              "message": "ساعت کاری در زمان درخواستی روشن نیست؛ امتیاز آن نامشخص است."
+            }
+          ],
+          "before_visit_verification": {
+            "status": "unverified",
+            "availability": "unconfirmed",
+            "requires_verification_before_visit": true
+          }
+        },
+        "verification": {
+          "offer_id": "sample_offer_3",
+          "product_id": "sample_product_same_title",
+          "shop_id": "sample_shop_center",
+          "state": "awaiting_user_verification",
+          "availability": "unconfirmed",
+          "requires_verification_before_visit": true,
+          "contact_attempted": false,
+          "contact_policy": "synthetic_contacts_not_for_contact",
+          "recorded_price_toman": 20000000,
+          "last_price_changed_at": "2026-09-16T10:00:00Z",
+          "price_verification_status": "unknown",
+          "shopping_time": null,
+          "requested_purchase_conditions": null,
+          "opening_hours_status": "recorded_unverified",
+          "recorded_weekly_hours": {
+            "sat": {
+              "status": "declared",
+              "shifts": [
+                {
+                  "start_time": "09:00:00",
+                  "end_time": "18:00:00"
+                }
+              ]
+            }
+          },
+          "payment_status": "recorded_unverified",
+          "recorded_payment_options": [
+            "پرداخت در محل"
+          ],
+          "warranty_status": "unknown",
+          "recorded_warranty": null,
+          "checklist": [
+            {
+              "topic": "inventory",
+              "question": "آیا همین کالای ثبت‌شده با عنوان «گوشی سامسونگ Galaxy A55 ۲۵۶» و مدل دقیق مورد نظر موجود است؟",
+              "evidence_paths": [
+                "candidate.offer_id",
+                "candidate.product"
+              ],
+              "state": "pending"
+            },
+            {
+              "topic": "price",
+              "question": "آیا قیمت ثبت‌شدهٔ 20,000,000 تومان برای همین کالا هنوز معتبر است؟",
+              "evidence_paths": [
+                "candidate.price_toman",
+                "candidate.last_price_changed_at"
+              ],
+              "state": "pending"
+            },
+            {
+              "topic": "opening_hours",
+              "question": "آیا فروشگاه در زمان مراجعهٔ مورد نظر باز است؟ ساعات کاری باید تأیید شود.",
+              "evidence_paths": [
+                "criteria.shopping_time",
+                "candidate.shop.weekly_hours"
+              ],
+              "state": "pending"
+            },
+            {
+              "topic": "payment",
+              "question": "چه روش‌های پرداختی برای همین کالا پذیرفته می‌شود و شرایط هر روش چیست؟",
+              "evidence_paths": [
+                "criteria.preferred_purchase_conditions",
+                "candidate.shop.payment_options"
+              ],
+              "state": "pending"
+            },
+            {
+              "topic": "warranty",
+              "question": "آیا همین کالا گارانتی معتبر دارد؟ شرکت، مدت و شرایط گارانتی چیست؟",
+              "evidence_paths": [
+                "candidate.warranty",
+                "criteria.preferred_purchase_conditions"
+              ],
+              "state": "pending"
+            }
+          ],
+          "warnings": [
+            "offer_does_not_confirm_stock",
+            "price_timestamp_is_last_change_not_last_verification",
+            "shop_names_synthetic_or_unverified",
+            "contact_numbers_synthetic",
+            "tehran_coverage_incomplete",
+            "inventory_not_verified",
+            "recorded_price_is_not_live",
+            "price_timestamp_is_last_change_not_verification",
+            "opening_hours_and_purchase_conditions_require_verification",
+            "synthetic_contacts_not_for_contact",
+            "no_seller_contact_or_verification_has_occurred"
+          ]
+        }
+      }
+    ],
+    "coverage": [
+      {
+        "query": {
+          "lat": null,
+          "lon": null,
+          "radius_km": null,
+          "page": 1,
+          "page_size": 50,
+          "q": "گوشی",
+          "category": null,
+          "shop_id": null,
+          "product_id": null,
+          "min_price_toman": null,
+          "max_price_toman": 17000000,
+          "sort": "price_asc"
+        },
+        "pages_fetched": 1,
+        "retrieved_count": 0,
+        "catalog_total": 0,
+        "complete_for_query": true,
+        "stop_reason": "exhausted",
+        "ranking_scope": "retrieved_candidates",
+        "full_dataset_ranking": false
+      },
+      {
+        "query": {
+          "lat": null,
+          "lon": null,
+          "radius_km": null,
+          "page": 1,
+          "page_size": 50,
+          "q": "گوشی",
+          "category": null,
+          "shop_id": null,
+          "product_id": null,
+          "min_price_toman": null,
+          "max_price_toman": null,
+          "sort": "price_asc"
+        },
+        "pages_fetched": 1,
+        "retrieved_count": 4,
+        "catalog_total": 4,
+        "complete_for_query": true,
+        "stop_reason": "exhausted",
+        "ranking_scope": "retrieved_candidates",
+        "full_dataset_ranking": false
+      }
+    ],
+    "catalog_requests": 2,
+    "warnings": [
+      "offer_does_not_confirm_stock",
+      "price_timestamp_is_last_change_not_last_verification",
+      "shop_names_synthetic_or_unverified",
+      "contact_numbers_synthetic",
+      "tehran_coverage_incomplete",
+      "diagnosis_and_alternatives_are_limited_to_retrieved_records",
+      "numeric_relaxations_are_capped_by_policy",
+      "relaxed_alternatives_require_user_acceptance",
+      "inventory_and_current_price_remain_unverified",
+      "synthetic_contacts_not_for_contact"
+    ]
+  }
+}
