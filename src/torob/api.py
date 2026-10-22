@@ -1,4 +1,4 @@
-"""Composition root: register future journey/recommendation routers here."""
+"""Application composition for Catalog and Journey recommendation routes."""
 
 import logging
 import sqlite3
@@ -15,6 +15,7 @@ from torob.catalog.repository import CatalogRepository
 from torob.catalog.router import router as catalog_router
 from torob.config import Settings
 from torob.data.database import initialize
+from torob.journey.router import router as journey_router
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +38,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.add_middleware(
         CORSMiddleware,
         allow_origins=list(settings.cors_origins),
-        allow_methods=["GET"],
+        allow_methods=["GET", "POST"],
         allow_headers=["Content-Type"],
     )
 
@@ -95,4 +96,5 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         }
 
     app.include_router(catalog_router)
+    app.include_router(journey_router)
     return app

@@ -1,5 +1,9 @@
 # Journey / Recommendation integration proposal
 
+Application integration now registers the Journey POST router. The current
+[public contract](../../../contracts/README.md) and
+[API handoff status](API_HANDOFF.md) supersede the pre-registration statements below.
+
 This branch reuses Catalog and Recommendation implementations in `src/torob/`.
 There is no dependency on the historical `apps/torob/recommend` snapshot.
 All new implementation, tests and documentation are Journey-owned. No shared
@@ -138,25 +142,17 @@ Recommendation head (`730c3ab797b3197eaf9906e1041c25e50402e3cd`), before adding
 Journey-only changes. Existing topic tips and main are not rewritten. Historical
 Journey refs retain their original commits.
 
-PRs #1, #2 and #3 merged before adapter PR #5. For its review against main,
-`cb9c83fb90c33463162b8051ba8679d418b0bbd3` was incorporated with a normal
-merge, preserving published history. This removed the ambiguous multiple merge
-bases and retained Recommendation's current README through the automatic merge.
-The adapter diff contained only `src/torob/journey/` changes.
+PRs #1 through #6 are merged. Main `2e16a88` incorporates adapter PR #5 and
+standalone API PR #6. The application integration branch includes that main
+through a normal merge, preserving published history and resolving the
+documentation conflict.
 
-PR #5 is merged into main at `e50c25ba32e06c18ad9bd596fcb1d56c1498525a`.
 `feat/journey-recommendation-api` originally stacked on adapter commit
-`c0734bef1b36c5f318d3662343e106c5fc86cb82`; it now incorporates that main
-through a normal merge, preserving published history. PR #6 targets main for
-review. Its diff contains only Journey-owned files; shared application wiring,
-Catalog, Recommendation, contracts, dependencies and CI match main.
-
-The integration order is #5 (merged), then #6, then Roham's #7
-(`feat/journey-app-integration`). PR #7 has incorporated main and remains based
-on #6 until that dependency lands. After #6 merges, retarget #7 to main and rerun
-verification. No teammate branch or PR is changed while preparing #6.
-The standalone router belongs to #6. Production endpoint registration, POST
-CORS support and shared OpenAPI integration belong to Roham's #7.
+`c0734bef1b36c5f318d3662343e106c5fc86cb82` and later incorporated main in
+`1b18068` before PR #6 landed. The standalone router belongs to #6. Application
+registration, POST CORS support and shared OpenAPI integration belong to PR #7
+(`feat/journey-app-integration`), now targeting main for review. No upstream
+branch or PR is modified by the application integration work.
 
 ## Checks
 
@@ -177,7 +173,4 @@ and verify that a missing database is never created by the adapter. The legacy
 four-step preparation example remains deliberately offline and blocked.
 `recommendation_example.py`, introduced by #6, demonstrates sample recommendations,
 explicit scripted acceptance and a fresh search. See [API_HANDOFF.md](API_HANDOFF.md)
-for the tested, unregistered POST router and Persian UI coordination handoff.
-The handoff's original ancestry and verification results are historical. Its
-unapplied `shared-wiring.patch` is malformed (`git apply --check` reports a corrupt
-patch at line 9); #7 applies the three intended wiring changes directly.
+for current application registration status and the historical wiring proposal.

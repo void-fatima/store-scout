@@ -1,4 +1,19 @@
-# Proposed Journey HTTP boundary and team handoff
+# Journey API handoff
+
+## Application integration
+
+The integration branch registers the Journey router in `torob.api.create_app` and
+permits POST for the configured CORS origins. The current public contract is in
+[contracts/README.md](../../../contracts/README.md) and its generated OpenAPI.
+Main-app tests in `tests/test_journey_api.py` use temporary sample databases.
+The supplied `shared-wiring.patch` is malformed (`git apply --check` reports a
+corrupt patch at line 9); its three wiring changes were applied directly instead.
+The patch is retained as a historical reference and should not be reapplied.
+
+## Original pre-registration handoff
+
+The remaining sections record the handoff before application integration; their
+unregistered-route and unapplied-patch statements describe that earlier stage.
 
 **Ready for registration, not registered in the production app.**
 `POST /api/v1/journey/recommendations` and its envelope are proposals for team
@@ -100,7 +115,7 @@ artifact update as a coordinated change; do not hand-edit generated JSON.
 Registration, CORS, shared docs and artifacts remain unchanged here, so the current
 contract check still passes. No UI or deployment change is included.
 
-## تحویل کوتاه برای ستایش
+## پیشنهاد اتصال رابط کاربری
 
 بک‌اند فعلی با Python، FastAPI، Pydantic و SQLite تأیید شده است؛ React و TypeScript
 فعلاً پیشنهاد فرانت‌اند هستند. مسیر POST بالا و envelope آن هم هنوز نیاز به توافق
