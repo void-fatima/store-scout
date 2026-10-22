@@ -1,3 +1,123 @@
+# Stage 1 shell and search handoff — 2026-10-22
+
+This section supersedes the historical status notes below. Stage 1 implements
+`Desktop/01-Landing-Search.png` and `Mobile/10-Landing-Search.png` from the supplied
+StoreScout package. All remaining reference screens were reviewed for visual
+language only. Results cards, explanations, alternatives, checklists and final
+comparison visuals are deferred.
+
+## Delivery and dependencies
+
+- Branch: `feat/ui-shell-search`, based on
+  `1c276967506e408d1329c43280c917fa47ea3022` (`feat/frontend-comparison-view`, PR #12).
+- The draft PR is stacked on #12; #8–#12 keep their existing bases. Six focused
+  Conventional Commits; no resets, stashes, rebases or force-pushes.
+- All tracked changes are under `frontend/`. No files in the reserved
+  `src/features/recommendation/**` directory, generated contracts, controller,
+  backend, CORS or root dependencies changed.
+- Fresh remote main `e105558` includes backend PR #7. Its runtime Python code is
+  identical to the existing reviewed contract source pin
+  `45cfe9815ebfd78b0423ca321c2f61e51ea7fbdd`; the pin remains deliberate.
+
+## Shared integration
+
+`App` now owns the one existing `useJourneyController()` instance and passes it
+to the optional `JourneyFlow.controller` prop. Header count reads directly from
+`state.comparison.length`. Standalone `<JourneyFlow Panel={...} client={...} />`
+continues to create its own single controller. `JourneyFlow.Panel`,
+`RecommendationPanelProps`, existing API contracts and controller behavior are
+unchanged. Both route subtrees remain mounted. Criteria edits still invalidate
+results, comparisons and plans and abort outstanding requests.
+
+The horizontal RTL header includes working search and comparison routes and
+`#guide`, which opens and focuses the actual three-step buying guide even from
+comparison. Mobile has a keyboard-accessible menu with Escape returning focus
+to its trigger. No account, notification or location-permission features exist.
+
+`CriteriaForm` remains the actual controlled form. Units and starting criteria
+are blank. Money is never formatted through floating point; Persian/Arabic
+digits and decimal normalization remain unchanged. Native details/summary
+reveals only supported payment, warranty and return-window fields. Closing the
+disclosure retains values. Errors inside it reopen it; local and asynchronous
+backend field errors focus their associated control. Stock and price caveats
+remain visible; there is no permanent sample-data badge.
+
+## Stable styling and assets
+
+- `src/styles/tokens.css`: existing semantic token names, warm page/navy text/
+  coral action colors, spacing, radii, typography, pastel and shadow tokens.
+- `src/styles/global.css`: loaded once by `src/main.tsx`; inherited Persian
+  typography/RTL, shell/search styles, focus and reduced-motion treatment.
+- `src/assets/search-hero.jpg`: 887x290 illustration-only crop, 32,650 bytes.
+- `src/assets/README.md`: crop coordinates, source provenance and font source.
+- `public/fonts/Vazirmatn-Variable.woff2` and `public/fonts/OFL.txt`: self-hosted
+  variable font and complete SIL Open Font License; no runtime CDN dependency.
+- `src/shell/Icon.tsx`: small native SVG icons and compass mark.
+
+### تحویل به ستایش
+
+استایل مشترک یک‌بار در `src/main.tsx` بارگذاری می‌شود. در کامپوننت‌های خودت از
+توکن‌های `src/styles/tokens.css` مثل `--color-text`، `--color-text-muted`،
+`--color-surface`، `--color-accent`، `--color-border`، `--space-*` و `--radius-*`
+استفاده کن. فونت وزیرمتن و جهت RTL از صفحه به ارث می‌رسند؛ فاصله‌ها را با ویژگی‌های
+منطقی مثل `padding-inline` بنویس. استایل اختصاصی پیشنهادها را در پوشهٔ خودت نگه دار.
+`RecommendationPanelProps` و `JourneyFlow.Panel` تغییری نکرده‌اند؛ برای اتصال خروجی
+واقعی کامپوننتت نیازی به تغییر props، توکن‌ها یا تنظیمات مشترک نیست. ترتیب پاسخ،
+شناسه‌ها و پیام‌های عدم قطعیت را حفظ کن و برچسب نمونه را فقط از context واقعی بخوان.
+
+## Verification performed
+
+Node 24.21.0 / npm 11.19.0, Windows, headless Google Chrome through Playwright:
+
+- `npm run typecheck`, `npm run lint`, `npm run build`,
+  `npm run contracts:check`: passed. Canonical bindings/fixtures unchanged.
+- `npm test`: 52 passed, one opt-in live test skipped.
+- `STORE_SCOUT_LIVE_API=http://127.0.0.1:8017 npm run test:live`: one passed
+  separately against the disposable synthetic API. Covers real submission,
+  selection, explicit scripted acceptance/fresh POST, canonical 422 and preflight.
+- `npm run test:ui`: five passed. Real browser viewport sizes: 1440x900,
+  768x1024, 390x844 and 360x844. Captured landing, field errors and expanded
+  preferences at every size; inspected the rendered compositions and wrapping.
+  No page-level horizontal overflow in initial or expanded states. Visible form
+  controls and payment labels have at least 44x44 targets. Keyboard skip link,
+  disclosure, menu Escape, route/guide focus, local/backend field focus, exact
+  decimal retention and retry revision behavior passed. WCAG A/AA axe scans
+  had zero violations in initial and expanded states at each size. The first
+  scan found selected payment text contrast; it was corrected before delivery.
+- The browser HTTP-failure test intercepts only its test request. Browser
+  screenshots are not a claim of a deployed backend connection or seller contact.
+  The separate opt-in live HTTP test exercises the actual pinned API.
+- `git diff --check` and ownership-boundary diff checks: passed.
+
+Reproduce browser checks after `npm ci`:
+
+```sh
+npx playwright install chromium
+npm run test:ui
+```
+
+Or set `STORE_SCOUT_CHROMIUM` to an installed Chromium/Chrome executable (used
+here: `C:/Program Files/Google/Chrome/Application/chrome.exe`). Playwright starts
+Vite if needed. Browser-only tooling is in frontend devDependencies. Outputs,
+traces and HTML reports go to gitignored `frontend/ui-artifacts/`.
+
+Final local evidence copies (not committed) are in
+`C:/Users/FATIMA/StoreScout-reference/verification/`:
+`stage1-{desktop,tablet,mobile,narrow}-{landing,errors,preferences}.png`.
+The reference archive/screenshots remain outside tracked source. Only the used
+hero crop is committed.
+
+## Remaining limitations
+
+Setayesh's production Recommendation component is not yet published/mounted;
+the existing reserved mount stays empty and received-results copy states this
+truthfully. The search sends requests to the existing configured API origin;
+set `VITE_API_BASE_URL` for the intended backend as before. No deployed API,
+real seller inventory, travel-time/location lookup, Safari, Firefox or physical
+mobile-device verification was performed. Final comparison visual redesign and
+all later-stage screens remain deferred. No deployment was performed.
+
+---
 # Frontend Journey and comparison handoff
 
 ## Branches and ownership

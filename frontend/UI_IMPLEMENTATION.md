@@ -49,3 +49,19 @@ Run the existing behavioral suite, typecheck, lint, build and contract check.
 Use real Chromium via local Playwright to inspect 1440x900, 768x1024, 390x844
 and 360px layouts, overflow, disclosure, keyboard navigation and field errors.
 Keep actual screenshots outside tracked source and report exact limitations.
+
+## Completed verification
+
+Implemented the desktop 01 and mobile 10 landing screens with shared tokens,
+self-hosted Persian typography, native SVG branding/icons, cropped decorative
+hero art, live selection count, useful guide navigation and the existing real
+controlled form. The controller and contract files are unchanged. App passes
+its one controller to JourneyFlow; standalone Panel/client usage remains valid.
+All other screens were reviewed directly or in the external contact sheet.
+
+Final checks: 52 standard tests passed (one opt-in test skipped), separate real
+sample-API test passed, five Chromium browser tests passed, zero WCAG A/AA axe
+violations in initial/expanded states at all four sizes, typecheck/lint/build/
+contract consistency passed. The selected payment label was darkened after
+contrast testing. See HANDOFF.md for reproducible commands, local screenshot
+paths, remaining boundaries and the Persian component handoff.
