@@ -88,7 +88,7 @@ def test_live_opt_in_sends_one_small_persian_request(monkeypatch, capsys, parame
     assert payload["model"] == "vendor/model"
     assert payload["messages"] == [{"role": "user", "content": "لطفاً فقط بنویس: سلام"}]
     output = capsys.readouterr()
-    assert "Success:" in output.out and "not connected" in output.out
+    assert "Success:" in output.out and "does not verify the shopping intent workflow" in output.out
     assert KEY not in output.out + output.err
     assert "vendor/model" not in output.out + output.err
 
