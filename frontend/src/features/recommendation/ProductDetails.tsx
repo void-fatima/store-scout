@@ -14,6 +14,7 @@ import type { ProductTab } from './presentation'
 import { Specifications } from './Specifications'
 import { ProductFit } from './ProductFit'
 import { ProductTabs } from './ProductTabs'
+import { ProductPurchaseReview } from './ProductPurchaseReview'
 
 const client = createProductDetailClient()
 type Load = { owner: AlternativesResponse; identity: string; result: ProductDetailResult }
@@ -84,6 +85,9 @@ export function ProductDetails({ entry, response, requestId, revision, previousH
         </div>
         <div role="tabpanel" id={`${tabPrefix}-fit-panel`} aria-labelledby={`${tabPrefix}-fit-tab`} tabIndex={0} hidden={tab !== 'fit'}>
           {validContext ? <ProductFit entry={entry} response={response} /> : <p role="alert">منبع یا شناسهٔ فعلی کالا سازگار نیست؛ دلیل‌های قبلی نمایش داده نمی‌شوند.</p>}
+        </div>
+        <div role="tabpanel" id={`${tabPrefix}-purchase-panel`} aria-labelledby={`${tabPrefix}-purchase-tab`} tabIndex={0} hidden={tab !== 'purchase'}>
+          {tab === 'purchase' && (validContext ? <ProductPurchaseReview entry={entry} /> : <p role="alert">منبع یا شناسهٔ فعلی کالا سازگار نیست؛ برنامهٔ قبلی نمایش داده نمی‌شود.</p>)}
         </div>
       </section>
       <section className="detail-surface product-selected-offer" aria-labelledby="selected-offer-title">
