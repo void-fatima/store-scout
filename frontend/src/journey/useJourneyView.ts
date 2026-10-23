@@ -9,7 +9,7 @@ export function useJourneyView() {
   const [view, setView] = useState(currentView)
   useEffect(() => {
     const changed = () => {
-      if (['', '#search', '#results', '#edit-search', '#comparison', '#guide', '#about'].includes(window.location.hash) || window.location.hash.startsWith('#explanation/')) {
+      if (['', '#search', '#results', '#edit-search', '#comparison', '#guide', '#about', '#alternatives'].includes(window.location.hash) || /^#(?:explanation|alternative|checklist)\//.test(window.location.hash)) {
         setView(currentView())
         if (window.location.hash === '#guide') requestAnimationFrame(() => document.getElementById('guide')?.focus())
       }

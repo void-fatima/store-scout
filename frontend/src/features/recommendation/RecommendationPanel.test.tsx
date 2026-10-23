@@ -54,11 +54,11 @@ it('resolves explanation by current tuple and displays owning reasons, limitatio
   expect(screen.getByText('این پیشنهاد در نتیجهٔ فعلی در دسترس نیست')).toBeVisible()
 })
 
-it('does not turn returned alternatives into original results or expose unfinished actions', () => {
+it('keeps returned alternatives separate from original results with a working review route', () => {
   render(<RecommendationPanel {...props({ response: structuredClone(journeyFixture.result) })} />)
   expect(screen.getByText('در این جست‌وجو، گزینهٔ مناسبی پیدا نشد')).toBeVisible()
   expect(screen.queryByRole('article')).not.toBeInTheDocument()
-  expect(screen.queryByRole('link', { name: /جایگزین|مراجعه/ })).not.toBeInTheDocument()
+  expect(screen.getByRole('link', { name: /دیدن جایگزین‌ها/ })).toHaveAttribute('href', '#alternatives')
   for (const diagnosis of journeyFixture.result.diagnoses) expect(screen.getByText(diagnosis.message)).toBeVisible()
 })
 

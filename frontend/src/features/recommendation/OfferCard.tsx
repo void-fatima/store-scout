@@ -35,7 +35,7 @@ export function OfferCard({ result, entry, rank, selected = false, selectionDisa
       <ul>{result.explanation_reasons.map((reason, index) => <li key={`${reason.code}-${index}`}>{reason.message}</li>)}</ul>
     </details>
     <div className="offer-card-actions">
-      {entry && !detail && <a className="outline-action" data-offer-action={offerHash('explanation', entry.key)} href={offerHash('explanation', entry.key)}>دلیل این پیشنهاد</a>}
+      {entry && !detail && <a className="outline-action" data-offer-action={offerHash(entry.source === 'alternative' ? 'alternative' : 'explanation', entry.key)} href={offerHash(entry.source === 'alternative' ? 'alternative' : 'explanation', entry.key)}>{entry.source === 'alternative' ? 'بررسی تغییرهای این جایگزین' : 'دلیل این پیشنهاد'}</a>}
       {!entry && <p className="field-help">شناسهٔ منبع برای انتخاب و مقایسه در دسترس نیست.</p>}
     </div>
   </article>
