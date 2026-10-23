@@ -17,7 +17,7 @@ export function exactMoney(value: string): string {
 }
 export const currencyLabel = (unit: PriceUnit) => unit === 'IRR' ? 'ریال' : 'تومان'
 
-export type OfferView = 'explanation' | 'alternative' | 'checklist'
+export type OfferView = 'explanation' | 'alternative' | 'checklist' | 'product'
 export function offerHash(view: OfferView, key: ComparisonKey) {
   return `#${view}/${[key.dataset_id, key.product_id, key.offer_id].map(encodeURIComponent).join('/')}`
 }
@@ -25,7 +25,7 @@ export type PanelRoute = { view: OfferView; key: ComparisonKey } | { view: 'alte
 export function parsePanelRoute(hash: string): PanelRoute {
   if (hash === '#alternatives') return { view: 'alternatives' }
   const [view, dataset, product, offer, extra] = hash.slice(1).split('/')
-  if (!['explanation', 'alternative', 'checklist'].includes(view ?? '') || !dataset || !product || !offer || extra !== undefined) return null
+  if (!['explanation', 'alternative', 'checklist', 'product'].includes(view ?? '') || !dataset || !product || !offer || extra !== undefined) return null
   try {
     return { view: view as OfferView, key: { dataset_id: decodeURIComponent(dataset), product_id: decodeURIComponent(product), offer_id: decodeURIComponent(offer) } }
   } catch { return null }

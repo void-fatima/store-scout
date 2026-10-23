@@ -7,14 +7,15 @@ import { Explanation } from './Explanation'
 import { OfferCard } from './OfferCard'
 import { Provenance, SourceBadge } from './Provenance'
 import { currencyLabel, editCriteria, exactMoney, parsePanelRoute } from './presentation'
-import { usePanelHash } from './usePanelHash'
+import { usePanelNavigation } from './usePanelHash'
 import { AlternativeReview, AlternativesList } from './Alternatives'
 import { Checklist } from './Checklist'
+import { ProductDetails } from './ProductDetails'
 import './recommendation.css'
 
 export function RecommendationPanel(props: RecommendationPanelProps) {
   const { status, response, comparison, requestId, revision, onViewVerification } = props
-  const hash = usePanelHash()
+  const { hash, previousHash } = usePanelNavigation()
   const route = parsePanelRoute(hash)
   const previousRoute = useRef<string | null>(null)
   const previousStatus = useRef(status)
@@ -64,6 +65,9 @@ export function RecommendationPanel(props: RecommendationPanelProps) {
       <div className="state-actions"><button className="primary-button" onClick={() => props.onRetry(requestId, revision)}><Icon name="retry" /> تلاش دوباره</button><button className="secondary-button" onClick={editCriteria}>ویرایش معیارها</button></div>
     </div> : response ? <>
       {route ? route.view === 'alternatives' ? <AlternativesList response={response} entries={entries} comparison={comparison} onToggle={toggle} />
+        : route.view === 'product' && active ? <ProductDetails key={JSON.stringify([requestId, revision, active.key])}
+          entry={active} response={response} requestId={requestId} revision={revision} previousHash={previousHash}
+          selected={comparison.some(key => sameValue(key, active.key))} selectionDisabled={comparison.length >= 10} onToggle={toggle} />
         : route.view === 'alternative' && active && suggestion ? <AlternativeReview key={JSON.stringify([requestId, revision, active.key])} suggestion={suggestion} entry={active} props={props} onToggle={toggle} />
         : route.view === 'checklist' && active ? <Checklist key={JSON.stringify([requestId, revision, active.key])} entry={active}
           selected={comparison.some(key => sameValue(key, active.key))} selectionDisabled={comparison.length >= 10} onToggle={toggle} />
