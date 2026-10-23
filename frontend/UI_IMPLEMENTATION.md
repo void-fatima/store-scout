@@ -1,50 +1,51 @@
-# Complete frontend implementation — 2026-10-23
+# Recommendation experience stage ? 2026-10-23
 
-## Updated authorization and scope
+## Current authorization and delivery scope
 
-The user explicitly authorizes all frontend implementation, including
-src/features/recommendation/**. This supersedes Stage 1's task-specific exclusive
-ownership and waiting notes. Backend services, wiring, contracts and all paths
-outside frontend/ remain outside ownership. No compatible published feature
-implementation exists in the freshly fetched refs. Every existing worktree was
-clean; preserve all published history and the PR #8–#13 dependency chain.
+The current user request authorizes implementation of all frontend paths,
+including `src/features/recommendation/**`. This replaces the historical folder
+reservation below. This delivery stops at recommendation results, explanation,
+loading, empty and error/retry states: Desktop 02/03/07/08/09 and Mobile 11.
+Alternatives, checklist presentation and final comparison styling remain Stage 2.
+The archive contains image references only; its illustrated sample facts are not
+application data or implementation instructions.
 
-Base: 7d786ed3f10b83c8a2ec134615f3daed4dcc07f6, PR #13.
-First topic: feat/ui-recommendation-experience. Completion/verification will
-stack on it. Main remains e105558 with PR #7 merged. Its runtime Python source
-matches the existing contract pin; no regeneration/source change is needed.
+## Base and preserved work
 
-## Visual and contract adaptations
+Use the complete Stage 1 history at
+`7d786ed3f10b83c8a2ec134615f3daed4dcc07f6` on `feat/ui-shell-search` (PR #13).
+The existing `feat/ui-recommendation-experience` worktree contained planning
+commit `51280d8`, a modified Icon and six untracked recommendation helper files.
+These were inspected, preserved and extended. Their unfinished checklist links
+were removed for this stage. Fresh origin refs contain no newer compatible
+recommendation implementation. The #8?#13 stack remains unchanged.
 
-All desktop 01–09 and mobile 10–13 images were opened. Keep the existing warm
-canvas, Persian typography, horizontal header, native hero/search and pastel
-surfaces. Results use ordered three-column desktop cards and stacked mobile
-cards, with a navy controlled comparison tray. Explanation and alternative
-views pair the current offer with reasons/constraint changes. Checklist uses
-canonical pending questions. Comparison retains its scrollable native table.
+## Design and implementation
 
-Images come only from the matched product's image_urls; absent/broken images
-use a neutral package illustration, never the example phone. Canonical reasons,
-limitations, diagnoses, warnings, provenance and coverage are displayed. Budget
-strings are formatted exactly without numeric monetary conversion. No browser
-ranking, invented policies, generated explanations or assumed stock.
+Opened the supplied desktop results, explanation, empty, error and loading
+images and mobile results image. Reuse Stage 1 tokens, warm canvas, coral/navy
+palette, self-hosted Vazirmatn, header, hero and icons. Desktop has three ordered
+cards, tablet has two columns and mobile stacks cards with compact search context.
+The edit action reveals/focuses the existing controlled form, preserving values.
+Explanation has the owning offer alongside returned reasons and limitations.
+Use native controls and details disclosures, real selected count and a working
+comparison link. There are no inactive future-action buttons.
 
-Presentation routes store only view/key in URL fragments; current response
-resolves every key. Browser Back, focus restoration and response invalidation
-must work without another request/comparison store. Acceptance requires explicit
-consent to all returned changes before the existing parent callback/fresh POST.
-Checklist marks are local reminders only; all canonical states stay pending.
+`App` mounts the production panel through `JourneyFlow.Panel`. One existing
+controller owns all request data, revision invalidation and comparison state.
+Presentation fragments contain only view and encoded canonical identities;
+explanations resolve against current original results. Backend order is never
+recomputed. Exact budget strings are formatted without monetary float conversion;
+recorded numeric prices receive no additional fractional rounding. Null is unknown,
+zero is zero. Only recorded product media may load; unavailable media uses a
+neutral package illustration. No stock, ratings, images or offers are invented.
 
-## Ordered implementation checkpoints
+## Verification and next stage
 
-A. Production RecommendationPanel, safe media, original order, canonical reasons,
-provenance and controlled selections; explanation navigation.
-B. Returned alternatives with complete original/proposed criteria and explicit
-acceptance; canonical before-visit checklist through the existing callback.
-C. Reference comparison, persistent navigation and production request states.
-D. Clean install, unit/contracts/build checks, actual disposable API HTTP and
-browser journey, deterministic intercepted edge states, all viewport screenshots,
-accessibility and final source/run handoff. Continue through completion.
+See `HANDOFF.md` for checks, actual HTTP versus intercepted scenarios, screenshots,
+reproduction commands and Stage 2 boundaries. This implementation changes only
+frontend source; generated contracts, API client, controller and backend algorithms
+remain unchanged. No merge, deployment or published-history rewrite.
 
 ---
 # Stage 1 visual implementation

@@ -1,3 +1,151 @@
+# Recommendation experience handoff ? 2026-10-23
+
+This section supersedes historical ownership and unmounted-feature notes below.
+The current user request authorizes all frontend paths, including
+`src/features/recommendation/**`. This delivery implements Desktop 02/03/07/08/09
+and Mobile 11 from the existing design archive and stops at this stage.
+
+## Branch and integration
+
+- Branch: `feat/ui-recommendation-experience`, stacked on `feat/ui-shell-search`
+  at `7d786ed3f10b83c8a2ec134615f3daed4dcc07f6` (draft PR #13).
+- Preserved existing planning commit `51280d8` and reused the partial uncommitted
+  cards, provenance, media, presentation and icon work in this worktree.
+  Five Conventional Commits include that planning commit. All tracked changes
+  stay under `frontend/`; prior PR bases and published history are preserved.
+- `App` mounts `RecommendationPanel` through the unchanged `JourneyFlow.Panel`
+  boundary. `RecommendationPanelProps`, generated contracts, API client,
+  controller implementation, operations and comparison view are unchanged.
+- The one existing controller still owns response identity, revision, abort/stale
+  guards, comparison validation (up to 10) and snapshot invalidation. Cards send
+  complete dataset/product/offer tuples through `onComparisonChange`. Header,
+  tray and comparison table read that same state. No second selection store.
+- Fresh fetch found main `e105558` and no newer compatible frontend feature.
+  The reviewed contract source pin remains
+  `45cfe9815ebfd78b0423ca321c2f61e51ea7fbdd`; consistency checks pass.
+
+## Results and explanations
+
+Original recommendations render in backend array order. Suggestions are never
+relabelled as matching original criteria. Cards show recorded product/seller,
+location, direct distance, price, last price-change time and unconfirmed stock.
+Budget strings use exact decimal formatting with no monetary float conversion;
+recorded numeric offer prices receive no additional fractional rounding. Unknown
+prices stay unknown and zero stays zero. Only canonical product image URLs may
+load; missing, unsupported or failed media uses a neutral package illustration.
+
+`#explanation/<dataset>/<product>/<offer>` encodes the complete identity and
+resolves only against the current original result. Invalid/stale identities show
+a current-data message. Backend reasons and data limitations appear verbatim;
+no browser ranking or model-match guarantees are added. A disclosure includes
+recorded address, IDs, payment, warranty, declared hours and explicit unknown
+return policy. It never infers current opening, inventory or travel time.
+Source provenance, coverage and all returned notices/warnings remain available.
+Synthetic/unverified identities, limited coverage, recorded-price uncertainty and
+unconfirmed stock also appear outside the source disclosure.
+
+Desktop uses three cards, tablet two columns and mobile one. On mobile, ready
+results replace the large form/hero with current criteria and a working edit
+button. `#edit-search` reveals/focuses the same mounted form; submitted searches
+return to results. Explanation hides search controls without clearing them.
+Browser Back restores the owning result-action focus. Search/comparison routes
+stay mounted. Error/retry retains criteria and uses the current request/revision;
+loading/idle/error never show old cards or selection controls. No fixture fallback.
+
+## Verification performed
+
+After a clean `npm ci` (zero audit vulnerabilities), on Windows with Node 24 and
+Google Chrome driven by Playwright:
+
+- `npm run typecheck`, `npm run lint`, `npm run build`,
+  `npm run contracts:check`: passed. Generated files and source pin unchanged.
+- `npm test`: 62 passed; one opt-in live test skipped.
+- Separate `STORE_SCOUT_LIVE_API=http://127.0.0.1:8017 npm run test:live`:
+  one passed against the actual disposable synthetic API. Covers parent submit,
+  canonical acceptance/fresh POST, selection, verification-plan state, canonical
+  422 and allowed-origin preflight. Scripted test acceptance is not UI consent.
+- `npm run test:ui` with both API environment variables below: 14 passed.
+  Five existing landing/form tests; four rendered results/explanation journeys
+  at 1440x900, 768x1024, 390x844 and 360x844; two desktop/mobile state journeys;
+  two real HTTP browser journeys; one long-record/unknown-price/broken-media case.
+- Keyboard Space selects the actual checkbox; Enter opens reasons/explanation;
+  Back restores the owning result action; comparison removal updates cards;
+  editing preserves exact criteria and invalidates old results/selections.
+  No page-level horizontal overflow in checked results, expanded reasons,
+  explanation or loading/error/empty states. Long identities and text also wrap.
+- WCAG A/AA axe scans report zero violations for results/explanation at all four
+  sizes, loading/error/empty at desktop/mobile, and existing landing/preferences.
+  The initial state scan found edit/retry contrast; token-based colors were
+  corrected before the final passing run.
+- `git diff --check` and the tracked frontend-only boundary check passed.
+  Rendered desktop/mobile results, explanation and states were opened for visual QA.
+
+### Actual HTTP versus intercepted browser evidence
+
+The two `disposable API real browser` tests issue actual browser POSTs to
+`http://127.0.0.1:8017`, receive HTTP 200, render the sample API's three original
+offers, open their real reasons and carry selection into comparison without
+another request. No route interception is installed in those tests.
+
+The other browser request scenarios explicitly intercept the transport. The
+three-card fixture scenario duplicates canonical facts with distinct offer IDs to
+check ordering/identity/layout. Loading, service failure, retry, empty, long text,
+null prices and broken image scenarios are deterministic UI checks, not evidence
+of a live service failure, real seller data or backend ranking behavior.
+
+### Reproduce
+
+```powershell
+# Terminal 1, frontend/: actual existing disposable API helper
+npm.cmd run dev:sample-api
+
+# Terminal 2, frontend/: let Playwright start Vite with the intended API origin
+$env:VITE_API_BASE_URL = 'http://127.0.0.1:8017'
+$env:STORE_SCOUT_LIVE_API = 'http://127.0.0.1:8017'
+$env:STORE_SCOUT_CHROMIUM = 'C:/Program Files/Google/Chrome/Application/chrome.exe'
+npm.cmd run test:live
+npm.cmd run test:ui
+```
+
+Browser pages use `http://localhost:5173`, matching the backend's existing CORS
+origin. Stop any previously started Vite before changing its API environment.
+Omit `STORE_SCOUT_CHROMIUM` after `npx playwright install chromium` if preferred.
+Without `STORE_SCOUT_LIVE_API`, the two browser HTTP tests and opt-in unit HTTP
+test skip. API base configuration remains the existing `VITE_API_BASE_URL`.
+
+### Screenshots
+
+Final screenshots are local, gitignored, and preserved in
+`frontend/ui-artifacts/evidence/` in the current worktree:
+
+- `stage-live-http-results-{desktop,mobile}.png` and
+  `stage-live-http-explanation-{desktop,mobile}.png`: actual disposable HTTP.
+- `stage-results-{desktop,tablet,mobile,narrow}.png` and
+  `stage-explanation-{desktop,tablet,mobile,narrow}.png`: intercepted UI scenarios.
+- `stage-{loading,error,empty}-{desktop,mobile}.png`: intercepted UI scenarios.
+
+Absolute directory:
+`C:/Users/FATIMA/GitHub/store-scout-ui-complete/frontend/ui-artifacts/evidence/`.
+`npm run test:ui` regenerates screenshots under `ui-artifacts/results/` and HTML
+reports under `ui-artifacts/report/`. Reference screens remain outside tracked
+source. The design package's example phones/ratings/offers were not copied into
+production data.
+
+## Remaining Stage 2 work
+
+- Alternatives presentation with all original/proposed changes and explicit
+  acceptance through the existing callback/fresh request.
+- Canonical before-visit checklist presentation through the existing controller
+  callback; any local reminder state must preserve canonical pending/unverified
+  states and synthetic-contact policy.
+- Final comparison visual styling, retaining its controlled state and semantics.
+
+These are intentionally absent from this stage's controls. No seller contact,
+stock verification, deployment, main merge or history rewrite was performed.
+Chromium desktop/mobile viewports were tested; physical devices, Safari and
+Firefox were not tested.
+
+---
 # Stage 1 shell and search handoff — 2026-10-22
 
 This section supersedes the historical status notes below. Stage 1 implements
