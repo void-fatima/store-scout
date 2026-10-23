@@ -1,7 +1,7 @@
 # قرارداد داده و API
 
 نسخهٔ فعلی `1.0.0-draft.1` است و برای هماهنگی سه عضو تیم آماده شده است؛ تصویب تیم هنوز
-ادعا نمی‌شود. منبع تعریف مدل‌ها `src/torob/catalog/contracts.py` است. خروجی کامل ماشین‌خوان
+ادعا نمی‌شود. مدل‌ها در ماژول‌های `catalog`، `recommend` و `journey` تعریف شده‌اند. خروجی ماشین‌خوان
 در `openapi.json` و نمونه‌های مستقل از دیتاست بزرگ در `examples/` قرار دارند.
 
 ## مسیرها
@@ -18,6 +18,60 @@
 
 `GET /health` خارج از این پیشوند است. `data_ready=false` یعنی هنوز دیتاست وارد نشده است.
 API مسیر نوشتن یا بارگذاری فایل ندارد؛ import از CLI انجام می‌شود.
+
+## Journey recommendations
+
+`POST /api/v1/journey/recommendations` یک درخواست بدون وضعیت پایدار است و از Catalog
+موجود و سرویس Recommendation استفاده می‌کند. بدنه از نوع `ShoppingRequest` است:
+
+```json
+{
+  "request_id": "sample-request",
+  "revision": 0,
+  "criteria": {
+    "q": "گوشی سامسونگ",
+    "max_budget": "200000000",
+    "price_unit": "IRR",
+    "latitude": 35.7,
+    "longitude": 51.4,
+    "max_distance_km": 5.0
+  },
+  "comparison": null
+}
+```
+
+بودجه با `max_budget` و واحد صریح `TOMAN` یا `IRR` ارسال می‌شود؛ مبلغ باید رشتهٔ اعشاری
+دقیق یا عدد صحیح باشد. جایگزین آن `max_price_toman`، عدد صحیح به تومان، است؛ این دو روش
+هم‌زمان مجاز نیستند. متن کالا، بودجه و مختصات لازم‌اند. محدودیت‌های متنی `city` و `area`
+و `min_price_toman` در این مسیر پشتیبانی نمی‌شوند و به‌جای حذف‌شدن، خطا برمی‌گردانند.
+
+پاسخ `200` از نوع `JourneyRecommendations` است:
+`{state: ShoppingState, result: AlternativesResponse}`. وضعیت شامل شناسه و revision
+درخواست، معیارها، مقایسه، `status=recommendations_ready` و `search_performed=true` است.
+`result` پاسخ کامل Recommendation را با `original`، `suggestions`،
+`original_constraints` و `original_verification` حفظ می‌کند. مدل دقیق در `openapi.json` است.
+خالی‌بودن `result.original.recommendations` پاسخ موفق است؛ پیشنهادهای جایگزین، توضیحات
+و پوشش داده نیز باید بررسی شوند. موجودی کالا همچنان تأییدنشده است.
+
+`comparison` در صورت ارسال شامل `{request_id, revision, keys}` است؛ هر کلید از
+`dataset_id`، `product_id` و `offer_id` تشکیل می‌شود و باید متعلق به درخواست و revision
+جاری باشد. `status` و `search_performed` فقط خروجی‌اند و نباید در درخواست ارسال شوند.
+برای پذیرش جایگزین، تغییرها باید صریحاً تأیید شوند؛ سپس معیارهای کامل به‌روز با revision
+جدید و مقایسهٔ پاک‌شده ارسال شوند. endpoint مستقل پذیرش یا ثبت رضایت در سرور وجود ندارد.
+
+| وضعیت | کدهای خطا |
+| --- | --- |
+| `422` | `invalid_request`، `missing_information`، `unsupported_constraint`، `invalid_recommendation_input` |
+| `409` | `catalog_snapshot_changed` |
+| `502` | `catalog_invalid_response`، `invalid_recommendation_data` |
+| `503` | `catalog_unavailable` |
+| `504` | `catalog_time_limit` |
+| `500` | `internal_error` |
+
+همهٔ خطاها ساختار `{error: {code, message, details}}` دارند. در خطای snapshot، نتایج و
+مقایسهٔ قبلی کنار گذاشته و درخواست تازه ارسال شود؛ صفحات متعلق به snapshotهای متفاوت
+نباید ترکیب شوند. جزئیات خطاهای سرویس، از جمله `retryable`، بدون تغییر حفظ می‌شوند.
+CORS برای originهای تنظیم‌شده، روش‌های `GET` و `POST` و هدر `Content-Type` را می‌پذیرد.
 
 ## CatalogQuery
 
