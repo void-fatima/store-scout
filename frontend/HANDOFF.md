@@ -1,3 +1,172 @@
+# Stage 3B complete: three functional product tabs — 2026-10-23
+
+This section supersedes Stage 3B's deferred status below. ProductDetails now has
+«مشخصات کالا», «تناسب با نیاز من» and «قبل از خرید بررسی کن». The product header,
+selected seller/offer and controlled comparison stay consistent across all tabs.
+Stage 3A's Catalog client, association checks, cancellation, specs states and
+escaped flexible-JSON presentation are retained. Only tracked `frontend/` files
+change; public panel props, Journey controller implementation, API contracts,
+generated bindings, reviewed source pin and dependencies remain unchanged.
+
+## Verified base and published dependency stack
+
+Fetched origin first; inspected status, worktrees, remote refs and actual open PR
+bases. PR #18 is still draft/open at the expected
+`fb3617bab853ae147e5e272eb7c135d6c725d1a9`, based on #17. No newer compatible
+commit or required fast-forward was found. No frontend/ancestor AGENTS.md applies.
+The backend Recommendation AGENTS.md is scoped to that unchanged backend module.
+Work is isolated at `C:/Users/FATIMA/GitHub/store-scout-product-tabs`.
+
+| Topic | Draft PR / base | Verified implementation SHA |
+| --- | --- | --- |
+| `feat/ui-product-fit` | [#19](https://github.com/void-fatima/store-scout/pull/19) → `feat/ui-product-details` / #18 | `965b51abf7704fe14e6860e0f9e686b4d3b21512` |
+| `feat/ui-product-purchase-review` | [#20](https://github.com/void-fatima/store-scout/pull/20) → `feat/ui-product-fit` / #19 | `1c166b864fbf0adef9729d75692a60a4e641effd` |
+
+The purchase topic adds this documentation commit after the tested implementation
+checkpoint; the final published tip is recorded in PR #20 metadata and the delivery
+report. Five coherent Conventional Commits span the stack: shared fit presentation
+with tests, persistent tabs with tests, canonical purchase content with tests,
+responsive/live browser coverage and focus fixes, then this handoff. Existing
+#8–#18 bases remain intact. No merge, rebase, force-push or deployment was performed.
+
+## Tabs, navigation and fit evidence
+
+Existing `#product/<dataset>/<product>/<offer>` URLs still open specifications.
+Suffixes `/fit` and `/purchase` select the other functional tabs. The owning tuple
+and request/revision remain the component key; the tab is deliberately not part of
+that key or the fetch effect dependencies. Switching tabs retains valid local
+specs state, including a pending request or failure, and sends no redundant GET.
+It does not POST a recommendation search, accept an alternative, edit criteria or
+clear comparison. Leaving/re-entering the detail route can still issue a fresh GET.
+
+Tabs use tablist/tab/tabpanel roles, unique useId relationships, roving tab stops,
+selected state and visible focus. ArrowLeft advances in Persian RTL visual order,
+ArrowRight reverses, Home/End select endpoints, and Enter/Space work as native
+buttons. Browser Back/Forward restores the selected tab and its focus. Changing a
+tab does not focus the outer page heading. Existing product, explanation,
+alternative and checklist routes remain functional; return focus goes back to the
+owning card action. Navigation distinguishes entering a new detail screen from
+returning to its source, and standalone checklist plan resolution no longer
+overrides a restored action's focus.
+
+Fit reuses `ExplanationReasons` / `ExplanationLimitations` extracted from the
+standalone Explanation screen. It shows only the selected result's canonical
+messages, relevant submitted criteria, exact budget/unit, direct-distance context,
+requested time and supported purchase preferences. An unaccepted alternative uses
+its owning suggestion's `relaxed_constraints`, compares them with the original
+criteria, explicitly states that viewing is not consent, and links to the existing
+explicit review flow. Missing suggestion ownership never falls back to original
+criteria. No scores, percentages, hardware facts or ranking calculations are added.
+The UI explains that lexical matching is not model equality or technical-use-case
+suitability, and that gaming/photography/programming assessment lacks evidence.
+
+## Canonical purchase review and reminders
+
+The third tab selects the current owning plan through the existing
+`onViewVerification` callback when necessary, then reads the controller-resolved
+plan from VerificationContext. There is no duplicate plan or verification store.
+`useOwningVerification` checks offer/product/shop identity and current selection;
+stale/missing/incompatible plans remain explicit. Standalone panel consumers retain
+the established owning-response-plan fallback when no provider is present.
+
+`VerificationQuestions` and `RecordedVisitConditions` are shared with standalone
+Checklist. The embedded content has unique headings and no page-focus effect.
+Canonical questions remain pending; personal checkmarks cannot mutate the plan,
+establish contact, confirm stock or verify conditions. Reminders reset when leaving
+purchase, leaving the route, changing request/revision/identity, or replacing the
+owning plan/snapshot. Recorded prices/change times, declared/unknown hours,
+unconfirmed conditions, synthetic contacts and coverage warnings stay distinct.
+No contact or inventory-confirmation action is provided.
+
+A Catalog specs error does not block still-valid fit messages or the owning
+verification plan. Invalidated recommendation context still hides all old content;
+the unchanged controller owns criteria/revision invalidation and comparison state.
+
+## Final commands and results
+
+Windows, Node 24, existing Chromium/Chrome test infrastructure:
+
+- `npm.cmd ci`: clean installation; zero audit vulnerabilities; lockfile unchanged.
+- `npm.cmd run typecheck`, `npm.cmd run lint`, `npm.cmd run build` and
+  `npm.cmd run contracts:check`: passed. No lint warnings; generated contracts and
+  source pin `45cfe9815ebfd78b0423ca321c2f61e51ea7fbdd` unchanged.
+- `npm.cmd test -- --maxWorkers=2`: **102 passed**, 2 opt-in HTTP tests skipped in
+  that run. Earlier simultaneous unit/browser runs hit existing five-second test
+  timeouts in App comparison/Journey form tests. The final complete unit run was
+  isolated with two workers; no timeout setting or test assertion was weakened.
+- Separate actual `STORE_SCOUT_LIVE_API=http://127.0.0.1:8017 npm.cmd run test:live`:
+  **2 passed** against the disposable synthetic API.
+- Final full `npm.cmd run test:ui` with live API variables: **46 passed, none
+  skipped** (2.2 minutes). This includes all 35 existing browser regressions and
+  11 new Stage 3B scenarios. Earlier runs exposed focus conflicts and an old
+  touch-target helper that inspected hidden tab links; both were corrected before
+  the final complete passing run. Visible control assertions remain >=44×44.
+- Nine new intercepted scenarios cover original/unaccepted-alternative tabs at
+  1440/768/390/360 widths plus specs failure with independent fit/purchase content.
+  Checks include one GET, no new POST, full owning reasons/criteria, pending states,
+  personal-reminder reset, canonical-plan resolution, header retention, controlled
+  comparison, RTL keys, history, standalone checklist compatibility and focus.
+- Two new desktop/mobile browser journeys use **actual HTTP without interception**.
+  Each searches for an unaccepted alternative, then an original offer after an
+  explicit criteria edit. Each result performs exactly one recommendation POST and
+  one Catalog GET (200); cycling all tabs adds neither request. The GET product
+  and dataset are checked against the real Journey response, fit messages match
+  its reasons, and questions match its owning verification plan. Existing live
+  browser tests also pass: eight actual-HTTP browser journeys in total.
+- Screenshots were visually inspected at 1440×900, 768×1024, 390×844 and 360×844.
+  Checked tab states have zero Axe WCAG A/AA violations, no duplicate IDs, contained
+  overflow, visible focus and usable labelled touch targets. Narrow labels wrap.
+- Reviewed edited React components using `vercel:react-best-practices`: derived
+  tab/plan state remains read-only; hooks are unconditional; local fetch lifetime
+  is independent of tab state; no new library, global store or dependencies added.
+- Final `git diff --check fb3617bab853ae147e5e272eb7c135d6c725d1a9 HEAD`, clean-tree
+  and frontend-only boundary checks pass. API/generated contracts, backend,
+  package/lockfile, source pin and Journey controller diff checks remain empty.
+
+Reproduce from `frontend/`. In one terminal:
+
+```powershell
+npm.cmd run dev:sample-api
+```
+
+In another, run the complete checks sequentially to avoid local resource contention:
+
+```powershell
+npm.cmd run typecheck
+npm.cmd run lint
+npm.cmd test -- --maxWorkers=2
+npm.cmd run build
+npm.cmd run contracts:check
+$env:VITE_API_BASE_URL = 'http://127.0.0.1:8017'
+$env:STORE_SCOUT_LIVE_API = 'http://127.0.0.1:8017'
+$env:STORE_SCOUT_CHROMIUM = 'C:/Program Files/Google/Chrome/Application/chrome.exe'
+npm.cmd run test:live
+npm.cmd run test:ui
+```
+
+Let Playwright start Vite; use localhost:5173 for the existing CORS configuration.
+Missing live variables cause opt-in checks to skip and are not HTTP evidence.
+
+## Screenshots and remaining limitations
+
+33 Stage 3B screenshot copies are preserved untracked under
+`C:/Users/FATIMA/GitHub/store-scout-product-tabs/frontend/ui-artifacts/evidence/`:
+
+- `stage3b-{original,alternative}-{specs,fit,purchase}-{desktop,tablet,mobile,narrow}.png`:
+  intercepted canonical UI scenarios (24 files).
+- `stage3b-purchase-with-specs-failure-narrow.png`: intercepted failure independence.
+- `stage3b-live-{original,alternative}-{fit,purchase}-{desktop,mobile}.png`:
+  actual disposable HTTP (8 files).
+
+Full runs regenerate originals in `ui-artifacts/results/` and the HTML report in
+`ui-artifacts/report/`. Browser scenarios with intercepted transport prove UI
+behavior only, not real ranking, seller facts, failures or inventory. No backend
+technical-use-case assessment, seller contact or inventory verification is
+implemented. Testing used synthetic sample records and Chrome viewports; no
+physical-device, Safari, Firefox or deployed-backend verification was performed.
+
+---
+
 # Stage 3A complete: recorded product details — 2026-10-23
 
 This section supersedes the product-detail deferral below. Recommendation cards

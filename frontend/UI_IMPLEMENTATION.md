@@ -1,3 +1,32 @@
+# Stage 3B: three functional product tabs — 2026-10-23
+
+ProductDetails now has specifications, canonical fit explanations and canonical
+purchase review. The existing product header, selected-offer surface and controlled
+comparison remain consistent. Tab-specific URLs retain local specs state and
+support Browser Back/Forward. RTL arrows, Home/End, labelled roles/relationships,
+visible focus and narrow wrapping are tested.
+
+Fit reuses standalone explanation presentation; alternatives use their own proposed
+criteria with explicit original/proposed distinction and the existing consent flow.
+Purchase reuses standalone checklist questions/conditions and the existing
+controller-selected plan via VerificationContext. Personal reminders remain local,
+reset on context or purchase-panel exit, and never verify any canonical state.
+Specs errors do not block valid fit or purchase content. Existing routes work.
+
+Stack: #18 → draft #19 (`feat/ui-product-fit`) → draft #20
+(`feat/ui-product-purchase-review`). Five Conventional Commits span both topics.
+Only frontend files change; props, controller, API/generated contracts, backend,
+source pin and dependencies stay unchanged. No technical suitability scoring,
+contact or inventory verification was introduced.
+
+Final checks: 102 unit/component tests passed with two workers (2 opt-in skips),
+two separate actual HTTP tests passed, all 46 browser tests passed with no skips,
+and typecheck/lint/build/contracts/whitespace checks passed. Four-width screenshot,
+accessibility, focus, history and real HTTP versus interception evidence is in the
+newest HANDOFF section. Earlier stage notes follow.
+
+---
+
 # Stage 3A: functional recorded product details — 2026-10-23
 
 This supersedes the deferred product-detail status below. The supplied PNG archive
