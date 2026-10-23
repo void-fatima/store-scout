@@ -58,16 +58,15 @@ def main():
                 target.write_bytes(git("show", f"{SOURCE['journeyRef']}:{name}"))
         torob.__path__.insert(0, str(package))
 
+        from torob.catalog.contracts import ErrorDetail, ErrorResponse
+        from torob.catalog.repository import CatalogRepository
+        from torob.data.importer import import_dataset
         from torob.journey.models import ShoppingRequest
         from torob.journey.recommendations import (
             AlternativeAcceptance,
             JourneyRecommendations,
             run_recommendations,
         )
-
-        from torob.catalog.contracts import ErrorDetail, ErrorResponse
-        from torob.catalog.repository import CatalogRepository
-        from torob.data.importer import import_dataset
         from torob.recommend.alternative_models import AlternativesResponse
         from torob.recommend.models import RecommendationResponse
 
