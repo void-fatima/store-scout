@@ -2,6 +2,12 @@
 .product-detail-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: var(--space-6); align-items: start; }
 .product-record-heading { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); align-items: center; gap: var(--space-4); margin-block-end: var(--space-8); }
 .product-record-heading .product-placeholder { color: var(--color-text-muted); }
+.product-tabs { display: flex; gap: var(--space-2); margin-block: var(--space-6); padding-block-end: var(--space-2); border-block-end: var(--border-default); }
+.product-tabs button { flex: 1 1 0; min-inline-size: 0; min-block-size: 48px; padding: var(--space-3); border: var(--border-default); border-radius: var(--radius-sm); background: var(--color-surface); color: var(--color-text-muted); font-weight: 700; font-size: var(--font-size-sm); overflow-wrap: anywhere; }
+.product-tabs button[aria-selected='true'] { color: var(--color-accent-hover); border-color: var(--color-accent-hover); background: var(--color-accent-soft); }
+.product-specification [role='tabpanel'] { min-inline-size: 0; scroll-margin-block: var(--space-6); }
+.product-fit > h3:not(:first-child) { margin-block-start: var(--space-6); }
+.fit-criteria { padding: var(--space-4); background: var(--color-lavender-soft); border-radius: var(--radius-sm); }
 .product-detail-grid :is(h3, dd, dt, p, bdi) { overflow-wrap: anywhere; }
 .product-identity { display: grid; grid-template-columns: minmax(0, .7fr) minmax(0, 1fr); gap: var(--space-3); font-size: var(--font-size-sm); }
 .product-identity dt { color: var(--color-text-muted); }

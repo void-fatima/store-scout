@@ -21,13 +21,21 @@ export type OfferView = 'explanation' | 'alternative' | 'checklist' | 'product'
 export function offerHash(view: OfferView, key: ComparisonKey) {
   return `#${view}/${[key.dataset_id, key.product_id, key.offer_id].map(encodeURIComponent).join('/')}`
 }
-export type PanelRoute = { view: OfferView; key: ComparisonKey } | { view: 'alternatives' } | null
+export type ProductTab = 'specs' | 'fit'
+export function productHash(key: ComparisonKey, tab: ProductTab) {
+  return `${offerHash('product', key)}${tab === 'specs' ? '' : `/${tab}`}`
+}
+export type PanelRoute = { view: Exclude<OfferView, 'product'>; key: ComparisonKey }
+  | { view: 'product'; key: ComparisonKey; tab?: ProductTab } | { view: 'alternatives' } | null
 export function parsePanelRoute(hash: string): PanelRoute {
   if (hash === '#alternatives') return { view: 'alternatives' }
-  const [view, dataset, product, offer, extra] = hash.slice(1).split('/')
-  if (!['explanation', 'alternative', 'checklist', 'product'].includes(view ?? '') || !dataset || !product || !offer || extra !== undefined) return null
+  const [view, dataset, product, offer, tab, extra] = hash.slice(1).split('/')
+  if (!['explanation', 'alternative', 'checklist', 'product'].includes(view ?? '') || !dataset || !product || !offer || extra !== undefined
+    || (tab !== undefined && (view !== 'product' || tab !== 'fit'))) return null
   try {
-    return { view: view as OfferView, key: { dataset_id: decodeURIComponent(dataset), product_id: decodeURIComponent(product), offer_id: decodeURIComponent(offer) } }
+    const key = { dataset_id: decodeURIComponent(dataset), product_id: decodeURIComponent(product), offer_id: decodeURIComponent(offer) }
+    return view === 'product' ? { view, key, ...(tab ? { tab: tab as ProductTab } : {}) }
+      : { view: view as Exclude<OfferView, 'product'>, key }
   } catch { return null }
 }
 export function editCriteria() {

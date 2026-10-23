@@ -6,7 +6,7 @@ import { Icon } from '../../shell/Icon'
 import { Explanation } from './Explanation'
 import { OfferCard } from './OfferCard'
 import { Provenance, SourceBadge } from './Provenance'
-import { currencyLabel, editCriteria, exactMoney, parsePanelRoute } from './presentation'
+import { currencyLabel, editCriteria, exactMoney, offerHash, parsePanelRoute } from './presentation'
 import { usePanelNavigation } from './usePanelHash'
 import { AlternativeReview, AlternativesList } from './Alternatives'
 import { Checklist } from './Checklist'
@@ -35,8 +35,12 @@ export function RecommendationPanel(props: RecommendationPanelProps) {
   useEffect(() => {
     // Do not steal focus from actionable backend field errors.
     const shouldFocus = (status === 'ready' && previousStatus.current !== 'ready') || previousRoute.current !== hash
-    if (shouldFocus && status === 'ready' && !['#comparison', '#guide', '#edit-search'].includes(hash)) {
-      const target = [...document.querySelectorAll<HTMLElement>('[data-offer-action]')].find(node => node.dataset.offerAction === previousRoute.current)
+    const previous = parsePanelRoute(previousRoute.current ?? '')
+    const current = parsePanelRoute(hash)
+    const tabChange = previous?.view === 'product' && current?.view === 'product' && sameValue(previous.key, current.key)
+    if (shouldFocus && !tabChange && status === 'ready' && !['#comparison', '#guide', '#edit-search'].includes(hash)) {
+      const returnAction = previous?.view === 'product' ? offerHash('product', previous.key) : previousRoute.current
+      const target = [...document.querySelectorAll<HTMLElement>('[data-offer-action]')].find(node => node.dataset.offerAction === returnAction)
       const focusTarget = target ?? document.getElementById('recommendation-title')
       focusTarget?.focus()
     }
@@ -67,6 +71,7 @@ export function RecommendationPanel(props: RecommendationPanelProps) {
       {route ? route.view === 'alternatives' ? <AlternativesList response={response} entries={entries} comparison={comparison} onToggle={toggle} />
         : route.view === 'product' && active ? <ProductDetails key={JSON.stringify([requestId, revision, active.key])}
           entry={active} response={response} requestId={requestId} revision={revision} previousHash={previousHash}
+          tab={route.tab ?? 'specs'}
           selected={comparison.some(key => sameValue(key, active.key))} selectionDisabled={comparison.length >= 10} onToggle={toggle} />
         : route.view === 'alternative' && active && suggestion ? <AlternativeReview key={JSON.stringify([requestId, revision, active.key])} suggestion={suggestion} entry={active} props={props} onToggle={toggle} />
         : route.view === 'checklist' && active ? <Checklist key={JSON.stringify([requestId, revision, active.key])} entry={active}
