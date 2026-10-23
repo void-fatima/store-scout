@@ -1,8 +1,10 @@
 import { useId, useState } from 'react'
-import type { FollowupPlan } from '../../contracts'
+import type { CatalogContext, FollowupPlan } from '../../contracts'
 import type { ResponseEntry } from '../../journey/operations'
 import { recordedHours, recordedNumber, recordedPayments, recordedText, recordedTimestamp } from '../../journey/comparison/recordedValues'
 import { Icon } from '../../shell/Icon'
+import { RecordedShopLocation } from '../location'
+import { hasOwningPlan } from './useOwningVerification'
 
 function PersonalReminders({ plan }: { plan: FollowupPlan }) {
   const [reminders, setReminders] = useState<{ plan: FollowupPlan; checked: number[] }>({ plan, checked: [] })
@@ -33,13 +35,13 @@ export function VerificationQuestions({ entry, plan }: { entry: ResponseEntry; p
   </section>
 }
 
-export function RecordedVisitConditions({ entry, plan }: { entry: ResponseEntry; plan: FollowupPlan }) {
+export function RecordedVisitConditions({ entry, plan, context }: { entry: ResponseEntry; plan: FollowupPlan; context: CatalogContext }) {
   const { shop } = entry.result.candidate
+  if (!hasOwningPlan(entry) || plan !== entry.plan || context.dataset?.dataset_id !== entry.key.dataset_id) return null
   return <section className="detail-surface visit-location" aria-label="مکان و شرایط ثبت‌شده">
         <h3><Icon name="pin" />مکان و شرایط ثبت‌شده</h3>
-        <dl><dt>نشانی</dt><dd>{recordedText(shop.address)}</dd><dt>محدوده</dt><dd>{recordedText(shop.location_label)}</dd>
-          <dt>مختصات</dt><dd>{recordedNumber(shop.lat)}، {recordedNumber(shop.lon)}</dd>
-          <dt>پرداخت ثبت‌شده</dt><dd>{recordedPayments(plan.recorded_payment_options)}</dd>
+        <RecordedShopLocation shop={shop} context={context} />
+        <dl><dt>پرداخت ثبت‌شده</dt><dd>{recordedPayments(plan.recorded_payment_options)}</dd>
           <dt>گارانتی ثبت‌شده</dt><dd>{recordedText(plan.recorded_warranty)}؛ وضعیت تأیید نامشخص</dd>
           <dt>سیاست بازگشت فروشگاه</dt><dd>نامشخص؛ ترجیح درخواستی تو، سیاست فروشگاه نیست.</dd>
           <dt>آخرین تغییر قیمت</dt><dd>{recordedTimestamp(plan.last_price_changed_at)}؛ زمان تغییر قیمت، زمان تأیید موجودی نیست.</dd>

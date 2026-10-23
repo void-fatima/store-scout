@@ -83,7 +83,7 @@ export function RecommendationPanel(props: RecommendationPanelProps) {
           tab={route.tab ?? 'specs'}
           selected={comparison.some(key => sameValue(key, active.key))} selectionDisabled={comparison.length >= 10} onToggle={toggle} />
         : route.view === 'alternative' && active && suggestion ? <AlternativeReview key={JSON.stringify([requestId, revision, active.key])} suggestion={suggestion} entry={active} props={props} onToggle={toggle} />
-        : route.view === 'checklist' && active ? <Checklist key={JSON.stringify([requestId, revision, active.key])} entry={active}
+        : route.view === 'checklist' && active ? <Checklist key={JSON.stringify([requestId, revision, active.key])} entry={active} context={response.original.context}
           selected={comparison.some(key => sameValue(key, active.key))} selectionDisabled={comparison.length >= 10} onToggle={toggle} />
         : route.view === 'explanation' && active ? <Explanation entry={active} rank={originals.indexOf(active) + 1} response={response}
         selected={comparison.some(key => sameValue(key, active.key))} selectionDisabled={comparison.length >= 10} onToggle={toggle} />

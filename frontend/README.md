@@ -1,4 +1,13 @@
-# Stage 3B product tabs
+# Integrated StoreScout frontend
+
+The application now includes typed search, Persian draft clarification and
+explicit confirmation, recommendations and alternatives, comparison, all three
+product tabs, the canonical purchase/checklist plan and recorded-shop maps.
+See [the release report](../docs/RELEASE_INTEGRATION.md) for current commands,
+verification evidence and limitations. The historical implementation notes below
+are superseded where they describe unmounted components or unmerged dependencies.
+
+## Historical Stage 3B product tabs
 
 Product details now include three working tabs: «مشخصات کالا», «تناسب با نیاز من»
 and «قبل از خرید بررسی کن». The base product URL opens specs; `/fit` and

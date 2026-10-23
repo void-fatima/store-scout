@@ -1,7 +1,16 @@
 # Independent recorded shop location — 2026-10-23
 
-Ready for integration in draft [PR #23](https://github.com/void-fatima/store-scout/pull/23).
-Application mounting remains pending reconciliation with the conversational frontend session.
+The component from [PR #23](https://github.com/void-fatima/store-scout/pull/23) is
+now mounted in the purchase tab and standalone checklist. `RecordedVisitConditions`
+receives the current owning result, plan and Catalog context; it checks plan/shop
+association and dataset identity before rendering `RecordedShopLocation`. Existing
+controller selection and request/revision invalidation remain in the callers.
+The component owns the displayed address, region and coordinates, replacing the
+previous duplicate rows. Its public props are unchanged.
+
+See [the release report](../../../../docs/RELEASE_INTEGRATION.md) for final
+verification and commands. Remaining sections preserve the original independent
+component handoff; references to pending mounting below describe that earlier stage.
 
 ## Branch and ownership
 

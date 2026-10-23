@@ -1,6 +1,12 @@
 # StoreScout
 
-Catalog search and shopping recommendations for the Torob dataset, built with Python, FastAPI and SQLite.
+Catalog search and shopping recommendations for the Torob dataset, built with
+Python, FastAPI, SQLite and a Persian RTL React frontend. Main includes typed
+search, explicit Persian intent confirmation, comparison, product details,
+purchase/checklist review and recorded-shop maps.
+
+See [the integration report](docs/RELEASE_INTEGRATION.md) for complete application
+commands, validation results and the distinction between fixture and provider evidence.
 
 ## Run
 
@@ -21,7 +27,7 @@ Sample data is synthetic; product availability requires verification.
 ## Verify
 
 ```sh
-uv run pytest tests src/torob/journey/tests
+uv run pytest tests src/torob/journey/tests src/torob/journey/llm/tests
 uv run ruff check .
 uv run ruff format --check .
 uv run python scripts/export_contracts.py --check

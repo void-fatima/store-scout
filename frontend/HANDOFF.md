@@ -1,4 +1,30 @@
-# Conversational frontend complete — 2026-10-23
+# Integrated application — 2026-10-23
+
+The backend, typed search, Persian intent confirmation flow, comparison, product
+tabs and recorded-shop component are integrated. `RecordedShopLocation` is mounted
+in the purchase tab and standalone checklist through `RecordedVisitConditions`.
+The caller passes the current result's shop and `response.original.context`;
+existing controller selection, request/revision and owning-plan guards remain.
+The old address/region/coordinate rows are replaced by the component's recorded
+facts. No public panel contract, ranking, verification state or routing is added.
+
+The verification report and complete local commands are in
+[docs/RELEASE_INTEGRATION.md](../docs/RELEASE_INTEGRATION.md).
+The source-pin documentation below records historical branch preparation;
+statements that the backend or component are absent from main are superseded.
+
+Final integrated checks: 749 backend tests; 168 frontend unit tests (three HTTP
+tests opt in separately); three actual local HTTP tests; 53 application browser
+tests; six isolated map browser tests. Typecheck, lint, production build, both
+frontend generators, backend contracts and cache-free Ruff pass. Browser evidence
+covers 1440, 768, 390 and 360 px; checked Axe states have no violations. The current
+checkout API, disposable synthetic databases and deterministic fixture interpreter
+were used for the final HTTP/browser run. External map requests were blocked;
+separate map tests use an intercepted frame or blocked-frame fallback. This does
+not verify live provider extraction, public tiles, inventory, physical stores,
+opening status or route accuracy. No paid requests or deployment occurred.
+
+## Historical conversational handoff
 
 Persian message → canonical draft → clarification/explicit field edits → reviewed
 summary → explicit confirmation of the persisted revision → Catalog recommendations
