@@ -40,6 +40,7 @@ it('uses only the current controller-selected plan when the provider is present'
   const view = render(<VerificationContext value={null}><RecommendationPanel {...p} /></VerificationContext>)
   expect(screen.queryByRole('checkbox', { name: /^یادآوری شخصی:/ })).not.toBeInTheDocument()
   view.rerender(<VerificationContext value={{ key: entry.key, plan: entry.plan! }}><RecommendationPanel {...p} /></VerificationContext>)
+  expect(screen.getByRole('heading', { name: 'چک‌لیست پیش از مراجعه' })).toHaveFocus()
   expect(screen.getAllByRole('checkbox', { name: /^یادآوری شخصی:/ })).toHaveLength(entry.plan!.checklist.length)
   view.rerender(<VerificationContext value={{ key: { ...entry.key, offer_id: 'wrong-offer' }, plan: entry.plan! }}><RecommendationPanel {...p} /></VerificationContext>)
   expect(screen.queryByRole('checkbox', { name: /^یادآوری شخصی:/ })).not.toBeInTheDocument()

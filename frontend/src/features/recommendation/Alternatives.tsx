@@ -11,7 +11,7 @@ type Toggle = NonNullable<Parameters<typeof OfferCard>[0]['onToggle']>
 function criteriaValue(criteria: ShoppingCriteria, field: 'query' | 'max_budget' | 'max_distance_km') {
   if (field === 'query') return criteria.query
   if (field === 'max_budget') return `${exactMoney(criteria.max_budget)} ${currencyLabel(criteria.price_unit)}`
-  return criteria.max_distance_km == null ? 'بدون شعاع مشخص' : `${recordedNumber(criteria.max_distance_km)} کیلومتر`
+  return criteria.max_distance_km == null ? 'بدون شعاع مشخص' : `${exactMoney(String(criteria.max_distance_km))} کیلومتر`
 }
 export function ProposedChanges({ suggestion }: { suggestion: AlternativeSuggestion }) {
   return <div className="proposed-changes">
@@ -62,10 +62,11 @@ function Confirmation({ suggestion, onConfirm, onClose }: {
   useEffect(() => {
     const element = dialog.current
     element?.showModal()
+    element?.querySelector<HTMLElement>('#acceptance-title')?.focus()
     return () => element?.close()
   }, [])
   return <dialog ref={dialog} className="acceptance-dialog" aria-labelledby="acceptance-title" aria-describedby="acceptance-effect" onCancel={event => { event.preventDefault(); onClose() }}>
-    <h2 id="acceptance-title">مرور و تأیید تغییرهای جست‌وجو</h2>
+    <h2 id="acceptance-title" tabIndex={-1}>مرور و تأیید تغییرهای جست‌وجو</h2>
     <p>{suggestion.explanation}</p>
     <ProposedChanges suggestion={suggestion} />
     <p id="acceptance-effect">با تأیید، جست‌وجوی تازه‌ای با معیارهای پیشنهادی انجام می‌شود. نتیجه‌ها، مقایسه و برنامهٔ قبلی پاک می‌شوند؛ موجودی تأیید نمی‌شود.</p>
@@ -75,7 +76,7 @@ function Confirmation({ suggestion, onConfirm, onClose }: {
       submitted.current = true
       setConfirming(true)
       onConfirm()
-    }}>پذیرش و جست‌وجوی تازه</button><button className="secondary-button" disabled={confirming} onClick={onClose} autoFocus>انصراف</button></div>
+    }}>پذیرش و جست‌وجوی تازه</button><button className="secondary-button" disabled={confirming} onClick={onClose}>انصراف</button></div>
   </dialog>
 }
 

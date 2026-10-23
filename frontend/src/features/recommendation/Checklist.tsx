@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import type { FollowupPlan } from '../../contracts'
 import type { ResponseEntry } from '../../journey/operations'
 import { sameValue } from '../../journey/operations'
@@ -29,18 +29,20 @@ export function Checklist({ entry, selected, onToggle, selectionDisabled }: {
   onToggle: NonNullable<Parameters<typeof OfferCard>[0]['onToggle']>
 }) {
   const canonicalSelection = useContext(VerificationContext)
+  const heading = useRef<HTMLHeadingElement>(null)
   // Standalone Panel consumers can render the owning response plan. In JourneyFlow,
   // use only the plan actually selected and re-resolved by the existing controller.
   const plan = canonicalSelection === undefined ? entry.plan
     : canonicalSelection && sameValue(canonicalSelection.key, entry.key) && canonicalSelection.plan === entry.plan ? canonicalSelection.plan : null
+  useEffect(() => { if (plan) heading.current?.focus() }, [plan])
   const back = entry.source === 'alternative' ? offerHash('alternative', entry.key) : '#results'
-  if (!entry.plan) return <div className="recommendation-state"><h2 id="recommendation-title" tabIndex={-1}>برنامهٔ بررسی برای این آفر در دسترس نیست</h2><a className="outline-action" href={back}>بازگشت به پیشنهادها</a></div>
+  if (!entry.plan) return <div className="recommendation-state"><h2 id="recommendation-title" tabIndex={-1}>برنامهٔ بررسی برای این آفر در دسترس نیست</h2><a className="outline-action" href="#results">بازگشت به پیشنهادها</a></div>
   if (!plan) return <div><h2 id="recommendation-title" tabIndex={-1}>آماده‌سازی برنامهٔ بررسی</h2><p role="status">برنامه باید با انتخاب فعلی هماهنگ شود.</p><a className="outline-action" href={back}>بازگشت به پیشنهادها</a></div>
   const { shop } = entry.result.candidate
   return <>
     <a className="detail-back" href={back}><Icon name="arrow" />{entry.source === 'alternative' ? 'بازگشت به جایگزین' : 'بازگشت به پیشنهادها'}</a>
-    <div className="detail-heading"><h2 id="recommendation-title" tabIndex={-1}>چک‌لیست پیش از مراجعه</h2><p>این موارد هنوز نیازمند بررسی تو هستند؛ اطلاعات ثبت‌شده، تأیید موجودی یا قیمت فعلی نیست.</p></div>
-    <div className="detail-grid checklist-grid"><div>
+    <div className="detail-heading"><h2 ref={heading} id="recommendation-title" tabIndex={-1}>چک‌لیست پیش از مراجعه</h2><p>این موارد هنوز نیازمند بررسی تو هستند؛ اطلاعات ثبت‌شده، تأیید موجودی یا قیمت فعلی نیست.</p></div>
+    <div className="detail-grid checklist-grid"><div className="checklist-offer">
       {entry.source === 'alternative' && <p className="alternative-badge">جایگزین با معیارهای اولیه تأیید نشده؛ باز کردن این برنامه، پذیرش تغییرها نیست.</p>}
       <OfferCard result={entry.result} entry={entry} detail hideChecklist selected={selected} selectionDisabled={selectionDisabled} onToggle={onToggle} />
       <section className="detail-surface visit-location" aria-label="مکان و شرایط ثبت‌شده">
@@ -65,7 +67,7 @@ export function Checklist({ entry, selected, onToggle, selectionDisabled }: {
         <dt>داده</dt><dd><bdi>{entry.key.dataset_id}</bdi></dd><dt>کالا</dt><dd><bdi>{plan.product_id}</bdi></dd>
         <dt>آفر</dt><dd><bdi>{plan.offer_id}</bdi></dd><dt>فروشگاه</dt><dd><bdi>{plan.shop_id}</bdi></dd>
       </dl><ul>{plan.warnings.map((warning, index) => <li key={index}>{warning}</li>)}</ul></details>
-      <a className="outline-action" href={back}>بازگشت به پیشنهادها</a>
+      <a className="outline-action" href="#results">بازگشت به پیشنهادها</a>
     </section></div>
   </>
 }

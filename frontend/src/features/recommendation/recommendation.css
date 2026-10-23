@@ -166,5 +166,12 @@
 .question-evidence summary { min-block-size: 44px; display: flex; align-items: center; }
 @media (max-width: 48rem) {
   .checklist-grid { grid-template-columns: minmax(0, 1fr); }
+  .checklist-offer { display: contents; }
+  .checklist-offer > .offer-card { order: 1; }
+  .checklist-grid > .detail-surface { order: 2; }
+  .checklist-offer > .visit-location { order: 3; }
   .verification-questions > li { padding: 14px; gap: 8px; }
+}
+@media (max-width: 36rem) {
+  .constraint-change { grid-template-columns: minmax(0, 1fr); }
 }
