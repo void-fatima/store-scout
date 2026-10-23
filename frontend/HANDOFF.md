@@ -1,3 +1,200 @@
+# Conversational frontend complete — 2026-10-23
+
+Persian message → canonical draft → clarification/explicit field edits → reviewed
+summary → explicit confirmation of the persisted revision → Catalog recommendations
+is now implemented. This section supersedes the prior frontend handoff for this
+additive flow; Stage 3B remains intact. The independent recorded-shop map is still
+unmounted and `src/features/location/**` is untouched in this stack.
+
+## Verified source, branches and dependencies
+
+Fetched origin and inspected worktrees, clean status, actual PR refs/ancestry and
+the newest handoff before implementing. No conversational frontend progress existed
+in any local/published frontend branch. Continued in the clean isolated worktree
+`C:/Users/FATIMA/GitHub/store-scout-location-integration`, initially detached at
+the verified frontend base. No other checkout was switched, cleaned or edited.
+No applicable frontend/ancestor AGENTS.md exists; backend Recommendation instructions
+are scoped to that unchanged module.
+
+| Topic | Draft PR / base | Full implementation SHA |
+| --- | --- | --- |
+| Existing frontend base | [#20](https://github.com/void-fatima/store-scout/pull/20), `feat/ui-product-purchase-review` | `670f4b043b8c862506a272b9f3d57da86ab5aa57` |
+| `feat/frontend-intent-client` | [#24](https://github.com/void-fatima/store-scout/pull/24) → #20 | `dbabf18a80bb4202370edaf1cfacdcd8f7d83e77` |
+| `feat/ui-conversational-journey` | [#25](https://github.com/void-fatima/store-scout/pull/25) → #24 | `7aac29a6a9c9c4d194554ad05bf7b1bfd18436d0` |
+
+The UI SHA is the final tested implementation checkpoint; this documentation-only
+commit follows it. PR #25 metadata and the delivery report record the final branch
+tip including the handoff. Five Conventional Commits span both topics: owning
+contracts/client, fixture-server HTTP safeguards, conversation/controller UI with
+tests, complete browser/coordinate coverage with feature guide, and this handoff.
+Both topics are pushed. Existing #8–#23 bases/dependencies are preserved.
+
+Backend runtime dependency remains draft [#22](https://github.com/void-fatima/store-scout/pull/22)
+at `18756bf98d85fb3615e5166aa3f24d6f8ab158df`, based on #21. It has **not** been
+merged into the frontend. `scripts/intent-source.json` pins it separately for
+read-only model/fixture generation and the disposable HTTP runner. The reviewed
+legacy Journey source pin `45cfe9815ebfd78b0423ca321c2f61e51ea7fbdd` is unchanged.
+
+## Behavior and ownership
+
+Open «خرید را با یک پیام شروع کن» in the existing search controls. The typed form
+remains independent and available. The native disclosure preserves the existing
+landing/results design; the conversation module is split from the initial bundle.
+
+- Creation/revision sends a message or selected explicit changes and only presents
+  a backend draft. No recommendation search happens during preparation.
+- Focused questions, all issues, raw interpreted values/provenance, exact backend
+  summary and notices are available as safely rendered React text. A textual
+  “confirmed” is still clarification. Unsupported minimum budgets/mandatory
+  conditions are retained until the user explicitly removes or changes them.
+- Field edits send only changed fields, including explicit null/empty removals.
+  There is no silent loosening, inferred magnitude/currency or new ranking logic.
+- Center coordinates are **manually entered and explicitly acknowledged** by the
+  user. Both must be finite/in bounds; zero is valid and Persian/Arabic digits are
+  supported. The retained label goes in `for_location`. Radius includes an explicit
+  unit and is normalized/validated by the backend. No default position/radius,
+  geocoder, browser geolocation, location picker or radius-circle map is added.
+- A revision-specific checkbox plus action confirms the backend-stored current
+  draft, then executes through its owning intent endpoint. Local unsent edits,
+  revisions and refresh clear consent. No draft preview is POSTed to legacy search.
+- Expiry, stale/not-found versions, rejection, unknown network outcomes, invalid
+  responses and unavailable interpretation are explicit. Ambiguous outcomes block
+  execution until refresh. Requests do not retry, repair or switch models on their
+  own. Late creation/confirmation/execution cannot restore reset or edited state.
+- The per-draft capability lives only in memory and request headers, never DOM
+  text, URL, browser storage or application logs. Reload starts a new conversation.
+  It is not a provider API key. No credentials were requested, read or used.
+
+`useJourneyController` still owns recommendation status/results, comparison and
+selected verification. Its additive internal `submitConfirmedIntent` entry point
+uses the persisted draft ID/revision/criteria plus the validated execution client;
+its existing abort/generation/response identity checks apply. Internal retry keeps
+the owning intent execution function instead of sending a preview to legacy search.
+Typing/submitting the independent form during confirmation advances the Journey
+operation epoch and prevents the old confirmation from starting a search.
+
+Product tabs, recorded Catalog details, original/alternative fit explanations,
+standalone checklist, canonical pending states/reminder reset, comparison and return
+focus remain functional. Explicit acceptance of an alternative continues the
+existing separately reviewed typed-search flow with fresh criteria/revision. Public
+`RecommendationPanelProps`, existing generated models, source pin and dependencies
+are unchanged. New intent bindings/schemas/fixtures are additive and generated
+from actual owning Pydantic models, including service-derived recommendations.
+
+See `src/contracts/intent/README.md` for the boundary and
+`src/features/conversation/README.md` for UI/controller details and limitations.
+
+## Verification actually executed
+
+Windows, existing Node 24/npm and Chrome test tooling:
+
+- `npm.cmd ci`: clean install, 128 packages, zero audit vulnerabilities; lockfile
+  unchanged. No dependency upgrade.
+- Final `npm.cmd run typecheck`, `npm.cmd run lint`, `npm.cmd run build`,
+  `npm.cmd run contracts:check` and `npm.cmd run intent:check`: **passed**. Final
+  lint/build have no warnings. Conversation is a separate ~31 kB minified chunk;
+  the main application chunk is ~476 kB. Both contract-generation pipelines match.
+- Full `npm.cmd test -- --maxWorkers=2`: **140 passed**, **3 opt-in HTTP tests
+  skipped** (23 files passed, 2 files skipped). Includes all 102 Stage 3B tests,
+  20 new client tests, 12 conversation/controller integration tests and 6 focused
+  coordinate/editor tests. A prior lazy-module test timing issue was corrected
+  by waiting for the accessible loaded field; no assertion/timeout was weakened.
+- Separate opt-in actual local HTTP run: **3 passed**, no skips. This includes
+  both existing Journey/Catalog live checks and the new intent check, using the
+  disposable pinned API with fixture-only interpretation and actual sample Catalog.
+  The new test covers create, clarification, explicit confirmation, execution,
+  rejection/stale execution and Authorization CORS preflight.
+- Full `npx.cmd playwright test --config playwright.intent.config.ts` with the
+  live variables below: **53 passed**, **none skipped** (4.8 minutes), including
+  all 46 previous browser regressions and 7 new scenarios.
+- Five new actual-HTTP browser journeys: four widths clarify ambiguous «۳۰ تومن»,
+  supply exact budget/center/radius, confirm revision 2 and execute once through
+  intent with no legacy preview POST. They check returned canonical results,
+  owning plan/pending states, personal reminders/reset, comparison, product tabs,
+  keyboard and restored focus. The fifth checks unaccepted alternatives followed
+  by explicit acceptance and a fresh actual legacy typed search. Together with
+  8 existing actual-HTTP browser journeys, 13 actual-HTTP journeys passed.
+- Two new **intercepted UI scenarios** verify stale confirmation → refresh →
+  renewed consent and safe interpretation unavailability/no automatic retry.
+  They are UI evidence, not claims about provider failures or ranking.
+- Browser runs block external assets; no external map/frame is mounted. The new
+  actual-HTTP checks require loopback and the fixture-runner header before sending
+  a message. No paid model request, provider credential access or live extraction
+  was performed. Mock interpretation does not establish model accuracy.
+- Four-width checked conversation states have zero Axe WCAG A/AA violations,
+  no duplicate IDs, visible focus, keyboard operation, ≥44px targets and no page
+  overflow. Initial contrast failures were corrected with existing darker tokens.
+- Frontend Python runners pass `uv run --frozen ruff check` and `ruff format
+  --check`. No backend test/source modifications. Full-range `git diff --check`
+  and frontend-only/location-exclusion checks pass.
+
+Reproduce from `frontend/`, first terminal:
+
+```powershell
+npm.cmd run dev:sample-intent-api
+```
+
+This extracts immutable #22 Python source to a temporary directory, initializes
+temporary synthetic Catalog and draft databases, and injects an allowlisted fixture
+interpreter. It does not load provider configuration or credentials. It owns API
+port 8018 and local test CORS origins 5173/5189. Ctrl+C stops/cleans this runner.
+
+Second terminal:
+
+```powershell
+npm.cmd run typecheck
+npm.cmd run lint
+npm.cmd test -- --maxWorkers=2
+npm.cmd run build
+npm.cmd run contracts:check
+npm.cmd run intent:check
+$env:STORE_SCOUT_INTENT_API = 'http://127.0.0.1:8018'
+$env:STORE_SCOUT_LIVE_API = 'http://127.0.0.1:8018'
+npm.cmd test -- src/api/intent.live.test.ts src/journey/journey.live.test.tsx --maxWorkers=2
+$env:VITE_API_BASE_URL = 'http://127.0.0.1:8018'
+$env:STORE_SCOUT_CHROMIUM = 'C:/Program Files/Google/Chrome/Application/chrome.exe'
+npx.cmd playwright test --config playwright.intent.config.ts
+```
+
+The isolated config starts/stops this worktree's Vite on port 5189 and refuses to
+reuse another session's server. For manual fixture preview, run
+`npm.cmd run dev -- --host 127.0.0.1 --port 5189 --strictPort` and open
+`http://localhost:5189`. Fixture messages are explicitly listed in
+`scripts/pinned_intent.py`; other messages fail safely instead of calling a model.
+Opt-in checks without their environment variables skip and are not HTTP evidence.
+Avoid overlapping repeated interpretation runs beyond the unchanged backend quota.
+
+## Screenshots and remaining integration
+
+Nineteen conversation screenshots are preserved locally (ignored) under
+`C:/Users/FATIMA/GitHub/store-scout-location-integration/frontend/ui-artifacts/intent/evidence/`:
+
+- `conversation-{clarification,review,confirmation,purchase}-{desktop,tablet,mobile,narrow}-http.png`
+  (16): actual local HTTP with fixture interpretation, visually inspected at
+  1440×1000, 768×1024, 390×844 and 360×844.
+- `conversation-accepted-alternative-mobile-http.png`: actual HTTP acceptance.
+- `conversation-stale-recovered-360-intercepted.png` and
+  `conversation-unavailable-360-intercepted.png`: intercepted UI behavior.
+
+Browser runs regenerate originals in `ui-artifacts/intent/results/`; the report
+is in `ui-artifacts/intent/report/`. Failed fixture-only test traces may contain
+disposable per-draft capabilities; do not share traces of real/private drafts.
+
+**Final frontend branch for later map integration: `feat/ui-conversational-journey`
+(PR #25), including this handoff.** Read its final SHA from PR metadata/delivery.
+Create `feat/ui-location-integration` from that tip only when proceeding with the
+separate authorized mounting task. Published map source remains PR #23 at
+`6315f742a88db967d3ccbeb61f8baba5ec8c32f2`; no files from it were imported here.
+Its recorded-shop component is distinct from a future user-center picker.
+
+No deployed backend, live model accuracy, physical-device, Safari/Firefox,
+technical-use-case assessment, seller contact, inventory/identity verification,
+map integration or route accuracy is claimed. No merge, force-push, deployment
+or history rewriting occurred. A transient GitHub connection reset was retried
+with a normal push; published history and existing PR bases remain intact.
+
+---
+
 # Stage 3B complete: three functional product tabs — 2026-10-23
 
 This section supersedes Stage 3B's deferred status below. ProductDetails now has

@@ -17,6 +17,20 @@ export const emptyDraft = (): CriteriaDraft => ({
   paymentMethods: [], warranty: '', returnDays: '',
 })
 
+/** Present the confirmed canonical criteria in the existing editable form. */
+export function draftFromCriteria(criteria: JourneySearchCriteria): CriteriaDraft {
+  return {
+    query: criteria.q ?? '', budget: criteria.max_budget == null ? String(criteria.max_price_toman ?? '') : String(criteria.max_budget),
+    priceUnit: criteria.max_price_toman == null ? criteria.price_unit ?? '' : 'TOMAN',
+    latitude: criteria.latitude == null ? '' : String(criteria.latitude),
+    longitude: criteria.longitude == null ? '' : String(criteria.longitude),
+    radius: criteria.max_distance_km == null ? '' : String(criteria.max_distance_km),
+    paymentMethods: [...(criteria.preferred_purchase_conditions?.payment_methods ?? [])],
+    warranty: criteria.preferred_purchase_conditions?.warranty_available == null ? '' : criteria.preferred_purchase_conditions.warranty_available ? 'yes' : 'no',
+    returnDays: criteria.preferred_purchase_conditions?.return_window_days == null ? '' : String(criteria.preferred_purchase_conditions.return_window_days),
+  }
+}
+
 export function normalizeDigits(value: string): string {
   return value.replace(/[۰-۹٠-٩]/g, digit => String(digit.charCodeAt(0) - (digit >= '۰' ? 1776 : 1632)))
     .replace(/٫/g, '.').replace(/−/g, '-').trim()
