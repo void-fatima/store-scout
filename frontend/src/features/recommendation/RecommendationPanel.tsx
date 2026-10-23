@@ -112,7 +112,7 @@ export function RecommendationPanel(props: RecommendationPanelProps) {
       {!route && response.suggestions.length > 0 && <div className="alternatives-callout"><div><h3>پیشنهادهای جایگزین با تغییر معیارها</h3><p>دیدن جایگزین‌ها تغییری ایجاد نمی‌کند؛ هر تغییر به پذیرش صریح تو نیاز دارد.</p></div><a className="outline-action" href="#alternatives" data-offer-action="#alternatives">دیدن جایگزین‌ها ({recordedNumber(response.suggestions.length)})</a></div>}
       {!!comparison.length && <aside className="comparison-tray" aria-label="انتخاب‌های مقایسه"><p role="status">{recordedNumber(comparison.length)} گزینه برای مقایسه انتخاب شده است</p><a href="#comparison"><Icon name="compare" />مقایسهٔ گزینه‌ها <Icon name="arrow" /></a></aside>}
       {comparison.length >= 10 && <p role="status">حداکثر ۱۰ آفر قابل انتخاب است؛ برای انتخاب تازه یکی را بردار.</p>}
-      <Provenance response={response} />
+      {route && <Provenance response={response} />}
     </> : <div className="recommendation-state"><h2 id="recommendation-title">نتیجه‌ای در دسترس نیست</h2><button className="secondary-button" onClick={editCriteria}>ویرایش معیارها</button></div>}
   </section>
 }
