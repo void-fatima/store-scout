@@ -22,6 +22,7 @@ export function RecommendationPanel(props: RecommendationPanelProps) {
   const route = parsePanelRoute(hash)
   const previousRoute = useRef<string | null>(null)
   const previousStatus = useRef(status)
+  const productOrigin = useRef<string | null>(null)
   const selectedPlanContext = useRef<{ hash: string; requestId: string; revision: number; response: RecommendationPanelProps['response'] } | null>(null)
   const entries = response ? responseEntries(response) : []
   const originals = entries.filter(entry => entry.source === 'original')
@@ -43,9 +44,12 @@ export function RecommendationPanel(props: RecommendationPanelProps) {
     const previous = parsePanelRoute(previousRoute.current ?? '')
     const current = parsePanelRoute(hash)
     const tabChange = previous?.view === 'product' && current?.view === 'product' && sameValue(previous.key, current.key)
+    const returningToOrigin = previous?.view === 'product' && productOrigin.current === hash
+    if (current?.view === 'product' && previous?.view !== 'product' && previousRoute.current !== '#comparison') productOrigin.current = previousRoute.current
     if (shouldFocus && !tabChange && status === 'ready' && !['#comparison', '#guide', '#edit-search'].includes(hash)) {
       const returnAction = previous?.view === 'product' ? offerHash('product', previous.key) : previousRoute.current
-      const target = [...document.querySelectorAll<HTMLElement>('[data-offer-action]')].find(node => node.dataset.offerAction === returnAction)
+      const restoringAction = !current || current.view === 'alternatives' || returningToOrigin
+      const target = restoringAction ? [...document.querySelectorAll<HTMLElement>('[data-offer-action]')].find(node => node.dataset.offerAction === returnAction) : null
       const focusTarget = target ?? document.getElementById('recommendation-title')
       focusTarget?.focus()
     }

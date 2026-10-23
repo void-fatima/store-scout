@@ -63,7 +63,7 @@ export function ProductDetails({ entry, response, requestId, revision, previousH
   const product = detail?.item ?? entry.result.candidate.product
   const candidate = entry.result.candidate
   return <>
-    <a className="detail-back" href={returnHash}><Icon name="arrow" />بازگشت به {returnHash === '#alternatives' ? 'جایگزین‌ها' : returnHash.startsWith('#explanation/') ? 'دلیل پیشنهاد' : returnHash.startsWith('#alternative/') ? 'بررسی جایگزین' : 'پیشنهادها'}</a>
+    <a className="detail-back" href={returnHash}><Icon name="arrow" />بازگشت به {returnHash === '#alternatives' ? 'جایگزین‌ها' : returnHash.startsWith('#explanation/') ? 'دلیل پیشنهاد' : returnHash.startsWith('#alternative/') ? 'بررسی جایگزین' : returnHash.startsWith('#checklist/') ? 'چک‌لیست' : 'پیشنهادها'}</a>
     <div className="detail-heading"><h2 id="recommendation-title" tabIndex={-1}>جزئیات کالای ثبت‌شده</h2>
       <p>مشخصات کالا از همان منبع جست‌وجو دریافت می‌شود؛ شرایط فروش به آفر انتخاب‌شده مربوط است.</p><SourceBadge response={response} /></div>
     {entry.source === 'alternative' && <p className="uncertainty-note">این کالا یک پیشنهاد جایگزین است؛ دیدن مشخصات، پذیرش تغییر معیارها نیست.</p>}

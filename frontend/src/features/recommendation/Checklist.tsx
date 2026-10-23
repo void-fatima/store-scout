@@ -12,7 +12,13 @@ export function Checklist({ entry, selected, onToggle, selectionDisabled }: {
 }) {
   const heading = useRef<HTMLHeadingElement>(null)
   const plan = useOwningVerification(entry)
-  useEffect(() => { if (plan) heading.current?.focus() }, [plan])
+  useEffect(() => {
+    // Preserve an owning action restored by parent navigation, including effect
+    // replay; resolving a plan must not steal that keyboard return focus.
+    const active = document.activeElement
+    const restoredAction = active instanceof HTMLElement && active.matches('[data-offer-action]') && active.closest('.checklist-grid')
+    if (plan && !restoredAction) heading.current?.focus()
+  }, [plan])
   const back = entry.source === 'alternative' ? offerHash('alternative', entry.key) : '#results'
   if (!entry.plan) return <div className="recommendation-state"><h2 id="recommendation-title" tabIndex={-1}>برنامهٔ بررسی برای این آفر در دسترس نیست</h2><a className="outline-action" href="#results">بازگشت به پیشنهادها</a></div>
   if (!plan) return <div><h2 id="recommendation-title" tabIndex={-1}>آماده‌سازی برنامهٔ بررسی</h2><p role="status">برنامه باید با انتخاب فعلی هماهنگ شود.</p><a className="outline-action" href={back}>بازگشت به پیشنهادها</a></div>
