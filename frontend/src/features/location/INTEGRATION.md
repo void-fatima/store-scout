@@ -8,7 +8,7 @@ controller selection and request/revision invalidation remain in the callers.
 The component owns the displayed address, region and coordinates, replacing the
 previous duplicate rows. Its public props are unchanged.
 
-See [the release report](../../../../../docs/RELEASE_INTEGRATION.md) for final
+See [the release report](../../../../docs/RELEASE_INTEGRATION.md) for final
 verification and commands. Remaining sections preserve the original independent
 component handoff; references to pending mounting below describe that earlier stage.
 
