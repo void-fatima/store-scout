@@ -18,6 +18,8 @@ def schema(models, mode):
 
 def main():
     with pinned_source():
+        from torob.catalog.repository import CatalogRepository
+        from torob.data.importer import import_dataset
         from torob.journey.intent.models import (
             ConfirmIntent,
             CreatedIntent,
@@ -29,9 +31,6 @@ def main():
         from torob.journey.intent.service import IntentService
         from torob.journey.intent.store import IntentStore
         from torob.journey.recommendations import JourneyRecommendations
-
-        from torob.catalog.repository import CatalogRepository
-        from torob.data.importer import import_dataset
 
         with tempfile.TemporaryDirectory(prefix="store-scout-intent-fixtures-") as directory:
             store = IntentStore(Path(directory) / "drafts.sqlite3", clock=lambda: 4102358400)
