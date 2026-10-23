@@ -1,4 +1,4 @@
-"""Composition root: register future journey/recommendation routers here."""
+"""Application composition for Catalog and Journey recommendation routes."""
 
 import logging
 import sqlite3
@@ -15,6 +15,10 @@ from torob.catalog.repository import CatalogRepository
 from torob.catalog.router import router as catalog_router
 from torob.config import Settings
 from torob.data.database import initialize
+from torob.journey.intent.router import router as intent_router
+from torob.journey.intent.service import IntentService
+from torob.journey.intent.store import IntentStore
+from torob.journey.router import router as journey_router
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +30,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     async def lifespan(app):
         initialize(settings.db_path)
         app.state.catalog = CatalogRepository(settings.db_path)
+        intent_store = IntentStore(
+            settings.db_path.with_name(settings.db_path.stem + ".intent.sqlite3")
+        )
+        intent_store.initialize()
+        app.state.intent = IntentService(intent_store)
         yield
 
     app = FastAPI(
@@ -37,8 +46,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.add_middleware(
         CORSMiddleware,
         allow_origins=list(settings.cors_origins),
-        allow_methods=["GET"],
-        allow_headers=["Content-Type"],
+        allow_methods=["GET", "POST"],
+        allow_headers=["Content-Type", "Authorization"],
     )
 
     @app.exception_handler(RequestValidationError)
@@ -95,4 +104,6 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         }
 
     app.include_router(catalog_router)
+    app.include_router(journey_router)
+    app.include_router(intent_router)
     return app
