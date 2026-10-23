@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import type { AlternativesResponse, ComparisonKey, ProductDetail } from '../../contracts'
 import { compatibleProduct, createProductDetailClient } from '../../api/productDetail'
 import type { ProductDetailClient, ProductDetailResult } from '../../api/productDetail'
@@ -9,8 +9,11 @@ import { Icon } from '../../shell/Icon'
 import { OfferFacts } from './OfferCard'
 import { ProductVisual } from './ProductVisual'
 import { SourceBadge } from './Provenance'
-import { offerHash } from './presentation'
+import { offerHash, productHash } from './presentation'
+import type { ProductTab } from './presentation'
 import { Specifications } from './Specifications'
+import { ProductFit } from './ProductFit'
+import { ProductTabs } from './ProductTabs'
 
 const client = createProductDetailClient()
 type Load = { owner: AlternativesResponse; identity: string; result: ProductDetailResult }
@@ -24,11 +27,13 @@ function errorText(result: Extract<ProductDetailResult, { ok: false }>) {
   return userError(result.failure.error).error.message
 }
 
-export function ProductDetails({ entry, response, requestId, revision, previousHash, selected, selectionDisabled, onToggle, detailClient = client }: {
+export function ProductDetails({ entry, response, requestId, revision, previousHash, selected, selectionDisabled, onToggle, detailClient = client, tab = 'specs' }: {
   entry: ResponseEntry; response: AlternativesResponse; requestId: string; revision: number
   previousHash: string | null; selected: boolean; selectionDisabled: boolean; onToggle: (key: ComparisonKey) => void
   detailClient?: ProductDetailClient
+  tab?: ProductTab
 }) {
+  const tabPrefix = useId()
   const context = response.original.context
   const identity = JSON.stringify([requestId, revision, entry.key, context])
   const [returnHash] = useState(() => previousHash && !previousHash.startsWith('#product/') && !['#edit-search', '#comparison'].includes(previousHash)
@@ -68,13 +73,17 @@ export function ProductDetails({ entry, response, requestId, revision, previousH
             <dt>مدل ثبت‌شده</dt><dd><bdi>{recordedText(product.model)}</bdi></dd>
             <dt>دسته‌بندی</dt><dd>{recordedText(product.category_name)}</dd></dl></div>
           <ProductVisual key={JSON.stringify([productId, product.image_urls])} product={product} /></div>
-        <h3 id="product-specifications-title">مشخصات کالا</h3>
-        <div aria-labelledby="product-specifications-title" aria-busy={validContext && !result}>
+        <ProductTabs selected={tab} prefix={tabPrefix} onSelect={next => { window.location.hash = productHash(entry.key, next) }} />
+        <div role="tabpanel" id={`${tabPrefix}-specs-panel`} aria-labelledby={`${tabPrefix}-specs-tab`} tabIndex={0} hidden={tab !== 'specs'} aria-busy={validContext && !result}>
+          <h3>مشخصات کالا</h3>
           {!validContext ? <p role="alert">منبع یا شناسهٔ فعلی کالا سازگار نیست؛ مشخصات در دسترس نیست.</p>
             : !result ? <p role="status">در حال دریافت مشخصات ثبت‌شده…</p>
               : detail ? <><p className="muted">مقادیر زیر عیناً از رکورد کالا هستند؛ مقدار تهی یا خالی به معنی ویژگی تأییدشده نیست.</p><Specifications specs={detail.item.specs} /></>
                 : <div className="product-detail-error"><p role="alert">{result.ok ? 'مشخصات با منبع فعلی سازگار نیست.' : errorText(result)}</p>
                   <button className="secondary-button" onClick={() => { setLoad(null); setAttempt(value => value + 1) }}>تلاش دوباره برای مشخصات</button></div>}
+        </div>
+        <div role="tabpanel" id={`${tabPrefix}-fit-panel`} aria-labelledby={`${tabPrefix}-fit-tab`} tabIndex={0} hidden={tab !== 'fit'}>
+          {validContext ? <ProductFit entry={entry} response={response} /> : <p role="alert">منبع یا شناسهٔ فعلی کالا سازگار نیست؛ دلیل‌های قبلی نمایش داده نمی‌شوند.</p>}
         </div>
       </section>
       <section className="detail-surface product-selected-offer" aria-labelledby="selected-offer-title">

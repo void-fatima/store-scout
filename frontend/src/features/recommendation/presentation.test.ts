@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest'
-import { exactMoney, offerHash, parsePanelRoute } from './presentation'
+import { exactMoney, offerHash, parsePanelRoute, productHash } from './presentation'
 
 it('formats exact monetary digits without floating point rounding or currency conversion', () => {
   expect(exactMoney('17000000.123456789')).toBe('۱۷٬۰۰۰٬۰۰۰٫۱۲۳۴۵۶۷۸۹')
@@ -16,4 +16,8 @@ it('round trips full offer identity and rejects malformed presentation links', (
   expect(parsePanelRoute('#alternatives')).toEqual({ view: 'alternatives' })
   expect(parsePanelRoute(offerHash('alternative', key))).toEqual({ view: 'alternative', key })
   expect(parsePanelRoute(offerHash('checklist', key))).toEqual({ view: 'checklist', key })
+  expect(parsePanelRoute(productHash(key, 'specs'))).toEqual({ view: 'product', key })
+  expect(parsePanelRoute(productHash(key, 'fit'))).toEqual({ view: 'product', key, tab: 'fit' })
+  expect(parsePanelRoute(`${offerHash('product', key)}/invalid`)).toBeNull()
+  expect(parsePanelRoute(`${offerHash('explanation', key)}/fit`)).toBeNull()
 })
