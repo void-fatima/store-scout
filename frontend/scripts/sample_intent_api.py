@@ -1,8 +1,9 @@
 """Actual pinned HTTP API + disposable Catalog, with fixture-only interpretation."""
 
 import argparse
+import sys
 import tempfile
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, nullcontext
 from pathlib import Path
 
 from pinned_intent import REFERENCE, ROOT, FixtureInterpreter, pinned_source
@@ -11,9 +12,12 @@ from pinned_intent import REFERENCE, ROOT, FixtureInterpreter, pinned_source
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=8018)
+    parser.add_argument("--current-source", action="store_true", help="Exercise this checkout's API")
     args = parser.parse_args()
+    if args.current_source:
+        sys.path.insert(0, str(ROOT / "src"))
     with (
-        pinned_source(),
+        nullcontext() if args.current_source else pinned_source(),
         tempfile.TemporaryDirectory(prefix="store-scout-intent-http-") as directory,
     ):
         import uvicorn
@@ -43,9 +47,8 @@ def main():
             response.headers["X-StoreScout-Interpretation"] = "fixture-only-18756bf"
             return response
 
-        print(
-            f"Fixture interpretation only; pinned HTTP API {REFERENCE}; disposable sample Catalog."
-        )
+        source = "current checkout" if args.current_source else f"pinned {REFERENCE}"
+        print(f"Fixture interpretation only; {source} HTTP API; disposable sample Catalog.")
         uvicorn.run(app, host="127.0.0.1", port=args.port, access_log=False)
 
 
