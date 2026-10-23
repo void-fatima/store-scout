@@ -78,14 +78,36 @@ it('hides all old results while loading/error/idle and retries only the supplied
   expect(view.container).toBeEmptyDOMElement()
 })
 
-it('does not create selectable identities without provenance and retains source warnings', async () => {
+it('does not create selectable identities without provenance and retains the inline source notice', () => {
   const p = props()
   p.response!.original.context.dataset = null
   render(<RecommendationPanel {...p} />)
   expect(screen.getByRole('article')).toBeVisible()
   expect(screen.queryByRole('checkbox')).not.toBeInTheDocument()
-  await userEvent.click(screen.getByText('منبع، پوشش و محدودیت‌های اطلاعات'))
-  for (const warning of p.response!.warnings) expect(screen.getByText(warning)).toBeVisible()
+  expect(screen.getByText(/منبع داده نامشخص/)).toBeVisible()
+  expect(screen.getByText(/قیمت‌ها ثبت‌شده‌اند؛ موجودی تأیید نشده است/)).toBeVisible()
+})
+
+it.each(['/', '/#results'] as const)('omits the dashboard accordion and its contents at %s', (url) => {
+  window.history.replaceState(null, '', url)
+  const { container } = render(<RecommendationPanel {...props()} />)
+  expect(container.querySelector('.data-provenance')).toBeNull()
+  expect(container.querySelector('.provenance-content')).toBeNull()
+  expect(screen.queryByText('منبع، پوشش و محدودیت‌های اطلاعات')).not.toBeInTheDocument()
+  expect(screen.queryByText('شناسه‌های منبع')).not.toBeInTheDocument()
+  expect(container.querySelectorAll('.source-badge')).toHaveLength(1)
+  expect(screen.getByText(/قیمت‌ها ثبت‌شده‌اند؛ موجودی تأیید نشده است/)).toBeVisible()
+})
+
+it.each(['alternatives', 'alternative', 'explanation', 'checklist', 'product'] as const)('retains the accordion and source warnings on the %s route', async (view) => {
+  const p = props({ response: structuredClone(view === 'alternatives' || view === 'alternative' ? journeyFixture.result : acceptedJourneyFixture.result) })
+  const entry = responseEntries(p.response!)[0]!
+  window.history.replaceState(null, '', view === 'alternatives' ? '#alternatives' : offerHash(view, entry.key))
+  render(<RecommendationPanel {...p} />)
+  const summary = screen.getByText('منبع، پوشش و محدودیت‌های اطلاعات')
+  await userEvent.click(summary)
+  const accordion = within(summary.closest('details')!)
+  for (const warning of p.response!.warnings) expect(accordion.getByText(warning)).toBeVisible()
 })
 
 it('uses only recorded product media with a neutral fallback on image failure', () => {
