@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-type IconName = 'search' | 'pin' | 'book' | 'info' | 'chevron' | 'list' | 'map' | 'menu'
+type IconName = 'search' | 'pin' | 'book' | 'info' | 'chevron' | 'list' | 'map' | 'menu' | 'store' | 'bulb' | 'arrow' | 'check' | 'box' | 'retry' | 'compare'
 const paths: Record<IconName, ReactNode> = {
   search: <><circle cx="10.5" cy="10.5" r="6.5" /><path d="m16 16 5 5" /></>,
   pin: <><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z" /><circle cx="12" cy="10" r="2.5" /></>,
@@ -9,6 +9,13 @@ const paths: Record<IconName, ReactNode> = {
   list: <><rect x="4" y="2" width="16" height="20" rx="3" /><path d="M8 7h8M8 12h8m-8 5h4" /></>,
   map: <><path d="m2 9 6-3 8 3 6-3v14l-6 3-8-3-6 3Zm6-3v14m8-11v14" /><path d="M17 5c0 3-3 6-3 6s-3-3-3-6a3 3 0 0 1 6 0Z" /></>,
   menu: <path d="M4 6h16M4 12h16M4 18h16" />,
+  store: <><path d="M3 10h18l-2-7H5Zm2 0v11h14V10M9 21v-7h6v7M7 3v7m5-7v7m5-7v7" /></>,
+  bulb: <><path d="M9 18h6m-6 3h6M8 14c-5-5-1-12 4-12s9 7 4 12l-1 2H9Z" /></>,
+  arrow: <path d="M21 12H3m7-7-7 7 7 7" />,
+  check: <path d="m4 12 5 5L20 6" />,
+  box: <path d="m12 2 9 5v10l-9 5-9-5V7Zm0 10L3 7m9 5 9-5m-9 5v10M7.5 4.5l9 5V15" />,
+  retry: <><path d="M3 10a9 9 0 1 1 2 8M3 3v7h7" /></>,
+  compare: <path d="M5 21V11m7 10V3m7 18V7" />,
 }
 export function Icon({ name, className = '' }: { name: IconName; className?: string }) {
   return <svg className={`ui-icon ${className}`} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>

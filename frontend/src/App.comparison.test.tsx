@@ -10,11 +10,12 @@ import { associatedFixture } from './test/journey-fixtures'
 import { responseEntries } from './journey/operations'
 import App from './App'
 
-/** Inject only a test consumer via the existing Panel prop; production stays empty. */
+/** Inject a test consumer via the existing controlled Panel boundary. */
 function SelectionProbe(props: RecommendationPanelProps) {
   const [mountId] = useState(() => crypto.randomUUID())
   const entries = props.response ? responseEntries(props.response) : []
   return <>
+    {props.error && <p role="alert">{props.error.error.message}</p>}
     <output aria-label="نشانهٔ نصب تست">{mountId}</output>
     <output aria-label="شناسه و نسخهٔ تست">{props.requestId}:{props.revision}</output>
     <output aria-label="تعداد انتخاب تست">{props.comparison.length}</output>

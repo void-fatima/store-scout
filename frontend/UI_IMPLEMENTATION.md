@@ -1,4 +1,54 @@
-﻿# Stage 1 visual implementation
+# Recommendation experience stage ? 2026-10-23
+
+## Current authorization and delivery scope
+
+The current user request authorizes implementation of all frontend paths,
+including `src/features/recommendation/**`. This replaces the historical folder
+reservation below. This delivery stops at recommendation results, explanation,
+loading, empty and error/retry states: Desktop 02/03/07/08/09 and Mobile 11.
+Alternatives, checklist presentation and final comparison styling remain Stage 2.
+The archive contains image references only; its illustrated sample facts are not
+application data or implementation instructions.
+
+## Base and preserved work
+
+Use the complete Stage 1 history at
+`7d786ed3f10b83c8a2ec134615f3daed4dcc07f6` on `feat/ui-shell-search` (PR #13).
+The existing `feat/ui-recommendation-experience` worktree contained planning
+commit `51280d8`, a modified Icon and six untracked recommendation helper files.
+These were inspected, preserved and extended. Their unfinished checklist links
+were removed for this stage. Fresh origin refs contain no newer compatible
+recommendation implementation. The #8?#13 stack remains unchanged.
+
+## Design and implementation
+
+Opened the supplied desktop results, explanation, empty, error and loading
+images and mobile results image. Reuse Stage 1 tokens, warm canvas, coral/navy
+palette, self-hosted Vazirmatn, header, hero and icons. Desktop has three ordered
+cards, tablet has two columns and mobile stacks cards with compact search context.
+The edit action reveals/focuses the existing controlled form, preserving values.
+Explanation has the owning offer alongside returned reasons and limitations.
+Use native controls and details disclosures, real selected count and a working
+comparison link. There are no inactive future-action buttons.
+
+`App` mounts the production panel through `JourneyFlow.Panel`. One existing
+controller owns all request data, revision invalidation and comparison state.
+Presentation fragments contain only view and encoded canonical identities;
+explanations resolve against current original results. Backend order is never
+recomputed. Exact budget strings are formatted without monetary float conversion;
+recorded numeric prices receive no additional fractional rounding. Null is unknown,
+zero is zero. Only recorded product media may load; unavailable media uses a
+neutral package illustration. No stock, ratings, images or offers are invented.
+
+## Verification and next stage
+
+See `HANDOFF.md` for checks, actual HTTP versus intercepted scenarios, screenshots,
+reproduction commands and Stage 2 boundaries. This implementation changes only
+frontend source; generated contracts, API client, controller and backend algorithms
+remain unchanged. No merge, deployment or published-history rewrite.
+
+---
+# Stage 1 visual implementation
 
 ## Design brief (before component edits)
 
