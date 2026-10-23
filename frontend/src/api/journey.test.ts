@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { journeyFixture, requestFixture, errorFixture } from '../test/fixtures/contracts'
-import { createJourneyClient } from './journey'
+import { createJourneyClient, userError } from './journey'
 
 const signal = () => new AbortController().signal
 const json = (data: unknown, status = 200) => new Response(JSON.stringify(data), { status })
@@ -34,6 +34,8 @@ describe('Journey HTTP boundary', () => {
     {}, { ...journeyFixture, result: { ...journeyFixture.result, original_verification: 'broken' } },
     { ...journeyFixture, state: { ...journeyFixture.state, revision: 99 } },
     { ...journeyFixture, state: { ...journeyFixture.state, request_id: 'other' } },
+    { ...journeyFixture, state: { ...journeyFixture.state, criteria: { ...journeyFixture.state.criteria, q: 'other query' } } },
+    { ...journeyFixture, result: { ...journeyFixture.result, original_constraints: { ...journeyFixture.result.original_constraints, max_budget: '17000000.123456788' } } },
   ])('rejects unexpected or unrelated responses', async data => {
     const result = await createJourneyClient({ fetcher: vi.fn<typeof fetch>().mockResolvedValue(json(data)) })(requestFixture, signal())
     expect(result).toMatchObject({ ok: false, failure: { kind: 'invalid_response' } })
@@ -66,5 +68,20 @@ describe('Journey HTTP boundary', () => {
     expect(await createJourneyClient({ baseUrl: 'http://user:password@localhost', fetcher })(requestFixture, signal()))
       .toMatchObject({ ok: false, failure: { kind: 'configuration' } })
     expect(fetcher).not.toHaveBeenCalled()
+  })
+
+  it('uses safe local UI messages even for unknown error codes', () => {
+    const error = userError({ error: { code: 'constructor', message: 'private traceback', details: [] } })
+    expect(typeof error.error.message).toBe('string')
+    expect(error.error.message).not.toContain('traceback')
+  })
+
+  it('associates equivalent decimal representations without rounding away a changed fractional digit', async () => {
+    const fetcher = vi.fn<typeof fetch>().mockImplementation(async () => json(journeyFixture))
+    const client = createJourneyClient({ fetcher })
+    expect(await client({ ...requestFixture, criteria: { ...requestFixture.criteria, max_budget: '00017000000.1234567890' } }, signal()))
+      .toMatchObject({ ok: true })
+    expect(await client({ ...requestFixture, criteria: { ...requestFixture.criteria, max_budget: '17000000.123456788' } }, signal()))
+      .toMatchObject({ ok: false, failure: { kind: 'invalid_response' } })
   })
 })

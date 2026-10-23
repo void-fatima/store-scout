@@ -1,5 +1,6 @@
 import type { ErrorResponse, JourneyRecommendations, ShoppingRequest } from '../contracts'
 import { isApiError, isJourneyResponse } from './validation'
+import { responseMatchesRequest } from './association'
 
 export type JourneyFailure = Readonly<{
   kind: 'api' | 'network' | 'cancelled' | 'invalid_response' | 'route_unavailable' | 'configuration'
@@ -54,7 +55,8 @@ export function createJourneyClient(options: { baseUrl?: string; fetcher?: typeo
       if (response.status !== 200 || !isJourneyResponse(data)
         || data.state.request_id !== request.request_id
         || (data.state.revision ?? 0) !== (request.revision ?? 0)
-        || data.state.status !== 'recommendations_ready' || data.state.search_performed !== true) {
+        || data.state.status !== 'recommendations_ready' || data.state.search_performed !== true
+        || !responseMatchesRequest(data, request)) {
         return failure('invalid_response', 'invalid_journey_response', 'پاسخ معتبر از سرویس دریافت نشد.', response.status)
       }
       return { ok: true, value: data }
@@ -80,5 +82,6 @@ export function userError(error: ErrorResponse): ErrorResponse {
     network_unavailable: 'ارتباط با سرویس برقرار نشد. دوباره تلاش کنید.',
     invalid_api_configuration: 'نشانی سرویس درست تنظیم نشده است.',
   }
-  return localError(error.error.code, messages[error.error.code] ?? 'درخواست انجام نشد. دوباره تلاش کنید.')
+  const fallback = 'درخواست انجام نشد. دوباره تلاش کنید.'
+  return localError(error.error.code, Object.hasOwn(messages, error.error.code) ? messages[error.error.code] ?? fallback : fallback)
 }

@@ -65,6 +65,7 @@ def main():
         from torob.journey.recommendations import (
             AlternativeAcceptance,
             JourneyRecommendations,
+            accept_alternative,
             run_recommendations,
         )
         from torob.recommend.alternative_models import AlternativesResponse
@@ -108,10 +109,31 @@ def main():
         # Derive its envelope through the real service using only synthetic data.
         db = Path(directory) / "sample.sqlite3"
         import_dataset(ROOT / "datasets/sample", db, source_kind="sample")
-        envelope = run_recommendations(CatalogRepository(db), request).model_dump(mode="json")
+        service_response = run_recommendations(CatalogRepository(db), request)
+        envelope = service_response.model_dump(mode="json")
         envelope["result"]["original"]["context"]["dataset"]["imported_at"] = "2026-10-01T00:00:00Z"
         result["fixtures"]["journeyFixture"] = JourneyRecommendations.model_validate_json(
             json.dumps(envelope, ensure_ascii=False)
+        ).model_dump(mode="json")
+        chosen = service_response.result.suggestions[0]
+        accepted = accept_alternative(
+            service_response,
+            AlternativeAcceptance(
+                request_id=request.request_id,
+                expected_revision=request.revision,
+                dataset_id=service_response.result.original.context.dataset.dataset_id,
+                offer_id=chosen.result.offer_id,
+                accepted_changes=chosen.changes,
+            ),
+            current_state=service_response.state,
+        )
+        fresh_request = ShoppingRequest.model_validate(
+            accepted.model_dump(include=set(ShoppingRequest.model_fields))
+        )
+        fresh = run_recommendations(CatalogRepository(db), fresh_request).model_dump(mode="json")
+        fresh["result"]["original"]["context"]["dataset"]["imported_at"] = "2026-10-01T00:00:00Z"
+        result["fixtures"]["acceptedJourneyFixture"] = JourneyRecommendations.model_validate_json(
+            json.dumps(fresh, ensure_ascii=False)
         ).model_dump(mode="json")
         suggestion = result["fixtures"]["alternativesFixture"]["suggestions"][0]
         result["fixtures"]["acceptanceFixture"] = AlternativeAcceptance.model_validate(
