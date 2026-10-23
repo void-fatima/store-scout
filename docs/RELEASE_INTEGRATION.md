@@ -32,7 +32,7 @@ tab focus and keyboard navigation are unchanged.
 
 ## Executed validation
 
-Windows / Python 3.13.15 / Node 24 / npm 11, frozen lockfiles:
+Windows / Python 3.13.15 and 3.12.14 / Node 24 / npm 11, frozen lockfiles:
 
 | Check | Result |
 | --- | --- |
@@ -40,7 +40,7 @@ Windows / Python 3.13.15 / Node 24 / npm 11, frozen lockfiles:
 | `uv run --no-sync ruff check --no-cache .` | Passed |
 | `uv run --no-sync ruff format --check .` | Passed; 110 Python files at the integrated checkpoint |
 | `uv run --no-sync python scripts/export_contracts.py --check` | Passed |
-| Python 3.12 isolated contract check | Passed; prerequisite also passes Linux/Windows GitHub CI |
+| Python 3.12 isolated full backend suite and contract check | 749 passed; contracts passed; prerequisite also passes Linux/Windows GitHub CI |
 | `npm.cmd ci` | 128 packages installed; audit: 0 vulnerabilities; lockfile unchanged |
 | `npm.cmd run typecheck` / `npm.cmd run lint` | Passed |
 | `npm.cmd test -- --maxWorkers=2` | 168 passed; 3 opt-in HTTP tests skipped in this default run |
