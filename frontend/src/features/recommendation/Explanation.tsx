@@ -4,6 +4,7 @@ import { recordedHours, recordedNumber, recordedPayments, recordedText } from '.
 import { Icon } from '../../shell/Icon'
 import { OfferCard } from './OfferCard'
 import { currencyLabel, exactMoney } from './presentation'
+import { ExplanationLimitations, ExplanationReasons } from './ExplanationEvidence'
 
 export function Explanation({ entry, rank, response, selected, onToggle, selectionDisabled }: {
   entry: ResponseEntry; rank: number; response: NonNullable<RecommendationPanelProps['response']>
@@ -23,13 +24,9 @@ export function Explanation({ entry, rank, response, selected, onToggle, selecti
       <OfferCard result={result} entry={entry} rank={rank} selected={selected} onToggle={onToggle} selectionDisabled={selectionDisabled} detail />
       <section className="detail-surface" aria-labelledby="explanation-heading">
         <h3 id="explanation-heading">انتخابی با دلیل روشن</h3>
-        <ol className="explanation-list">{result.explanation_reasons.map((reason, index) => <li key={`${reason.code}-${index}`}>
-          <Icon name="bulb" /><p>{reason.message}</p>
-        </li>)}</ol>
+        <ExplanationReasons result={result} />
         <p className="explanation-budget">سقف بودجهٔ جست‌وجو: {exactMoney(criteria.max_budget)} {currencyLabel(criteria.price_unit)}</p>
-        <h3>چه چیزهایی هنوز مشخص نیست؟</h3>
-        <ul className="limitations-list">{result.data_limitations.map((limitation, index) => <li key={`${limitation.code}-${index}`}>{limitation.message}</li>)}</ul>
-        <p className="uncertainty-note">موجودی و قیمت فعلی تأیید نشده‌اند. زمان تغییر قیمت، زمان تأیید نیست. پیش از مراجعه، شرایط خرید را بررسی کن.</p>
+        <ExplanationLimitations result={result} />
         <details className="offer-record-details"><summary>اطلاعات ثبت‌شده و شناسه‌های این آفر</summary>
           <dl>
             <dt>شناسهٔ داده</dt><dd><bdi>{entry.key.dataset_id}</bdi></dd>
