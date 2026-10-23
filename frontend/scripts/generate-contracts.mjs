@@ -32,9 +32,10 @@ const types = {
   errorFixture: 'ErrorResponse', journeyFixture: 'JourneyRecommendations', requestFixture: 'ShoppingRequest',
   acceptanceFixture: 'AlternativeAcceptance',
   acceptedJourneyFixture: 'JourneyRecommendations',
+  productDetailFixture: 'ProductDetail',
 }
 // Generate typed object literals, rather than casting unvalidated JSON in tests.
-let fixtures = `${bannerComment}\nimport type { AlternativesResponse, RecommendationResponse, ErrorResponse, JourneyRecommendations } from '../../contracts/generated/responses'\nimport type { ShoppingRequest, AlternativeAcceptance } from '../../contracts/generated/requests'\n`
+let fixtures = `${bannerComment}\nimport type { AlternativesResponse, RecommendationResponse, ErrorResponse, JourneyRecommendations, ProductDetail } from '../../contracts/generated/responses'\nimport type { ShoppingRequest, AlternativeAcceptance } from '../../contracts/generated/requests'\n`
 for (const [name, value] of Object.entries(data.fixtures)) {
   fixtures += `\nexport const ${name}: ${types[name]} = ${JSON.stringify(value, null, 2)}\n`
 }

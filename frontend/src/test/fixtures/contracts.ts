@@ -2,7 +2,7 @@
  * Recommendation/Catalog: current canonical Python models.
  * Pending Journey: 45cfe9815ebfd78b0423ca321c2f61e51ea7fbdd
  */
-import type { AlternativesResponse, RecommendationResponse, ErrorResponse, JourneyRecommendations } from '../../contracts/generated/responses'
+import type { AlternativesResponse, RecommendationResponse, ErrorResponse, JourneyRecommendations, ProductDetail } from '../../contracts/generated/responses'
 import type { ShoppingRequest, AlternativeAcceptance } from '../../contracts/generated/requests'
 
 export const acceptanceFixture: AlternativeAcceptance = {
@@ -2185,6 +2185,47 @@ export const journeyFixture: JourneyRecommendations = {
     "revision": 3,
     "search_performed": true,
     "status": "recommendations_ready"
+  }
+}
+
+export const productDetailFixture: ProductDetail = {
+  "context": {
+    "contract_version": "1.0.0-draft.1",
+    "currency": "toman",
+    "dataset": {
+      "counts": {
+        "offers": 5,
+        "products": 4,
+        "shops": 4
+      },
+      "coverage": "Tehran dataset; coverage is incomplete",
+      "dataset_id": "torob-5a1a259eea5ba2cf",
+      "imported_at": "2026-10-01T00:00:00Z",
+      "source_kind": "sample",
+      "source_sha256": "5a1a259eea5ba2cf1a015b49b746cf5ecfcec7132986dc8fee77809edf4ca3e0"
+    },
+    "notices": [
+      "offer_does_not_confirm_stock",
+      "price_timestamp_is_last_change_not_last_verification",
+      "shop_names_synthetic_or_unverified",
+      "contact_numbers_synthetic",
+      "tehran_coverage_incomplete"
+    ]
+  },
+  "item": {
+    "brand_name": "سامسونگ",
+    "category_name": "گوشی موبایل",
+    "image_urls": [],
+    "model": null,
+    "persian_title": "گوشی سامسونگ Galaxy A55 ۲۵۶",
+    "product_id": "sample_product_phone",
+    "specs": [
+      {
+        "key": "داده",
+        "section": "نمونه",
+        "value": "ساختگی"
+      }
+    ]
   }
 }
 

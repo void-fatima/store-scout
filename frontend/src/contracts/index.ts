@@ -26,6 +26,8 @@ export type {
   CatalogQuery,
   OfferCandidate,
   ProductSummary,
+  Product,
+  ProductDetail,
   Shop,
   PurchaseConditions,
   PriceUnit,

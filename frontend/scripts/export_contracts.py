@@ -58,7 +58,7 @@ def main():
                 target.write_bytes(git("show", f"{SOURCE['journeyRef']}:{name}"))
         torob.__path__.insert(0, str(package))
 
-        from torob.catalog.contracts import ErrorDetail, ErrorResponse
+        from torob.catalog.contracts import ErrorDetail, ErrorResponse, ProductDetail
         from torob.catalog.repository import CatalogRepository
         from torob.data.importer import import_dataset
         from torob.journey.models import ShoppingRequest
@@ -75,7 +75,9 @@ def main():
         # accepts string/number on input, but serializes to an exact decimal string.
         result = {
             "requestSchema": schema([ShoppingRequest, AlternativeAcceptance], "validation"),
-            "responseSchema": schema([JourneyRecommendations, ErrorResponse], "serialization"),
+            "responseSchema": schema(
+                [JourneyRecommendations, ErrorResponse, ProductDetail], "serialization"
+            ),
             "fixtures": {
                 "alternativesFixture": fixture(AlternativesResponse, "alternatives_response.json"),
                 "recommendationFixture": fixture(
@@ -109,6 +111,11 @@ def main():
         # Derive its envelope through the real service using only synthetic data.
         db = Path(directory) / "sample.sqlite3"
         import_dataset(ROOT / "datasets/sample", db, source_kind="sample")
+        detail = CatalogRepository(db).product("sample_product_phone").model_dump(mode="json")
+        detail["context"]["dataset"]["imported_at"] = "2026-10-01T00:00:00Z"
+        result["fixtures"]["productDetailFixture"] = ProductDetail.model_validate(
+            detail
+        ).model_dump(mode="json")
         service_response = run_recommendations(CatalogRepository(db), request)
         envelope = service_response.model_dump(mode="json")
         envelope["result"]["original"]["context"]["dataset"]["imported_at"] = "2026-10-01T00:00:00Z"

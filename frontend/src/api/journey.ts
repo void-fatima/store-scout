@@ -18,14 +18,14 @@ function failure(kind: JourneyFailure['kind'], code: string, message: string, st
   return { ok: false, failure: { kind, error: localError(code, message), ...(status === undefined ? {} : { status }) } }
 }
 
-export function apiEndpoint(baseUrl: string): string {
+export function apiEndpoint(baseUrl: string, path = '/api/v1/journey/recommendations'): string {
   const base = baseUrl.trim().replace(/\/+$/, '')
-  if (!base) return '/api/v1/journey/recommendations'
+  if (!base) return path
   const url = new URL(base)
   if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password || url.search || url.hash) {
     throw new Error('Invalid API configuration')
   }
-  return `${base}/api/v1/journey/recommendations`
+  return `${base}${path}`
 }
 
 export function createJourneyClient(options: { baseUrl?: string; fetcher?: typeof fetch } = {}): JourneyClient {
