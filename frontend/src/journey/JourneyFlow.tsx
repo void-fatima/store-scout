@@ -66,7 +66,7 @@ function JourneyRoutes({ Panel, controller }: FlowProps & { controller: Controll
       </div>}
       </>}
       {state.notice && <p role="status" className="journey-notice">{state.notice}</p>}
-      {state.selectedVerification && !hash.startsWith('#checklist/') && <div className="journey-notice">
+      {state.selectedVerification && !['checklist', 'product'].includes(parsePanelRoute(hash)?.view ?? '') && <div className="journey-notice">
         <p role="status">برنامهٔ پیش از مراجعه انتخاب شد؛ موجودی هنوز تأیید نشده است.</p>
         <button className="secondary-button" onClick={() => { clearVerification(); if (hash.startsWith('#checklist/')) window.location.hash = 'results' }}>بستن انتخاب برنامه</button>
       </div>}

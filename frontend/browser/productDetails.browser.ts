@@ -42,6 +42,8 @@ async function accessible(page: Page, width: number) {
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width)
   expect((await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()).violations).toEqual([])
   for (const target of await page.locator('.product-detail-grid .compare-choice, .product-detail-grid a, .detail-back').all()) {
+    // Inactive tab panels remain mounted to retain fetch state; inspect visible controls.
+    if (!await target.isVisible()) continue
     const box = await target.boundingBox()
     expect(box?.width).toBeGreaterThanOrEqual(44)
     expect(box?.height).toBeGreaterThanOrEqual(44)

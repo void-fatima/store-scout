@@ -14,6 +14,7 @@ import type { ProductTab } from './presentation'
 import { Specifications } from './Specifications'
 import { ProductFit } from './ProductFit'
 import { ProductTabs } from './ProductTabs'
+import { ProductPurchaseReview } from './ProductPurchaseReview'
 
 const client = createProductDetailClient()
 type Load = { owner: AlternativesResponse; identity: string; result: ProductDetailResult }
@@ -62,7 +63,7 @@ export function ProductDetails({ entry, response, requestId, revision, previousH
   const product = detail?.item ?? entry.result.candidate.product
   const candidate = entry.result.candidate
   return <>
-    <a className="detail-back" href={returnHash}><Icon name="arrow" />بازگشت به {returnHash === '#alternatives' ? 'جایگزین‌ها' : returnHash.startsWith('#explanation/') ? 'دلیل پیشنهاد' : returnHash.startsWith('#alternative/') ? 'بررسی جایگزین' : 'پیشنهادها'}</a>
+    <a className="detail-back" href={returnHash}><Icon name="arrow" />بازگشت به {returnHash === '#alternatives' ? 'جایگزین‌ها' : returnHash.startsWith('#explanation/') ? 'دلیل پیشنهاد' : returnHash.startsWith('#alternative/') ? 'بررسی جایگزین' : returnHash.startsWith('#checklist/') ? 'چک‌لیست' : 'پیشنهادها'}</a>
     <div className="detail-heading"><h2 id="recommendation-title" tabIndex={-1}>جزئیات کالای ثبت‌شده</h2>
       <p>مشخصات کالا از همان منبع جست‌وجو دریافت می‌شود؛ شرایط فروش به آفر انتخاب‌شده مربوط است.</p><SourceBadge response={response} /></div>
     {entry.source === 'alternative' && <p className="uncertainty-note">این کالا یک پیشنهاد جایگزین است؛ دیدن مشخصات، پذیرش تغییر معیارها نیست.</p>}
@@ -84,6 +85,9 @@ export function ProductDetails({ entry, response, requestId, revision, previousH
         </div>
         <div role="tabpanel" id={`${tabPrefix}-fit-panel`} aria-labelledby={`${tabPrefix}-fit-tab`} tabIndex={0} hidden={tab !== 'fit'}>
           {validContext ? <ProductFit entry={entry} response={response} /> : <p role="alert">منبع یا شناسهٔ فعلی کالا سازگار نیست؛ دلیل‌های قبلی نمایش داده نمی‌شوند.</p>}
+        </div>
+        <div role="tabpanel" id={`${tabPrefix}-purchase-panel`} aria-labelledby={`${tabPrefix}-purchase-tab`} tabIndex={0} hidden={tab !== 'purchase'}>
+          {tab === 'purchase' && (validContext ? <ProductPurchaseReview entry={entry} /> : <p role="alert">منبع یا شناسهٔ فعلی کالا سازگار نیست؛ برنامهٔ قبلی نمایش داده نمی‌شود.</p>)}
         </div>
       </section>
       <section className="detail-surface product-selected-offer" aria-labelledby="selected-offer-title">

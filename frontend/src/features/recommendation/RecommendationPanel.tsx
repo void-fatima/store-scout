@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import type { ComparisonKey, RecommendationPanelProps } from '../../contracts'
 import { responseEntries, sameValue } from '../../journey/operations'
 import { recordedNumber } from '../../journey/comparison/recordedValues'
@@ -11,14 +11,18 @@ import { usePanelNavigation } from './usePanelHash'
 import { AlternativeReview, AlternativesList } from './Alternatives'
 import { Checklist } from './Checklist'
 import { ProductDetails } from './ProductDetails'
+import { VerificationContext } from './VerificationContext'
+import { hasOwningPlan } from './useOwningVerification'
 import './recommendation.css'
 
 export function RecommendationPanel(props: RecommendationPanelProps) {
   const { status, response, comparison, requestId, revision, onViewVerification } = props
   const { hash, previousHash } = usePanelNavigation()
+  const canonicalSelection = useContext(VerificationContext)
   const route = parsePanelRoute(hash)
   const previousRoute = useRef<string | null>(null)
   const previousStatus = useRef(status)
+  const productOrigin = useRef<string | null>(null)
   const selectedPlanContext = useRef<{ hash: string; requestId: string; revision: number; response: RecommendationPanelProps['response'] } | null>(null)
   const entries = response ? responseEntries(response) : []
   const originals = entries.filter(entry => entry.source === 'original')
@@ -26,21 +30,26 @@ export function RecommendationPanel(props: RecommendationPanelProps) {
     && (route.view === 'explanation' ? entry.source === 'original' : route.view === 'alternative' ? entry.source === 'alternative' : true)) : undefined
   const suggestion = active && response?.suggestions.find(item => item.result === active.result)
   useEffect(() => {
-    if (status !== 'ready' || route?.view !== 'checklist' || !active?.plan) { selectedPlanContext.current = null; return }
+    const purchase = route?.view === 'product' && route.tab === 'purchase'
+    if (status !== 'ready' || !(route?.view === 'checklist' || purchase) || !active?.plan || !hasOwningPlan(active)) { selectedPlanContext.current = null; return }
+    if (purchase && canonicalSelection && sameValue(canonicalSelection.key, active.key) && canonicalSelection.plan === active.plan) return
     const previous = selectedPlanContext.current
     if (previous?.hash === hash && previous.response === response && previous.requestId === requestId && previous.revision === revision) return
     selectedPlanContext.current = { hash, requestId, revision, response }
     onViewVerification(active.key, active.plan)
-  }, [active, hash, onViewVerification, requestId, response, revision, route?.view, status])
+  }, [active, canonicalSelection, hash, onViewVerification, requestId, response, revision, route, status])
   useEffect(() => {
     // Do not steal focus from actionable backend field errors.
     const shouldFocus = (status === 'ready' && previousStatus.current !== 'ready') || previousRoute.current !== hash
     const previous = parsePanelRoute(previousRoute.current ?? '')
     const current = parsePanelRoute(hash)
     const tabChange = previous?.view === 'product' && current?.view === 'product' && sameValue(previous.key, current.key)
+    const returningToOrigin = previous?.view === 'product' && productOrigin.current === hash
+    if (current?.view === 'product' && previous?.view !== 'product' && previousRoute.current !== '#comparison') productOrigin.current = previousRoute.current
     if (shouldFocus && !tabChange && status === 'ready' && !['#comparison', '#guide', '#edit-search'].includes(hash)) {
       const returnAction = previous?.view === 'product' ? offerHash('product', previous.key) : previousRoute.current
-      const target = [...document.querySelectorAll<HTMLElement>('[data-offer-action]')].find(node => node.dataset.offerAction === returnAction)
+      const restoringAction = !current || current.view === 'alternatives' || returningToOrigin
+      const target = restoringAction ? [...document.querySelectorAll<HTMLElement>('[data-offer-action]')].find(node => node.dataset.offerAction === returnAction) : null
       const focusTarget = target ?? document.getElementById('recommendation-title')
       focusTarget?.focus()
     }

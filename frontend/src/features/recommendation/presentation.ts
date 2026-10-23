@@ -21,7 +21,7 @@ export type OfferView = 'explanation' | 'alternative' | 'checklist' | 'product'
 export function offerHash(view: OfferView, key: ComparisonKey) {
   return `#${view}/${[key.dataset_id, key.product_id, key.offer_id].map(encodeURIComponent).join('/')}`
 }
-export type ProductTab = 'specs' | 'fit'
+export type ProductTab = 'specs' | 'fit' | 'purchase'
 export function productHash(key: ComparisonKey, tab: ProductTab) {
   return `${offerHash('product', key)}${tab === 'specs' ? '' : `/${tab}`}`
 }
@@ -31,7 +31,7 @@ export function parsePanelRoute(hash: string): PanelRoute {
   if (hash === '#alternatives') return { view: 'alternatives' }
   const [view, dataset, product, offer, tab, extra] = hash.slice(1).split('/')
   if (!['explanation', 'alternative', 'checklist', 'product'].includes(view ?? '') || !dataset || !product || !offer || extra !== undefined
-    || (tab !== undefined && (view !== 'product' || tab !== 'fit'))) return null
+    || (tab !== undefined && (view !== 'product' || !['fit', 'purchase'].includes(tab)))) return null
   try {
     const key = { dataset_id: decodeURIComponent(dataset), product_id: decodeURIComponent(product), offer_id: decodeURIComponent(offer) }
     return view === 'product' ? { view, key, ...(tab ? { tab: tab as ProductTab } : {}) }

@@ -4,6 +4,7 @@ import type { ProductTab } from './presentation'
 
 const productTabs: readonly { id: ProductTab; label: string }[] = [
   { id: 'specs', label: 'مشخصات کالا' }, { id: 'fit', label: 'تناسب با نیاز من' },
+  { id: 'purchase', label: 'قبل از خرید بررسی کن' },
 ]
 
 export function ProductTabs({ selected, prefix, onSelect }: { selected: ProductTab; prefix: string; onSelect: (tab: ProductTab) => void }) {

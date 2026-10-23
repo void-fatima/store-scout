@@ -1,3 +1,17 @@
+# Stage 3B product tabs
+
+Product details now include three working tabs: «مشخصات کالا», «تناسب با نیاز من»
+and «قبل از خرید بررسی کن». The base product URL opens specs; `/fit` and
+`/purchase` retain the current tuple and select the other panels. Switching tabs
+does not refetch specs, search again or accept alternative criteria. Fit presents
+the owning backend reasons; purchase uses the controller-resolved canonical plan.
+Personal reminders remain separate from pending verification states.
+
+See the newest [HANDOFF.md](HANDOFF.md) for draft #19/#20 dependencies, commands,
+screenshots, HTTP evidence and limitations. Earlier implementation notes follow.
+
+---
+
 # Stage 3A product details
 
 Recommendation cards now link to recorded product specifications, preserving the
