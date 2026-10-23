@@ -33,12 +33,13 @@ class LLMConfig:
             and all(33 <= ord(char) <= 126 for char in self.api_key)
             and self.api_key not in {"YOUR_API_KEY", "REPLACE_WITH_LOCAL_KEY"}
             and len(self.model) <= 200
+            and self.model not in {"YOUR_MODEL", "YOUR_ACCOUNT_MODEL_ID"}
             and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9/_.:~-]*", self.model) is not None
             and isinstance(self.base_url, str)
             and isinstance(self.timeout_seconds, (int, float))
             and not isinstance(self.timeout_seconds, bool)
-            and math.isfinite(self.timeout_seconds)
             and 0 < self.timeout_seconds <= 60
+            and math.isfinite(self.timeout_seconds)
             and type(self.max_response_bytes) is int
             and 1 <= self.max_response_bytes <= 1_048_576
         )
