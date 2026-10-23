@@ -44,7 +44,10 @@ function JourneyRoutes({ Panel, controller }: FlowProps & { controller: Controll
     <section id="search" className="journey-route" ref={searchRegion} tabIndex={-1} hidden={view !== 'search'} aria-label="جست‌وجوی خرید">
     <div hidden={explanation} className={activeResults && hash !== '#edit-search' && state.status === 'ready' ? 'search-controls compact-on-mobile' : 'search-controls'}>
       <LandingHero />
-      <CriteriaForm draft={state.draft} errors={state.fieldErrors} loading={state.status === 'loading'} onChange={changeDraft} onSubmit={submit} />
+      <CriteriaForm draft={state.draft} errors={state.fieldErrors} loading={state.status === 'loading'} onChange={changeDraft} onSubmit={() => {
+        if (Panel && hash === '#edit-search') window.location.hash = 'results'
+        submit()
+      }} />
     </div>
     <section className={Panel ? 'production-results' : 'foundation-note search-results'} hidden={state.status === 'idle' && !state.notice} aria-label="نتیجهٔ جست‌وجو">
       {!Panel && <>

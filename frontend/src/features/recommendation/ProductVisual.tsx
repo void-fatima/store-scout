@@ -20,7 +20,7 @@ export function ProductVisual({ product }: { product: ProductSummary }) {
         <svg width="100" height="112" viewBox="0 0 100 112" fill="none" aria-hidden="true">
           <path d="m50 12 35 20v48l-35 20-35-20V32Z" fill="currentColor" opacity=".09" />
           <path d="m50 12 35 20v48l-35 20-35-20V32Zm0 40L15 32m35 20 35-20M50 52v48M32 22l35 20v18" stroke="currentColor" strokeWidth="2.5" strokeLinejoin="round" />
-        </svg><span>تصویر ثبت نشده</span>
+        </svg><span>تصویر در دسترس نیست</span>
       </div>}
   </div>
 }

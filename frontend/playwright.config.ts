@@ -7,7 +7,7 @@ export default defineConfig({
   reporter: [['list'], ['html', { outputFolder: 'ui-artifacts/report', open: 'never' }]],
   workers: 2,
   use: {
-    baseURL: 'http://127.0.0.1:5173',
+    baseURL: 'http://localhost:5173',
     browserName: 'chromium',
     launchOptions: process.env.STORE_SCOUT_CHROMIUM ? { executablePath: process.env.STORE_SCOUT_CHROMIUM } : {},
     trace: 'retain-on-failure',

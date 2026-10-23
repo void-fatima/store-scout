@@ -1,6 +1,9 @@
 ﻿/* Production Recommendation experience; shared semantic tokens come from Stage 1. */
 .recommendation-panel { min-inline-size: 0; scroll-margin-block: 24px; }
+.recommendation-panel :is(a, button, input, summary) { scroll-margin-block: 100px; }
 .production-results { margin-block-start: var(--space-6); }
+.recommendation-panel .secondary-button { color: var(--color-accent-hover); }
+.recommendation-panel .primary-button { background: var(--color-accent-hover); border-color: var(--color-accent-hover); }
 .text-action { border: 0; background: transparent; }
 .uncertainty-note { padding: 12px 16px; margin-block: 16px; background: var(--color-accent-soft); border-radius: var(--radius-sm); font-size: .8125rem; }
 .recommendation-state { text-align: center; padding: clamp(24px, 5vw, 64px) 16px; max-inline-size: 58rem; margin-inline: auto; }

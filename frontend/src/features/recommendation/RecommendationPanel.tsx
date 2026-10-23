@@ -66,7 +66,7 @@ export function RecommendationPanel(props: RecommendationPanelProps) {
         <p className="uncertainty-note">قیمت‌ها ثبت‌شده‌اند؛ موجودی تأیید نشده است. هویت فروشگاه‌ها ساختگی یا تأییدنشده و پوشش بازار محدود است.</p>
         {response.original.recommendations.length ? <div className="offer-grid">{response.original.recommendations.map((result, index) => {
           const entry = entries.find(item => item.result === result)
-          return <OfferCard key={`${result.product_id}/${result.offer_id}`} result={result} entry={entry} rank={index + 1}
+          return <OfferCard key={JSON.stringify([response.original.context.dataset?.dataset_id, result.product_id, result.offer_id])} result={result} entry={entry} rank={index + 1}
             selected={!!entry && comparison.some(key => sameValue(key, entry.key))} selectionDisabled={comparison.length >= 10} onToggle={toggle} />
         })}</div> : <div className="recommendation-state">
           <div className="state-symbol"><Icon name="search" /></div>

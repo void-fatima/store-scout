@@ -4,7 +4,7 @@ import { expect, it } from 'vitest'
 import html from '../index.html?raw'
 import App from './App'
 
-it('renders semantic Persian navigation, content and the empty feature mount', () => {
+it('renders semantic Persian navigation and an idle production feature mount', () => {
   render(<App />)
   expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('قبل از رفتن، هوشمندانه انتخاب کن')
   expect(within(screen.getByRole('navigation', { name: 'ناوبری اصلی' }))
