@@ -10,8 +10,9 @@ from pydantic import ValidationError
 
 from torob.journey.llm.client import BoxAPIClient, Completion, OutputLimitParameter
 from torob.journey.llm.config import LLMConfig
-from torob.journey.llm.errors import ErrorCode, LLMError
+from torob.journey.llm.errors import ErrorCode, LLMError, safe_finish_reason
 
+from .diagnostics import rejection
 from .errors import IntentError
 from .models import ExtractedFields
 from .normalize import readable
@@ -93,52 +94,87 @@ class LLMInterpreter:
         self._client, self._config = client, config
 
     def extract(self, message: str) -> ExtractedFields:
-        response = self._client.complete(
-            message,
-            system_text=SYSTEM_PROMPT,
-            output_limit_parameter=self._config.parameter,
-            max_output_tokens=self._config.max_output_tokens,
-        )
-        if response.finish_reason != "stop":
+        failure = None
+        try:
+            response = self._client.complete(
+                message,
+                system_text=SYSTEM_PROMPT,
+                output_limit_parameter=self._config.parameter,
+                max_output_tokens=self._config.max_output_tokens,
+            )
+        except LLMError as exc:
+            failure = exc
+        if failure is not None:
+            rejection(
+                f"llm_{failure.code.value}",
+                finish_reason=failure.finish_reason,
+                max_output_tokens=self._config.max_output_tokens,
+            )
+            raise failure
+
+        def invalid(reason, fields=()):
+            rejection(
+                reason,
+                finish_reason=safe_finish_reason(response.finish_reason),
+                max_output_tokens=self._config.max_output_tokens,
+                fields=fields,
+            )
             raise IntentError("invalid_interpretation")
-        invalid = False
+
+        if response.finish_reason != "stop":
+            invalid("non_stop_finish_reason")
+        bad_json = False
         try:
             data = json.loads(
                 response.text, object_pairs_hook=_unique_object, parse_constant=_no_constant
             )
+        except (ValueError, TypeError, RecursionError):
+            bad_json = True
+        if bad_json:
+            invalid("invalid_json")
+
+        schema_fields = None
+        try:
             result = ExtractedFields.model_validate(data)
-            normalized_message = readable(message).casefold()
-            for value in result.model_dump(exclude={"shopping_related"}).values():
-                values = value if isinstance(value, list) else [value] if value is not None else []
-                if any(
-                    not readable(span).strip()
-                    or readable(span).casefold() not in normalized_message
-                    for span in values
-                ):
-                    invalid = True
-            if not result.shopping_related and any(
-                value for name, value in result.model_dump().items() if name != "shopping_related"
+        except ValidationError as exc:
+            schema_fields = tuple(
+                error["loc"][0] if error["loc"] else "__root__"
+                for error in exc.errors(
+                    include_input=False, include_context=False, include_url=False
+                )
+            )
+        if schema_fields is not None:
+            invalid("schema_validation", schema_fields)
+
+        normalized_message = readable(message).casefold()
+        spans = result.model_dump(exclude={"shopping_related"})
+        mismatches = []
+        for name, value in spans.items():
+            values = value if isinstance(value, list) else [value] if value is not None else []
+            if any(
+                not readable(span).strip() or readable(span).casefold() not in normalized_message
+                for span in values
             ):
-                invalid = True
-            for name, pattern in (
-                ("warranty", r"گارانتی|ضمانت"),
-                ("installments", r"قسط|اقساط"),
-                ("return_window", r"مرجوع|بازگشت"),
+                mismatches.append(name)
+        if mismatches:
+            invalid("evidence_span_mismatch", mismatches)
+        if not result.shopping_related and any(spans.values()):
+            invalid("irrelevant_fields", [name for name, value in spans.items() if value])
+        for name, pattern in (
+            ("warranty", r"گارانتی|ضمانت"),
+            ("installments", r"قسط|اقساط"),
+            ("return_window", r"مرجوع|بازگشت"),
+        ):
+            span = getattr(result, name)
+            if (span and not re.search(pattern, readable(span))) or (
+                result.shopping_related and re.search(pattern, normalized_message) and not span
             ):
-                span = getattr(result, name)
-                if (span and not re.search(pattern, readable(span))) or (
-                    result.shopping_related and re.search(pattern, normalized_message) and not span
-                ):
-                    invalid = True
-            if result.shopping_related and re.search(
-                r"تومان|تومن|ریال|میلیون|میلیارد", normalized_message
-            ):
-                if result.max_budget is None and result.min_budget is None:
-                    invalid = True
-        except (ValueError, TypeError, RecursionError, ValidationError):
-            invalid = True
-        if invalid:
-            raise IntentError("invalid_interpretation")
+                invalid("preference_evidence", [name])
+        if result.shopping_related and re.search(
+            r"تومان|تومن|ریال|میلیون|میلیارد", normalized_message
+        ):
+            if result.max_budget is None and result.min_budget is None:
+                invalid("missing_monetary_evidence", ["max_budget", "min_budget"])
         return result
 
 

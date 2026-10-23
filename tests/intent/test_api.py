@@ -30,6 +30,39 @@ def revise(client, draft, headers, changes=READY):
     )
 
 
+@pytest.mark.parametrize("digits", ["40", "۴۰"])
+def test_observed_intake_with_offline_completion_clarifies_without_search(
+    intent_client, provider, monkeypatch, digits
+):
+    provider.output = extracted(
+        product_query="گوشی سامسونگ",
+        brand="سامسونگ",
+        max_budget=f"{digits} میلیون تومان",
+    )
+    search = Mock(side_effect=AssertionError("Draft creation must not search"))
+    monkeypatch.setattr(intent_client.app.state.catalog, "search", search)
+    draft, headers = create(intent_client, f"گوشی سامسونگ تا {digits} میلیون تومان میخوام")
+    assert draft["status"] == "needs_clarification"
+    assert draft["criteria"]["max_budget"] == "40000000"
+    assert draft["criteria"]["price_unit"] == "TOMAN"
+    assert draft["fields"]["max_budget"] == f"{digits} میلیون تومان"
+    assert draft["fields"]["location"] is None
+    assert draft["fields"]["coordinates"] is None
+    assert draft["fields"]["radius"] is None
+    assert {issue["field"] for issue in draft["issues"]} == {"coordinates", "radius"}
+    assert draft["search_performed"] is False
+    prefix = f"{PATH}/{draft['draft_id']}"
+    for suffix, payload in (
+        ("confirm", {"expected_revision": 0, "confirm": True}),
+        ("recommendations", {"expected_revision": 0}),
+    ):
+        response = intent_client.post(f"{prefix}/{suffix}", headers=headers, json=payload)
+        assert response.status_code == 409
+        assert response.json()["error"]["code"] == "confirmation_required"
+    search.assert_not_called()
+    assert len(provider.calls) == 1
+
+
 def test_real_sample_catalog_only_after_explicit_confirmation(intent_client, provider, monkeypatch):
     client = intent_client
     repository = client.app.state.catalog

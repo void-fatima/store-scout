@@ -238,6 +238,16 @@ Errors never include raw model output, credentials, headers, exception strings
 or traceback locals. Codes use the existing `{error:{code,message,details}}`
 envelope. Provider failures do not disable Catalog, health or typed Journey routes.
 
+Interpretation rejection warnings now identify the first rejecting guard using
+only allowlisted reason/finish/field names and the actual supplied token cap where
+available. Public errors remain fixed. No input, completion, credential, header,
+capability or traceback is logged. See
+[the diagnosis report](../../../../docs/INTENT_INTERPRETATION_DIAGNOSIS.md) for the
+reported 40-million-toman intake, offline regression evidence, metadata meanings
+and what to capture from the next user-triggered attempt. The exact reported live
+cause and live recovery remain unverified; no model/token/validation change is
+justified by the screenshot alone.
+
 Relevant HTTP failures: 422 invalid user request/criteria, 404 unavailable token/
 draft/expiry, 409 stale or unconfirmed version, 413 body too large, 429 local/provider
 rate limit, 502 invalid/incomplete model response, 503 configuration/provider/storage

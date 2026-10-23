@@ -140,9 +140,9 @@ class BoxAPIClient:
         message = choices[0].get("message")
         reason = choices[0].get("finish_reason")
         if reason == "length":
-            raise LLMError(ErrorCode.INCOMPLETE_RESPONSE)
+            raise LLMError(ErrorCode.INCOMPLETE_RESPONSE, finish_reason=reason)
         if reason is not None and reason != "stop":
-            raise LLMError(ErrorCode.MALFORMED_RESPONSE)
+            raise LLMError(ErrorCode.MALFORMED_RESPONSE, finish_reason=reason)
         if (
             not isinstance(message, dict)
             or message.get("role") != "assistant"
@@ -151,7 +151,7 @@ class BoxAPIClient:
             or message.get("tool_calls")
             or message.get("function_call")
         ):
-            raise LLMError(ErrorCode.MALFORMED_RESPONSE)
+            raise LLMError(ErrorCode.MALFORMED_RESPONSE, finish_reason=reason)
         # Even a provider accidentally echoing the credential must not expose it.
         return Completion(message["content"].replace(self._config.api_key, "[REDACTED]"), reason)
 

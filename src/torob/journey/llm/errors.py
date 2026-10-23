@@ -42,11 +42,32 @@ _MESSAGES = {
 }
 
 
+def safe_finish_reason(value: object) -> str:
+    """Provider-controlled values must never become diagnostic text."""
+    if value is None:
+        return "missing"
+    if isinstance(value, str) and value in {
+        "stop",
+        "length",
+        "content_filter",
+        "tool_calls",
+        "function_call",
+    }:
+        return value
+    return "other"
+
+
+_NO_COMPLETION = object()
+
+
 class LLMError(Exception):
     """Safe to log normally or serialize with as_dict; no upstream data attached."""
 
-    def __init__(self, code: ErrorCode):
+    def __init__(self, code: ErrorCode, *, finish_reason: object = _NO_COMPLETION):
         self.code = ErrorCode(code)
+        self.finish_reason = (
+            "unavailable" if finish_reason is _NO_COMPLETION else safe_finish_reason(finish_reason)
+        )
         super().__init__(_MESSAGES[self.code])
 
     def as_dict(self) -> dict[str, str]:
