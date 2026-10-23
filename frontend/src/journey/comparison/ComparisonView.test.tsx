@@ -5,6 +5,7 @@ import type { AlternativesResponse } from '../../contracts'
 import { alternativesFixture } from '../../test/fixtures/contracts'
 import { responseEntries } from '../operations'
 import { ComparisonView } from './ComparisonView'
+import { offerHash } from '../../features/recommendation/presentation'
 
 const renderComparison = (response: AlternativesResponse = alternativesFixture) => {
   const entries = responseEntries(response)
@@ -94,4 +95,22 @@ it('explains zero selections without hiding the return path', () => {
   render(<ComparisonView response={null} selections={[]} status="idle" onComparisonChange={vi.fn()} />)
   expect(screen.getByText(/هنوز انتخاب معتبری برای مقایسه ندارید/)).toBeVisible()
   expect(screen.getByRole('link', { name: 'بازگشت به جست‌وجو' })).toHaveAttribute('href', '#search')
+})
+
+it('links each current identity to its owning checklist and review without accepting alternatives', () => {
+  const { entries } = renderComparison()
+  expect(screen.getAllByRole('link', { name: 'چک‌لیست پیش از مراجعه' }).map(link => link.getAttribute('href')))
+    .toEqual(entries.map(entry => offerHash('checklist', entry.key)))
+  expect(screen.getAllByRole('link', { name: 'دیدن تغییرهای پیشنهادی' }).map(link => link.getAttribute('href')))
+    .toEqual(entries.map(entry => offerHash('alternative', entry.key)))
+  expect(screen.getByRole('link', { name: 'بازگشت به پیشنهادها' })).toHaveAttribute('href', '#results')
+})
+
+it('displays recorded monetary digits without extra fractional rounding and keeps source warnings available', async () => {
+  const response = structuredClone(alternativesFixture)
+  response.suggestions[0]!.result.candidate.price_toman = 19000000.1234567
+  renderComparison(response)
+  expect(screen.getByRole('row', { name: /^قیمت ثبت‌شده/ })).toHaveTextContent('۱۹٬۰۰۰٬۰۰۰٫۱۲۳۴۵۶۷ تومان')
+  await userEvent.click(screen.getByText('هشدارها و محدودیت‌های منبع'))
+  for (const warning of response.warnings) expect(screen.getByText(warning)).toBeVisible()
 })
