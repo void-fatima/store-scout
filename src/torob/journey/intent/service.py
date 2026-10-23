@@ -8,6 +8,7 @@ from torob.journey.models import ShoppingRequest
 from torob.journey.recommendations import JourneyRecommendations, run_recommendations
 from torob.recommend.catalog import CatalogSource
 
+from .diagnostics import rejection
 from .errors import IntentError
 from .extraction import Interpreter, configured_interpreter
 from .models import (
@@ -63,6 +64,7 @@ class IntentService:
         except IntentError:
             invalid = True
         if invalid:
+            rejection("criteria_normalization")
             raise IntentError("invalid_interpretation")
         token = self.store.create(record)
         return CreatedIntent(draft=view, access_token=token)
@@ -89,6 +91,7 @@ class IntentService:
                 raise IntentError("invalid_criteria")
             changes, source = self._model_patch(extraction), "model_interpretation"
             if not changes.model_fields_set:
+                rejection("empty_revision")
                 raise IntentError("invalid_interpretation")
         if changes is None or not changes.model_fields_set:
             raise IntentError("invalid_intent_request")
