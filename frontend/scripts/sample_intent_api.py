@@ -36,6 +36,13 @@ def main():
                 yield
 
         app.router.lifespan_context = fixture_lifespan
+
+        @app.middleware("http")
+        async def fixture_marker(request, call_next):
+            response = await call_next(request)
+            response.headers["X-StoreScout-Interpretation"] = "fixture-only-18756bf"
+            return response
+
         print(
             f"Fixture interpretation only; pinned HTTP API {REFERENCE}; disposable sample Catalog."
         )

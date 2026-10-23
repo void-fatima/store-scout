@@ -4,6 +4,9 @@ import { createIntentClient } from './intent'
 const baseUrl = process.env.STORE_SCOUT_INTENT_API
 
 it.skipIf(!baseUrl)('uses actual pinned intent HTTP with fixture interpretation and sample Catalog', async () => {
+  expect(['localhost', '127.0.0.1']).toContain(new URL(baseUrl!).hostname)
+  const health = await fetch(`${baseUrl}/health`)
+  expect(health.headers.get('x-storescout-interpretation')).toBe('fixture-only-18756bf')
   const client = createIntentClient({ baseUrl: baseUrl! })
   const signal = new AbortController().signal
   const created = await client.create({ message: 'گوشی سامسونگ تا ۳۰ میلیون تومان' }, signal)
