@@ -1,5 +1,9 @@
 # Shopping Journey
 
+The application also registers the [Persian shopping intent API](intent/README.md):
+model interpretation, validated drafts, clarification and explicit version-bound
+confirmation before the existing recommendation flow. Frontend chat is not added.
+
 Journey now maps validated requests to the actual Recommendation Task 03 service.
 Read [INTEGRATION.md](INTEGRATION.md) for current interfaces, revision/comparison
 rules, source ancestry and coordination requirements. The original offline

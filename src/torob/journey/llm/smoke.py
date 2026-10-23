@@ -73,7 +73,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 2
     print("Success: received a valid provider text completion from one live request.")
     # Do not print provider content, headers, credentials, or operator-supplied configuration.
-    print("This verifies the standalone client; application shopping intake is not connected.")
+    print(
+        "This verifies provider connectivity only; it does not verify the shopping intent workflow."
+    )
     return 0
 
 

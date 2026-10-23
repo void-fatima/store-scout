@@ -1,4 +1,4 @@
-"""Proposed Journey POST boundary; deliberately unregistered in torob.api."""
+"""Registered typed Journey POST boundary, compatible with existing form clients."""
 
 import logging
 from typing import Annotated

@@ -1,8 +1,10 @@
 # Standalone BoxAPI client (backend stage 1)
 
-This module establishes a provider connection boundary. **The application does
-not yet use the model.** There is no new route, shopping extraction, ranking,
-frontend chat, tool calling or structured-output dependency.
+This module establishes the provider connection boundary. Stage 2 now uses it
+through the registered [Persian intent API](../intent/README.md), which validates
+drafts and requires explicit confirmation before Journey search. This directory
+still owns the provider client and connectivity smoke only; it does not rank
+products or provide frontend chat, tools or provider-side structured output.
 
 The current main application already registers
 `POST /api/v1/journey/recommendations` in `torob.api.create_app`. Historical
@@ -91,7 +93,9 @@ provider text, headers and operator-supplied values are not printed.
 or a future application-owned transport. Call
 `complete(text, output_limit_parameter=OutputLimitParameter.MAX_TOKENS)` only
 after verifying that choice for the configured model. Results expose `.text`.
-The fixed default cap is 64 tokens; explicit client caps must be 16–256. Input
+The fixed default cap is 64 tokens; normal client instances allow 16–256. Stage 2
+explicitly constructs a client with a larger ceiling (at most 2048) for extraction;
+the smoke cap is unchanged. Input
 is limited to 4,000 characters. Completion representations hide text, and exact
 credential echoes in returned text are replaced with `[REDACTED]`.
 
@@ -138,13 +142,11 @@ uv run --no-sync ruff format --check .
 uv run --no-sync python scripts/export_contracts.py --check
 ```
 
-**Live verification is pending** until an operator supplies an accessible model,
-verified output-limit parameter and real key and observes live success. Mocks
-establish request handling and safety properties, not BoxAPI connectivity.
+The account owner reported a successful manual Stage 1 smoke using `gpt-6.1-sol`
+and `max_completion_tokens`. That verifies standalone connectivity. No additional
+paid request or live extraction evaluation was performed for Stage 2. Mocks
+establish local handling and integration, not model accuracy or live extraction.
 
-Next stage: extract a shopping **draft** from Persian input, validate it using
-the existing Journey criteria models, ask for missing/ambiguous information,
-and obtain explicit confirmation of criteria (including budget units, location,
-radius and any changes). Only confirmed criteria should enter the existing
-Journey/Catalog/Recommendation flow. Preserve Recommendation's retrieval and
-ranking ownership. This stage implements none of that extraction or UI wiring.
+The [Stage 2 guide](../intent/README.md) documents the implemented draft extraction,
+clarification, confirmation and Journey integration. Frontend wiring and a
+separately approved real-model extraction evaluation remain future work.
