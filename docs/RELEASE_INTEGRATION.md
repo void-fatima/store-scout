@@ -10,8 +10,9 @@ comparison, product details and verification plans remain controller-owned.
 ## Dependency reconciliation
 
 Fresh inspection found #21, #22, #8 and #9 already merged, with their exact heads
-present in main. Remaining intended order: #10 → #11 → #12 → #13 → #14 → #15 →
-#16 → #17 → #18 → #19 → #20 → #23 → #24 → #25, then the map mounting PR.
+present in main. Merged during this integration, in order: #10 → #26 → #11 →
+#12 → #13 → #14 → #15 → #16 → #17 → #18 → #19 → #20 → #23 → #24 → #25.
+The accompanying map mounting PR is based on that complete main branch.
 Prerequisite #26 repairs a backend integration issue discovered during this run:
 Python 3.12/3.13 supply different default HTTP 413/422 phrases. Explicit intent
 response descriptions preserve the published OpenAPI and make both checks pass.
