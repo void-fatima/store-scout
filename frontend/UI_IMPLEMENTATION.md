@@ -1,3 +1,30 @@
+# Stage 3A: functional recorded product details — 2026-10-23
+
+This supersedes the deferred product-detail status below. The supplied PNG archive
+continues to guide the existing visual language; it supplies no product-detail
+mockup or application facts. The user's Stage 3A request defines this implementation.
+
+Cards open the current dataset/product/offer detail route for original and
+unaccepted-alternative results. The generated canonical Catalog client supplies
+recorded specs, with full snapshot checks and local request/revision cancellation.
+Responsive Persian RTL surfaces separate product identity/media/specifications
+from the selected seller's recorded price, warranty, payment and declared hours.
+Flexible JSON remains escaped, repeated and explicit about empty/null values.
+Comparison is controlled by the existing parent; return navigation restores focus.
+No inactive tabs, suitability scores, contact actions or invented specifications.
+
+Stacked draft PRs: #17 (client) on #16, then #18 (UI) on #17. Public panel props,
+Journey request contracts/controller, backend and dependency versions are unchanged.
+Final checks: 90 standard tests passed, two separate live tests passed, all 35
+browser tests passed, and 368 existing backend regressions passed. Typecheck,
+lint/build/contracts/whitespace checks pass. Four-width screenshots and actual
+sample HTTP versus intercepted UI evidence are documented in the newest HANDOFF.
+
+Stage 3B remains separate: «تناسب با نیاز من» from backend-supported explanations
+and «قبل از خرید بررسی کن» through the canonical verification flow.
+
+---
+
 # UI Stage 2 implementation — 2026-10-23
 
 The current user request supersedes the deferred alternatives/checklist/comparison
@@ -145,29 +172,3 @@ violations in initial/expanded states at all four sizes, typecheck/lint/build/
 contract consistency passed. The selected payment label was darkened after
 contrast testing. See HANDOFF.md for reproducible commands, local screenshot
 paths, remaining boundaries and the Persian component handoff.
-# Stage 3A: functional recorded product details — 2026-10-23
-
-This supersedes the deferred product-detail status below. The supplied PNG archive
-continues to guide the existing visual language; it supplies no product-detail
-mockup or application facts. The user's Stage 3A request defines this implementation.
-
-Cards open the current dataset/product/offer detail route for original and
-unaccepted-alternative results. The generated canonical Catalog client supplies
-recorded specs, with full snapshot checks and local request/revision cancellation.
-Responsive Persian RTL surfaces separate product identity/media/specifications
-from the selected seller's recorded price, warranty, payment and declared hours.
-Flexible JSON remains escaped, repeated and explicit about empty/null values.
-Comparison is controlled by the existing parent; return navigation restores focus.
-No inactive tabs, suitability scores, contact actions or invented specifications.
-
-Stacked draft PRs: #17 (client) on #16, then #18 (UI) on #17. Public panel props,
-Journey request contracts/controller, backend and dependency versions are unchanged.
-Final checks: 90 standard tests passed, two separate live tests passed, all 35
-browser tests passed, and 368 existing backend regressions passed. Typecheck,
-lint/build/contracts/whitespace checks pass. Four-width screenshots and actual
-sample HTTP versus intercepted UI evidence are documented in the newest HANDOFF.
-
-Stage 3B remains separate: «تناسب با نیاز من» from backend-supported explanations
-and «قبل از خرید بررسی کن» through the canonical verification flow.
-
----
