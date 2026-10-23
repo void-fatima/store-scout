@@ -1,0 +1,423 @@
+{
+  "$defs": {
+    "AlternativeAcceptance": {
+      "additionalProperties": false,
+      "properties": {
+        "accepted_changes": {
+          "items": {
+            "$ref": "#/$defs/ConstraintChange"
+          },
+          "minItems": 1,
+          "title": "Accepted Changes",
+          "type": "array"
+        },
+        "dataset_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Dataset Id",
+          "type": "string"
+        },
+        "expected_revision": {
+          "minimum": 0,
+          "title": "Expected Revision",
+          "type": "integer"
+        },
+        "offer_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Offer Id",
+          "type": "string"
+        },
+        "request_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Request Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "expected_revision",
+        "dataset_id",
+        "offer_id",
+        "accepted_changes"
+      ],
+      "title": "AlternativeAcceptance",
+      "type": "object"
+    },
+    "ComparisonKey": {
+      "additionalProperties": false,
+      "properties": {
+        "dataset_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Dataset Id",
+          "type": "string"
+        },
+        "offer_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Offer Id",
+          "type": "string"
+        },
+        "product_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Product Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "dataset_id",
+        "product_id",
+        "offer_id"
+      ],
+      "title": "ComparisonKey",
+      "type": "object"
+    },
+    "ComparisonState": {
+      "additionalProperties": false,
+      "properties": {
+        "keys": {
+          "items": {
+            "$ref": "#/$defs/ComparisonKey"
+          },
+          "maxItems": 10,
+          "title": "Keys",
+          "type": "array"
+        },
+        "request_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Request Id",
+          "type": "string"
+        },
+        "revision": {
+          "minimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "request_id",
+        "revision",
+        "keys"
+      ],
+      "title": "ComparisonState",
+      "type": "object"
+    },
+    "ConstraintChange": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "enum": [
+            "query",
+            "max_budget",
+            "max_distance_km"
+          ],
+          "title": "Field",
+          "type": "string"
+        },
+        "original": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "relaxed": {
+          "$ref": "#/$defs/JsonValue"
+        }
+      },
+      "required": [
+        "field",
+        "original",
+        "relaxed"
+      ],
+      "title": "ConstraintChange",
+      "type": "object"
+    },
+    "JsonValue": {},
+    "PaymentMethod": {
+      "enum": [
+        "cash",
+        "card",
+        "installments"
+      ],
+      "title": "PaymentMethod",
+      "type": "string"
+    },
+    "PriceUnit": {
+      "enum": [
+        "TOMAN",
+        "IRR"
+      ],
+      "title": "PriceUnit",
+      "type": "string"
+    },
+    "PurchaseConditions": {
+      "additionalProperties": false,
+      "properties": {
+        "payment_methods": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/PaymentMethod"
+              },
+              "minItems": 1,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Payment Methods"
+        },
+        "return_window_days": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Return Window Days"
+        },
+        "warranty_available": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Warranty Available"
+        }
+      },
+      "title": "PurchaseConditions",
+      "type": "object"
+    },
+    "SearchCriteria": {
+      "additionalProperties": false,
+      "properties": {
+        "area": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Area"
+        },
+        "city": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "City"
+        },
+        "latitude": {
+          "anyOf": [
+            {
+              "maximum": 90,
+              "minimum": -90,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Latitude"
+        },
+        "longitude": {
+          "anyOf": [
+            {
+              "maximum": 180,
+              "minimum": -180,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Longitude"
+        },
+        "max_budget": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "gt": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Budget"
+        },
+        "max_distance_km": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 100,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Distance Km"
+        },
+        "max_price_toman": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 9000000000000,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Price Toman"
+        },
+        "min_price_toman": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 9000000000000,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Min Price Toman"
+        },
+        "preferred_purchase_conditions": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PurchaseConditions"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "price_unit": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PriceUnit"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "q": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Q"
+        },
+        "shopping_time": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Shopping Time"
+        }
+      },
+      "title": "SearchCriteria",
+      "type": "object"
+    },
+    "ShoppingRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "comparison": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ComparisonState"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "criteria": {
+          "$ref": "#/$defs/SearchCriteria"
+        },
+        "request_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Request Id",
+          "type": "string"
+        },
+        "revision": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "request_id"
+      ],
+      "title": "ShoppingRequest",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "AlternativeAcceptance": {
+      "$ref": "#/$defs/AlternativeAcceptance"
+    },
+    "ShoppingRequest": {
+      "$ref": "#/$defs/ShoppingRequest"
+    }
+  },
+  "required": [
+    "ShoppingRequest",
+    "AlternativeAcceptance"
+  ],
+  "title": "BackendContracts",
+  "type": "object"
+}
