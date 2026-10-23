@@ -116,4 +116,3 @@ The read-only `api/productDetail.ts` client uses the configured API origin and
 canonical runtime validation. It rejects product or complete dataset identity
 mismatches (including import timestamp/hash), absent provenance and invalid JSON.
 Journey requests, public panel props and controller behavior remain unchanged.
-
