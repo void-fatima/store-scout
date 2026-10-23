@@ -13,6 +13,9 @@
     "test:watch": "vitest",
     "contracts:generate": "node scripts/generate-contracts.mjs",
     "contracts:check": "node scripts/generate-contracts.mjs --check",
+    "intent:generate": "node scripts/generate-intent-contracts.mjs",
+    "intent:check": "node scripts/generate-intent-contracts.mjs --check",
+    "dev:sample-intent-api": "uv run --project .. --frozen --no-dev python scripts/sample_intent_api.py",
     "dev:sample-api": "uv run --project .. --frozen --no-dev python scripts/sample_api.py",
     "test:live": "vitest run src/journey/journey.live.test.tsx",
     "test:ui": "playwright test"

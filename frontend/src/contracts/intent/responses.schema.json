@@ -1,0 +1,704 @@
+{
+  "$defs": {
+    "Coordinates": {
+      "additionalProperties": false,
+      "properties": {
+        "latitude": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Latitude",
+          "type": "number"
+        },
+        "longitude": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Longitude",
+          "type": "number"
+        },
+        "for_location": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "For Location"
+        }
+      },
+      "required": [
+        "latitude",
+        "longitude"
+      ],
+      "title": "Coordinates",
+      "type": "object"
+    },
+    "CreatedIntent": {
+      "additionalProperties": false,
+      "properties": {
+        "draft": {
+          "$ref": "#/$defs/IntentView"
+        },
+        "access_token": {
+          "title": "Access Token",
+          "type": "string"
+        }
+      },
+      "required": [
+        "draft",
+        "access_token"
+      ],
+      "title": "CreatedIntent",
+      "type": "object"
+    },
+    "IntentFields": {
+      "additionalProperties": false,
+      "properties": {
+        "product_query": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Product Query"
+        },
+        "brand": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Brand"
+        },
+        "category": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Category"
+        },
+        "max_budget": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Budget"
+        },
+        "min_budget": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Min Budget"
+        },
+        "location": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Location"
+        },
+        "radius": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Radius"
+        },
+        "warranty": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Warranty"
+        },
+        "installments": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Installments"
+        },
+        "return_window": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Return Window"
+        },
+        "other_preferences": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 5,
+          "title": "Other Preferences",
+          "type": "array"
+        },
+        "coordinates": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Coordinates"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "title": "IntentFields",
+      "type": "object"
+    },
+    "IntentView": {
+      "additionalProperties": false,
+      "properties": {
+        "draft_id": {
+          "pattern": "^[a-f0-9]{32}$",
+          "title": "Draft Id",
+          "type": "string"
+        },
+        "revision": {
+          "title": "Revision",
+          "type": "integer"
+        },
+        "expires_at": {
+          "title": "Expires At",
+          "type": "integer"
+        },
+        "status": {
+          "enum": [
+            "needs_clarification",
+            "awaiting_confirmation",
+            "confirmed",
+            "rejected",
+            "invalid"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "fields": {
+          "$ref": "#/$defs/IntentFields"
+        },
+        "provenance": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Provenance"
+          },
+          "title": "Provenance",
+          "type": "object"
+        },
+        "max_budget": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Money"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "min_budget": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Money"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "criteria": {
+          "$ref": "#/$defs/SearchCriteria"
+        },
+        "issues": {
+          "items": {
+            "$ref": "#/$defs/Issue"
+          },
+          "title": "Issues",
+          "type": "array"
+        },
+        "next_question": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Next Question"
+        },
+        "summary": {
+          "items": {
+            "$ref": "#/$defs/SummaryLine"
+          },
+          "title": "Summary",
+          "type": "array"
+        },
+        "notices": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Notices",
+          "type": "array"
+        },
+        "search_performed": {
+          "const": false,
+          "default": false,
+          "title": "Search Performed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "draft_id",
+        "revision",
+        "expires_at",
+        "status",
+        "fields",
+        "provenance",
+        "max_budget",
+        "min_budget",
+        "criteria",
+        "issues",
+        "next_question",
+        "summary",
+        "notices"
+      ],
+      "title": "IntentView",
+      "type": "object"
+    },
+    "Issue": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "title": "Field",
+          "type": "string"
+        },
+        "code": {
+          "enum": [
+            "missing",
+            "ambiguous",
+            "unsupported",
+            "resolution_required",
+            "irrelevant"
+          ],
+          "title": "Code",
+          "type": "string"
+        },
+        "question": {
+          "title": "Question",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field",
+        "code",
+        "question"
+      ],
+      "title": "Issue",
+      "type": "object"
+    },
+    "Money": {
+      "additionalProperties": false,
+      "properties": {
+        "raw_text": {
+          "title": "Raw Text",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        },
+        "currency": {
+          "anyOf": [
+            {
+              "enum": [
+                "TOMAN",
+                "IRR"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Currency"
+        },
+        "toman": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Toman"
+        },
+        "requires_clarification": {
+          "title": "Requires Clarification",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "raw_text",
+        "value",
+        "currency",
+        "toman",
+        "requires_clarification"
+      ],
+      "title": "Money",
+      "type": "object"
+    },
+    "PaymentMethod": {
+      "enum": [
+        "cash",
+        "card",
+        "installments"
+      ],
+      "title": "PaymentMethod",
+      "type": "string"
+    },
+    "PriceUnit": {
+      "enum": [
+        "TOMAN",
+        "IRR"
+      ],
+      "title": "PriceUnit",
+      "type": "string"
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "enum": [
+            "model_interpretation",
+            "user_supplied"
+          ],
+          "title": "Source",
+          "type": "string"
+        },
+        "evidence": {
+          "maxLength": 200,
+          "title": "Evidence",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source",
+        "evidence"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "PurchaseConditions": {
+      "additionalProperties": false,
+      "properties": {
+        "payment_methods": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/PaymentMethod"
+              },
+              "minItems": 1,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Payment Methods"
+        },
+        "warranty_available": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Warranty Available"
+        },
+        "return_window_days": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Return Window Days"
+        }
+      },
+      "title": "PurchaseConditions",
+      "type": "object"
+    },
+    "SearchCriteria": {
+      "additionalProperties": false,
+      "properties": {
+        "q": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Q"
+        },
+        "min_price_toman": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 9000000000000,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Min Price Toman"
+        },
+        "max_price_toman": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 9000000000000,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Price Toman"
+        },
+        "city": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "City"
+        },
+        "area": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Area"
+        },
+        "max_budget": {
+          "anyOf": [
+            {
+              "gt": 0,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Budget"
+        },
+        "price_unit": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PriceUnit"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "latitude": {
+          "anyOf": [
+            {
+              "maximum": 90,
+              "minimum": -90,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Latitude"
+        },
+        "longitude": {
+          "anyOf": [
+            {
+              "maximum": 180,
+              "minimum": -180,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Longitude"
+        },
+        "max_distance_km": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 100,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Distance Km"
+        },
+        "preferred_purchase_conditions": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PurchaseConditions"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "shopping_time": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Shopping Time"
+        }
+      },
+      "title": "SearchCriteria",
+      "type": "object"
+    },
+    "SummaryLine": {
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "label",
+        "value"
+      ],
+      "title": "SummaryLine",
+      "type": "object"
+    }
+  }
+}
