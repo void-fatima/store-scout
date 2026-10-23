@@ -21,12 +21,22 @@ class OutputLimitParameter(StrEnum):
 @dataclass(frozen=True)
 class Completion:
     text: str = field(repr=False)
+    finish_reason: str | None = field(default=None, repr=False)
 
 
 class BoxAPIClient:
-    def __init__(self, config: LLMConfig, *, transport: Transport | None = None):
+    def __init__(
+        self,
+        config: LLMConfig,
+        *,
+        transport: Transport | None = None,
+        max_output_tokens_limit: int = 256,
+    ):
+        if type(max_output_tokens_limit) is not int or not 16 <= max_output_tokens_limit <= 2048:
+            raise LLMError(ErrorCode.INVALID_CONFIGURATION)
         self._config = config
         self._transport = transport if transport is not None else HTTPSTransport()
+        self._max_output_tokens_limit = max_output_tokens_limit
 
     def complete(
         self,
@@ -34,6 +44,7 @@ class BoxAPIClient:
         *,
         output_limit_parameter: OutputLimitParameter,
         max_output_tokens: int = 64,
+        system_text: str | None = None,
     ) -> Completion:
         """One user message, one POST. No tools, structured output, fallback or retry."""
         if (
@@ -42,14 +53,25 @@ class BoxAPIClient:
             or len(text) > 4000
             or not isinstance(output_limit_parameter, OutputLimitParameter)
             or type(max_output_tokens) is not int
-            or not 16 <= max_output_tokens <= 256
+            or not 16 <= max_output_tokens <= self._max_output_tokens_limit
+            or (
+                system_text is not None
+                and (
+                    not isinstance(system_text, str)
+                    or not system_text.strip()
+                    or len(system_text) > 6000
+                )
+            )
         ):
             raise LLMError(ErrorCode.INVALID_REQUEST)
         try:
             body = json.dumps(
                 {
                     "model": self._config.model,
-                    "messages": [{"role": "user", "content": text}],
+                    "messages": (
+                        ([{"role": "system", "content": system_text}] if system_text else [])
+                        + [{"role": "user", "content": text}]
+                    ),
                     output_limit_parameter.value: max_output_tokens,
                 },
                 ensure_ascii=False,
@@ -116,6 +138,11 @@ class BoxAPIClient:
         if not isinstance(choices, list) or len(choices) != 1 or not isinstance(choices[0], dict):
             raise LLMError(ErrorCode.MALFORMED_RESPONSE)
         message = choices[0].get("message")
+        reason = choices[0].get("finish_reason")
+        if reason == "length":
+            raise LLMError(ErrorCode.INCOMPLETE_RESPONSE)
+        if reason is not None and reason != "stop":
+            raise LLMError(ErrorCode.MALFORMED_RESPONSE)
         if (
             not isinstance(message, dict)
             or message.get("role") != "assistant"
@@ -126,7 +153,7 @@ class BoxAPIClient:
         ):
             raise LLMError(ErrorCode.MALFORMED_RESPONSE)
         # Even a provider accidentally echoing the credential must not expose it.
-        return Completion(message["content"].replace(self._config.api_key, "[REDACTED]"))
+        return Completion(message["content"].replace(self._config.api_key, "[REDACTED]"), reason)
 
 
 def _json_object(body: bytes) -> dict | None:

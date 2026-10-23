@@ -13,6 +13,7 @@ class ErrorCode(StrEnum):
     RATE_LIMIT = "rate_limit"
     TIMEOUT = "timeout"
     MALFORMED_RESPONSE = "malformed_response"
+    INCOMPLETE_RESPONSE = "incomplete_response"
     RESPONSE_TOO_LARGE = "response_too_large"
     PROVIDER_UNAVAILABLE = "provider_unavailable"
     REQUEST_REJECTED = "request_rejected"
@@ -31,6 +32,7 @@ _MESSAGES = {
     ErrorCode.RATE_LIMIT: "Provider rate limit reached; no retry was attempted.",
     ErrorCode.TIMEOUT: "Provider request timed out; no retry was attempted.",
     ErrorCode.MALFORMED_RESPONSE: "Provider did not return a valid text completion.",
+    ErrorCode.INCOMPLETE_RESPONSE: "Provider output was truncated; no retry was attempted.",
     ErrorCode.RESPONSE_TOO_LARGE: "Provider response exceeded the configured byte limit.",
     ErrorCode.PROVIDER_UNAVAILABLE: "Provider is unavailable; no retry was attempted.",
     ErrorCode.REQUEST_REJECTED: "Provider rejected the request; check model parameter support.",
