@@ -1,3 +1,15 @@
+# Stage 3A product details
+
+Recommendation cards now link to recorded product specifications, preserving the
+selected offer and existing Journey/comparison state. `src/api/productDetail.ts`
+exports a read-only Catalog client using the same `VITE_API_BASE_URL` configuration
+as Journey. `#product/<dataset>/<product>/<offer>` contains encoded presentation
+identity only; the current result and fetched Catalog snapshot must agree.
+See the newest [HANDOFF.md](HANDOFF.md) for the stacked draft PRs, full validation
+results, screenshot evidence and Stage 3B boundary. Earlier stage notes follow.
+
+---
+
 # StoreScout frontend
 
 React + TypeScript + Vite. All frontend commands run from this directory.

@@ -1,3 +1,150 @@
+# Stage 3A complete: recorded product details — 2026-10-23
+
+This section supersedes the product-detail deferral below. Recommendation cards
+now open «مشخصات کالا» for a current original or unaccepted-alternative offer.
+The existing Persian RTL tokens, Vazirmatn, ProductVisual, exact price formatting,
+source/provenance and controlled comparison are reused. Only tracked `frontend/`
+paths change. Backend, Journey request contracts, RecommendationPanelProps,
+controller implementation, dependency lockfile and reviewed source pin are unchanged.
+
+## Verified starting point and delivery stack
+
+Fetched origin first; inspected working trees, worktrees, remote refs and GitHub
+dependencies. PR #16 remains open/draft at the expected compatible
+`3991c09190d779f1fec56717a3b81c9da81cadbd`, based on #15. No stack merges were
+assumed and no tracked branch needed fast-forwarding. No frontend or ancestor
+AGENTS.md applies. The existing clean `store-scout-product-details` worktree was
+already at that base. The supplied archive contains PNG references, not additional
+implementation instructions; the user's pasted Stage 3A request defines scope.
+
+| Topic | Draft PR / base | Verified implementation SHA |
+| --- | --- | --- |
+| `feat/frontend-product-detail-client` | [#17](https://github.com/void-fatima/store-scout/pull/17) → `feat/ui-comparison-polish` / #16 | `4cb66289a1074bdc5d8569569e6f12fa5c27d691` |
+| `feat/ui-product-details` | [#18](https://github.com/void-fatima/store-scout/pull/18) → `feat/frontend-product-detail-client` / #17 | `1d8817ac8249e7ed728e63a8afb94188ec72a91b` |
+
+The UI tip adds the final documentation commit after this tested implementation
+checkpoint; final published tip is available in PR #18 metadata and the delivery
+report. Five Conventional Commits span the two topics: canonical
+client/contracts with tests, detail UI with tests, responsive/live regression
+coverage and fixes, documentation, then the final handoff placement/whitespace correction. Existing #8–#16 dependencies are intact.
+No merge, force-push, published-history rewrite or deployment was performed.
+
+## Data integration and identity safety
+
+Read the canonical Catalog models/router, sample CSV and existing exporter first.
+`ProductDetail`/`Product` now come from that exporter, with Ajv runtime validation;
+generated files and the sample fixture were regenerated, not hand-edited. The
+Journey pin stays `45cfe9815ebfd78b0423ca321c2f61e51ea7fbdd`.
+The small GET client shares API origin validation/error types and omits credentials.
+IDs are encoded as a URL segment. It rejects unexpected product IDs, absent dataset
+context and mismatched full dataset identity, import timestamp/hash, contract or
+currency. Invalid JSON and unsupported top-level specs are explicit failures.
+
+`#product/<dataset>/<product>/<offer>` resolves against current original and
+alternative entries. Selected/candidate product and offer identities must agree.
+Fetch state remains local to the detail component, bound to request/revision,
+tuple, context and owning response. Rendering hides results from a replaced owner
+immediately; effect cleanup aborts and invalidates late responses even when a
+transport ignores cancellation. Committed-effect scheduling avoids an extra GET
+during React development replay. Criteria edits invalidate through the unchanged
+controller. Missing/stale tuples show an unavailable state.
+
+Opening details does not call acceptance, verification selection, criteria mutation
+or Journey retry/search. Returning restores the owning card action's focus. Browser
+back from comparison recognizes the product route and focuses its heading.
+Comparison selection/removal stays controlled; return navigation retains criteria.
+Revisiting a detail after leaving it may issue a fresh GET; there is no detail cache
+or second Journey/comparison store.
+
+## Recorded presentation
+
+Product title, brand, model, category and canonical media/neutral placeholder appear
+with a distinct specification surface. Flexible JSON records retain insertion
+order, repeated entries, zero, false, recorded units and arbitrary nested fields.
+Null, empty strings, arrays and objects are explicit; deeply nested values use
+escaped JSON text rather than unbounded indentation. No HTML injection, external
+product enrichment, guessed hardware specs or suitability claims are introduced.
+
+A separate selected-offer surface retains the actual seller, recorded price/change
+time, warranty, payment, unknown return conditions and declared hours. Unconfirmed
+stock, synthetic contacts and limited coverage remain explicit. The existing
+canonical checklist is linked; there are no contact or inventory-confirmation
+actions and no inactive future tabs. Loading, empty specs, 404, 503, invalid or
+incompatible responses and local retry leave the shopping journey available.
+
+## Final verification and reproduction
+
+Windows, Node 24, installed Chrome through existing Playwright infrastructure:
+
+- `npm.cmd ci`: passed, zero audit vulnerabilities; lockfile unchanged.
+- `npm.cmd run typecheck`, `npm.cmd run lint`, `npm.cmd run build`,
+  `npm.cmd run contracts:check`: passed. Lint has no warnings.
+- `npm.cmd test`: 90 passed; 2 opt-in HTTP tests skipped in this standard run.
+- Separate `STORE_SCOUT_LIVE_API=http://127.0.0.1:8017 npm.cmd run test:live`:
+  2 passed. Actual GETs for original/alternative products return the sample specs
+  and matching dataset context; actual unknown-product GETs return 404.
+- Full `npm.cmd run test:ui` with live API variables: **35 passed, none skipped**,
+  including all 27 existing browser regressions and 8 Stage 3A scenarios.
+- Six browser journeys use actual disposable HTTP without interception: four
+  existing search/acceptance/checklist journeys plus new desktop/mobile detail
+  journeys. The new journeys GET both an unaccepted alternative and an original
+  offer (HTTP 200), assert returned sample specs, and show that opening details
+  itself performs no fresh recommendation POST or acceptance.
+- Other browser scenarios explicitly intercept transport: nested/escaped/long
+  records, repeat/zero/false values, failure/retry/empty, dataset mismatch, delayed
+  product switching and criteria edits. One navigation scenario combines existing
+  canonical entries only to exercise both result sources; it proves no ranking or
+  constraint-satisfaction behavior. Interception is UI evidence, not HTTP evidence.
+- Checked screenshots at 1440×900, 768×1024, 390×844 and 360×844; keyboard
+  Enter/Space, restored return focus, selected-offer identity, comparison retention,
+  labelled 44×44 targets and contained overflow pass. Axe WCAG A/AA reports zero
+  violations in checked detail states. Browser checks exposed and fixed white-
+  background placeholder/link contrast and the product-route return allowlist.
+- Existing backend regression `uv run --frozen pytest`: **368 passed**; one
+  Starlette/httpx deprecation warning from installed dependencies. No backend edit.
+- Final `git diff --check`, clean-tree and frontend-only boundary checks pass.
+
+From `frontend/`, start the disposable sample API in one terminal:
+
+```powershell
+npm.cmd run dev:sample-api
+```
+
+In another terminal, let Playwright start Vite with the matching API origin:
+
+```powershell
+$env:VITE_API_BASE_URL = 'http://127.0.0.1:8017'
+$env:STORE_SCOUT_LIVE_API = 'http://127.0.0.1:8017'
+$env:STORE_SCOUT_CHROMIUM = 'C:/Program Files/Google/Chrome/Application/chrome.exe'
+npm.cmd run test:live
+npm.cmd run test:ui
+```
+
+Use `http://localhost:5173` for the existing CORS configuration. Without the live
+variable, opt-in HTTP tests skip; that does not count as HTTP verification.
+
+## Preserved screenshot evidence and limitations
+
+Untracked evidence in this worktree:
+`C:/Users/FATIMA/GitHub/store-scout-product-details/frontend/ui-artifacts/evidence/`.
+
+- `stage3a-product-{desktop,tablet,mobile,narrow}.png`: intercepted recorded-JSON
+  presentation and controlled selection at all four widths.
+- `stage3a-{loading-desktop,not-found-mobile,empty-mobile}.png`: intercepted states.
+- `stage3a-live-{alternative,original}-{desktop,mobile}.png`: actual sample HTTP.
+
+The full browser run regenerates originals under `ui-artifacts/results/` and the
+HTML report under `ui-artifacts/report/`. Evidence is not production media.
+Only synthetic sample records were fetched; sample specs describe the recorded
+synthetic data, not verified physical-device specifications. No physical-device,
+Safari, Firefox, deployed-backend or broad real-dataset verification was performed.
+
+Next task, **Stage 3B**: «تناسب با نیاز من» using backend-supported explanations,
+and «قبل از خرید بررسی کن» reusing the canonical verification flow. No invented
+suitability scores or duplicate ranking logic. These are not completed by Stage 3A.
+
+---
+
 # UI Stage 2 complete: alternatives, checklist and comparison — 2026-10-23
 
 This section supersedes the previous stage and first-topic status below. Stage 2

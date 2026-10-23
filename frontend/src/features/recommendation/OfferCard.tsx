@@ -36,6 +36,7 @@ export function OfferCard({ result, entry, rank, selected = false, selectionDisa
       <ul>{result.explanation_reasons.map((reason, index) => <li key={`${reason.code}-${index}`}>{reason.message}</li>)}</ul>
     </details>
     <div className="offer-card-actions">
+      {entry && <a className="outline-action" data-offer-action={offerHash('product', entry.key)} href={offerHash('product', entry.key)}>مشخصات کالا</a>}
       {entry && !detail && <a className="outline-action" data-offer-action={offerHash(entry.source === 'alternative' ? 'alternative' : 'explanation', entry.key)} href={offerHash(entry.source === 'alternative' ? 'alternative' : 'explanation', entry.key)}>{entry.source === 'alternative' ? 'بررسی تغییرهای این جایگزین' : 'دلیل این پیشنهاد'}</a>}
       {entry?.plan && !hideChecklist && <a className="outline-action" href={offerHash('checklist', entry.key)} data-offer-action={offerHash('checklist', entry.key)}>چک‌لیست پیش از مراجعه</a>}
       {entry && !entry.plan && <p className="field-help">برنامهٔ بررسی برای این آفر ثبت نشده است.</p>}
