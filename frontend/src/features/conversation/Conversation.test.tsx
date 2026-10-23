@@ -40,10 +40,12 @@ async function start(client: IntentClient = fixtureClient()) {
   return { user, client }
 }
 async function complete(user: ReturnType<typeof userEvent.setup>) {
+  await user.click(screen.getByRole('button', { name: 'انتخاب محل روی نقشه' }))
+  await user.click(screen.getByText('ورود دستی مختصات (پیشرفته / دسترس‌پذیری)'))
   await user.type(screen.getByLabelText('عرض مرکز جست‌وجوی من'), '۳۵٫۷')
   await user.type(screen.getByLabelText('طول مرکز جست‌وجوی من'), '۵۱٫۴')
   await user.type(screen.getByLabelText('شعاع جست‌وجو با واحد'), '۵ کیلومتر')
-  await user.click(screen.getByRole('checkbox', { name: 'این مختصات را از محل انتخابی خودم وارد کرده‌ام.' }))
+  await user.click(screen.getByRole('button', { name: 'تأیید این مکان' }))
   await user.click(screen.getByRole('button', { name: 'ثبت اصلاح معیارها' }))
   await screen.findByText('آمادهٔ بازبینی و تأیید', { exact: true })
 }
@@ -62,6 +64,8 @@ it('runs message → user-supplied center/radius → explicit confirmation → e
   expect(client.recommendations).not.toHaveBeenCalled()
   expect(screen.queryByRole('article')).not.toBeInTheDocument()
   await complete(user)
+  expect(client.revise).toHaveBeenCalledTimes(1)
+  expect(client.recommendations).not.toHaveBeenCalled()
   expect(client.revise).toHaveBeenCalledWith(expect.objectContaining({ draftId: readyIntentFixture.draft_id }),
     expect.anything(), { expected_revision: 0, changes: { coordinates: { latitude: 35.7, longitude: 51.4, for_location: null }, radius: '۵ کیلومتر' } }, expect.any(AbortSignal))
   expect(confirm()).toBeDisabled()
@@ -99,6 +103,33 @@ it('natural confirmation is just clarification; local edits clear explicit conse
   vi.mocked(client.revise).mockResolvedValueOnce({ ok: true, value: next })
   await user.click(screen.getByRole('button', { name: 'ارسال توضیح و ساخت نسخهٔ تازه' }))
   await waitFor(() => expect(screen.getByText('نسخهٔ ۲', { exact: true })).toBeVisible())
+  expect(client.confirm).not.toHaveBeenCalled()
+  expect(client.recommendations).not.toHaveBeenCalled()
+})
+
+it('requires renewed overall consent after a map criteria revision and preserves the current revision', async () => {
+  const { user, client } = await start()
+  await complete(user)
+  await user.click(consent())
+  await user.click(screen.getByRole('button', { name: 'تغییر مکان' }))
+  expect(consent()).toBeChecked()
+  await user.click(screen.getByRole('button', { name: 'لغو انتخاب مکان' }))
+  expect(consent()).toBeChecked()
+  await user.click(screen.getByRole('button', { name: 'تغییر مکان' }))
+  await user.click(screen.getByText('ورود دستی مختصات (پیشرفته / دسترس‌پذیری)'))
+  await user.clear(screen.getByLabelText('عرض مرکز جست‌وجوی من'))
+  await user.type(screen.getByLabelText('عرض مرکز جست‌وجوی من'), '35.71')
+  await user.click(screen.getByRole('button', { name: 'تأیید این مکان' }))
+  expect(consent()).not.toBeChecked()
+  expect(confirm()).toBeDisabled()
+  const next = { ...structuredClone(readyIntentFixture), revision: 2 }
+  vi.mocked(client.revise).mockResolvedValueOnce({ ok: true, value: next })
+  await user.click(screen.getByRole('button', { name: 'ثبت اصلاح معیارها' }))
+  await screen.findByText('نسخهٔ ۲', { exact: true })
+  expect(client.revise).toHaveBeenLastCalledWith(expect.anything(), expect.objectContaining({ revision: 1 }),
+    { expected_revision: 1, changes: { coordinates: { latitude: 35.71, longitude: 51.4, for_location: null } } }, expect.any(AbortSignal))
+  expect(consent()).not.toBeChecked()
+  expect(confirm()).toBeDisabled()
   expect(client.confirm).not.toHaveBeenCalled()
   expect(client.recommendations).not.toHaveBeenCalled()
 })
