@@ -22,7 +22,7 @@
 .recorded-shop-location__coordinates { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); }
 .recorded-shop-location__map { display: block; inline-size: 100%; block-size: 300px; border: var(--border-default); border-radius: var(--radius-sm); background: var(--color-lavender-soft); }
 .recorded-shop-location__help, .recorded-shop-location__credit { color: var(--color-text-muted); font-size: var(--font-size-sm); margin-block: var(--space-3); }
-.recorded-shop-location__open { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2); min-block-size: 48px; margin-block-start: var(--space-3); padding: var(--space-3) var(--space-4); border: var(--border-default); border-radius: var(--radius-sm); color: var(--color-accent); font-weight: 600; text-decoration: none; }
+.recorded-shop-location__open { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2); min-block-size: 48px; margin-block-start: var(--space-3); padding: var(--space-3) var(--space-4); border: var(--border-default); border-radius: var(--radius-sm); color: var(--color-accent-hover); font-weight: 600; text-decoration: none; }
 .recorded-shop-location__open:hover { background: var(--color-accent-soft); color: var(--color-accent-hover); }
 .recorded-shop-location__new-window { font-size: var(--font-size-sm); font-weight: 400; }
 .recorded-shop-location__credit a { display: inline-flex; align-items: center; min-block-size: 44px; color: var(--color-text-muted); }

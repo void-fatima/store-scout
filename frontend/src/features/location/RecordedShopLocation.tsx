@@ -9,6 +9,13 @@ export interface RecordedShopLocationProps {
 }
 
 const text = (value: string | null | undefined, fallback: string) => value?.trim() ? value : fallback
+const noticeMessages: Readonly<Record<string, string>> = {
+  offer_does_not_confirm_stock: 'آفر ثبت‌شده، موجودی فعلی را تأیید نمی‌کند.',
+  price_timestamp_is_last_change_not_last_verification: 'زمان قیمت، آخرین تغییر است؛ زمان تأیید قیمت یا موجودی نیست.',
+  shop_names_synthetic_or_unverified: 'نام فروشگاه‌ها ساختگی یا تأییدنشده است.',
+  contact_numbers_synthetic: 'شماره‌های تماس ساختگی‌اند.',
+  tehran_coverage_incomplete: 'پوشش داده‌های تهران کامل نیست.',
+}
 
 /** Read-only recorded data. The caller owns association with its current result. */
 export function RecordedShopLocation({ shop, context }: RecordedShopLocationProps) {
@@ -53,7 +60,7 @@ export function RecordedShopLocation({ shop, context }: RecordedShopLocationProp
       <p>هویت فروشگاه ساختگی یا تأییدنشده است. شماره‌های تماس این منبع ساختگی‌اند و برای تماس مناسب نیستند.</p>
       {dataset && <dl><dt>شناسهٔ داده</dt><dd><bdi>{dataset.dataset_id}</bdi></dd>
         <dt>زمان ورود داده؛ زمان تأیید مکان نیست</dt><dd><bdi>{dataset.imported_at}</bdi></dd></dl>}
-      {!!context.notices?.length && <ul>{context.notices.map((notice, index) => <li key={index}>{notice}</li>)}</ul>}
+      {!!context.notices?.length && <ul>{context.notices.map((notice, index) => <li key={index}>{Object.hasOwn(noticeMessages, notice) ? noticeMessages[notice] : notice}</li>)}</ul>}
     </details>
   </section>
 }
