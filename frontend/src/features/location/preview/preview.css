@@ -1,0 +1,6 @@
+.location-preview { inline-size: min(100% - 32px, 780px); margin-inline: auto; padding-block: 40px; }
+.location-preview > header { margin-block-end: var(--space-6); }
+.location-preview h1 { font-size: clamp(1.5rem, 4vw, 2rem); }
+.location-preview__eyebrow { color: var(--color-accent-hover); font-weight: 700; }
+.location-preview label { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.location-preview select { min-block-size: 48px; max-inline-size: 100%; border: var(--border-default); border-radius: var(--radius-sm); padding-inline: var(--space-3); background: var(--color-surface); color: var(--color-text); }
