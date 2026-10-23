@@ -28,5 +28,5 @@ jobs:
       - run: uv sync --locked
       - run: uv run ruff check .
       - run: uv run ruff format --check .
-      - run: uv run pytest
+      - run: uv run pytest tests src/torob/journey/tests src/torob/journey/llm/tests
       - run: uv run python scripts/export_contracts.py --check
