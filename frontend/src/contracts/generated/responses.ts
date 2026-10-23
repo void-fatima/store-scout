@@ -285,10 +285,20 @@ export type RequestId1 = string;
 export type Revision1 = number;
 export type SearchPerformed = boolean;
 export type Status1 = 'needs_information' | 'criteria_ready' | 'catalog_request_prepared' | 'recommendations_ready';
+export type BrandName1 = string | null;
+export type CategoryName1 = string | null;
+export type ImageUrls1 = string[];
+export type Model1 = string | null;
+export type PersianTitle1 = string;
+export type ProductId5 = string;
+export type Specs = {
+  [k: string]: JsonValue;
+}[];
 
 export interface BackendContracts {
   ErrorResponse: ErrorResponse;
   JourneyRecommendations: JourneyRecommendations;
+  ProductDetail: ProductDetail;
 }
 export interface ErrorResponse {
   error: ErrorDetail;
@@ -570,4 +580,17 @@ export interface SearchCriteria {
   price_unit?: PriceUnit | null;
   q?: Q1;
   shopping_time?: ShoppingTime2;
+}
+export interface ProductDetail {
+  context: CatalogContext;
+  item: Product;
+}
+export interface Product {
+  brand_name?: BrandName1;
+  category_name?: CategoryName1;
+  image_urls?: ImageUrls1;
+  model?: Model1;
+  persian_title: PersianTitle1;
+  product_id: ProductId5;
+  specs?: Specs;
 }

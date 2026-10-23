@@ -1102,6 +1102,98 @@
       "title": "PriceUnit",
       "type": "string"
     },
+    "Product": {
+      "additionalProperties": false,
+      "properties": {
+        "brand_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Brand Name"
+        },
+        "category_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Category Name"
+        },
+        "image_urls": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Image Urls",
+          "type": "array"
+        },
+        "model": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model"
+        },
+        "persian_title": {
+          "minLength": 1,
+          "title": "Persian Title",
+          "type": "string"
+        },
+        "product_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Product Id",
+          "type": "string"
+        },
+        "specs": {
+          "items": {
+            "additionalProperties": {
+              "$ref": "#/$defs/JsonValue"
+            },
+            "type": "object"
+          },
+          "title": "Specs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "product_id",
+        "persian_title"
+      ],
+      "title": "Product",
+      "type": "object"
+    },
+    "ProductDetail": {
+      "additionalProperties": false,
+      "properties": {
+        "context": {
+          "$ref": "#/$defs/CatalogContext"
+        },
+        "item": {
+          "$ref": "#/$defs/Product"
+        }
+      },
+      "required": [
+        "item",
+        "context"
+      ],
+      "title": "ProductDetail",
+      "type": "object"
+    },
     "ProductSummary": {
       "additionalProperties": false,
       "properties": {
@@ -2025,11 +2117,15 @@
     },
     "JourneyRecommendations": {
       "$ref": "#/$defs/JourneyRecommendations"
+    },
+    "ProductDetail": {
+      "$ref": "#/$defs/ProductDetail"
     }
   },
   "required": [
     "JourneyRecommendations",
-    "ErrorResponse"
+    "ErrorResponse",
+    "ProductDetail"
   ],
   "title": "BackendContracts",
   "type": "object"
