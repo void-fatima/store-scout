@@ -1,17 +1,26 @@
 # UI Stage 2 implementation — 2026-10-23
 
 The current user request supersedes the deferred alternatives/checklist/comparison
-scope below. Implement on two topics: `feat/ui-alternatives-checklist` from the
-verified PR #14 head, then `feat/ui-comparison-polish` from the completed first
-topic. Preserve all public interfaces and controller behavior. Only frontend
-source changes; the existing archive's sample facts are visual references.
+scope below. Delivered on two stacked draft topics: `feat/ui-alternatives-checklist`
+(#15) from the verified PR #14 head, then `feat/ui-comparison-polish` (#16) from
+the completed first topic. Public interfaces and controller behavior are preserved.
+Only frontend source changes; the archive's sample facts remain visual references.
+Five meaningful commits span the two topics.
 
 Desktop 05/06 and Mobile 12/13 use the existing palette, cards, tokens, typography
 and assets. Alternatives show full current/proposed query, budget/unit and radius,
 explicit modal consent and the existing callback/fresh POST. Checklist renders
 the existing controller-selected canonical plan, with pending questions and
 clearly separate personal reminders. Contact and inventory claims remain
-unverified. Comparison polish retains the existing table and controlled state.
+unverified. Comparison polish retains the existing table and controlled state,
+adds readable product headers and exact prices, and keeps horizontal scrolling
+contained on mobile. No best-choice scores or unsupported facts are introduced.
+
+Final complete verification: 74 standard tests passed (one opt-in HTTP test skipped
+in that run), separate live HTTP test passed, all 27 Chromium browser tests passed,
+including four actual HTTP browser journeys. Typecheck/lint/build/contracts and
+frontend-boundary/whitespace checks pass. Four-size screenshot, keyboard, focus,
+touch-target, accessibility and overflow evidence is recorded in HANDOFF.md.
 
 See the newest HANDOFF section for exact checks, screenshot paths and dependency
 details. Product details («مشخصات کالا»، «تناسب با نیاز من»، «قبل از خرید بررسی کن»)

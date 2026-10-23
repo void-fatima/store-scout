@@ -1,3 +1,110 @@
+# UI Stage 2 complete: alternatives, checklist and comparison — 2026-10-23
+
+This section supersedes the previous stage and first-topic status below. Stage 2
+is complete and stops here. Only tracked `frontend/` paths changed. Public props,
+generated contracts, API client, controller implementation and backend behavior
+are unchanged. No dependency upgrade, main merge, force-push or deployment.
+
+## Published stack and verified commits
+
+| Topic | Draft PR / base | Verified commit |
+| --- | --- | --- |
+| `feat/ui-alternatives-checklist` | [#15](https://github.com/void-fatima/store-scout/pull/15) → `feat/ui-recommendation-experience` / #14 | `5d629dcf2dc7054ed9b1f3e0f270b63ba7c90bf2` (complete first-topic head) |
+| `feat/ui-comparison-polish` | [#16](https://github.com/void-fatima/store-scout/pull/16) → `feat/ui-alternatives-checklist` / #15 | `3f069ebcaec09209f225dd6933daad8c5213fc85` (verified implementation checkpoint) |
+
+The second topic adds this final handoff commit after the implementation checkpoint;
+its final published head is recorded in PR #16 metadata and the delivery report.
+Five meaningful Conventional Commits span both topics: three on #15, two on #16.
+All prior PR #8–#14 bases and published ancestry remain intact. The starting origin
+head was confirmed at `4ea6034a2368954ab310232dfc5560005173d7d7` and had not advanced.
+
+## Completed flows
+
+- Alternatives retain backend order, identity, explanations and limitations,
+  separate from original matches. Review shows current/proposed query, exact
+  budget/unit and radius. Native modal acknowledgement is explicit; Escape/cancel
+  restore focus and change nothing. Duplicate and stale confirmations are guarded.
+  The existing callback/controller owns revision advancement and the fresh request.
+  Failure/retry uses accepted criteria and the current revision without old matches.
+- Checklist routes select the canonical owning plan through the existing callback
+  and controller. A read-only provider exposes that selection without another store.
+  Backend questions remain pending; personal reminders are separate and reset on
+  request/revision/snapshot/identity changes. Recorded price/change time, declared
+  hours, unknown conditions, synthetic contacts and direct distance stay distinct
+  from verification, current opening or travel claims. No contact action is enabled.
+- The existing controlled comparison table now has clear recorded product/seller
+  headers, shared safe media/neutral placeholders, exact prices, prominent price/
+  distance rows, explicit unknowns, offer limitations and source warnings. Complete
+  identity and selection order remain intact. Zero/single guidance, removal,
+  returned selections and the ten-selection maximum work. Opening an alternative's
+  review/checklist does not accept it. Narrow tables scroll inside a named keyboard
+  region with sticky feature labels. Comparison-to-detail navigation now focuses
+  the actual detail heading instead of overriding it with outer-route focus.
+
+## Final checks performed on the complete stack
+
+Windows, Node 24, installed Google Chrome via Playwright:
+
+- `npm ci`: clean installation, zero audit vulnerabilities, lockfile unchanged.
+- `npm run typecheck`, `npm run lint`, `npm run build`,
+  `npm run contracts:check`: passed. Schemas/bindings/fixtures match the unchanged
+  source pin `45cfe9815ebfd78b0423ca321c2f61e51ea7fbdd`.
+- `npm test`: 74 passed; one opt-in live test skipped in that standard run.
+- Separate `STORE_SCOUT_LIVE_API=http://127.0.0.1:8017 npm run test:live`:
+  one passed against the existing disposable synthetic API.
+- `npm run test:ui` with the live API environment: all 27 passed, none skipped.
+  Five landing/form, nine results/request-state/media, eight alternative/checklist
+  and five comparison scenarios, including all existing browser regressions.
+- Four browser journeys use actual disposable HTTP without interception: desktop/
+  mobile search/results/explanation/comparison, and desktop/mobile alternative
+  consent/fresh accepted request/checklist. HTTP 200s, criteria and revision are
+  checked. Other scenarios explicitly intercept transport for UI behavior only.
+  They do not establish backend ranking, real failures, seller facts or inventory.
+- Coverage includes cancel versus consent, exactly one fresh request, failed
+  acceptance-request retry, stale controls/plans, same-title identity, retained
+  state, comparison-to-checklist focus, removal to zero and eleven-offer stress
+  fixtures enforcing the existing ten-selection maximum.
+- Rendered layouts were checked at 1440, 768, 390 and 360 pixels. Keyboard Enter/
+  Space, native modal containment/Escape, restored focus, table ArrowLeft scrolling
+  and 44×44 labelled action targets pass. Axe WCAG A/AA reports zero violations in
+  checked states. Page/dialog overflow checks pass; table scrolling stays contained.
+- `git diff --check` and the tracked frontend-only boundary check pass. Screenshots
+  were opened against Desktop 04/05/06 and Mobile 12/13. Earlier focus issues were
+  corrected before the final complete passing browser run.
+
+Reproduction commands are in the first-topic section below. Let Playwright start
+Vite with `VITE_API_BASE_URL=http://127.0.0.1:8017` and set `STORE_SCOUT_LIVE_API`
+to the same disposable API. Pages use `http://localhost:5173` for existing CORS.
+Without the opt-in variable, HTTP tests skip; those runs are not HTTP verification.
+
+## Final screenshot evidence
+
+Untracked copies are preserved at
+`C:/Users/FATIMA/GitHub/store-scout-ui-stage2/frontend/ui-artifacts/evidence/`:
+
+- `stage2-live-{alternatives,checklist}-{desktop,mobile}.png`: actual HTTP.
+- `stage2-{alternatives,review,consent,checklist}-{desktop,tablet,mobile,narrow}.png`:
+  intercepted canonical UI scenarios.
+- `stage2-comparison-{desktop,tablet,mobile,narrow}.png` and
+  `stage2-comparison-{single,empty}-{desktop,tablet,mobile,narrow}.png`:
+  intercepted comparison scenarios.
+
+The complete browser run regenerates originals in `frontend/ui-artifacts/results/`
+and the report in `frontend/ui-artifacts/report/`. References/reports/screenshots
+are not committed application assets. Production copies no sample phone photos,
+ratings or invented offers.
+
+## Remaining limitations and next approved stage
+
+No physical-device, Safari, Firefox or deployed-backend verification was performed.
+Seller contact, live inventory and route/travel estimates remain unsupported.
+
+Next, separately scoped: «مشخصات کالا»، «تناسب با نیاز من»، «قبل از خرید بررسی کن».
+Use recorded specifications and backend-supported explanations, preserve explicit
+unknowns, and do not invent suitability scores. This product-detail feature is
+approved for a future stage and is not implemented in Stage 2.
+
+---
 # UI Stage 2: alternatives and before-visit checklist — 2026-10-23
 
 This section supersedes the previous stage's deferred-screen notes. This first

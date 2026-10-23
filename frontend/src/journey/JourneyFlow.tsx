@@ -33,7 +33,10 @@ function JourneyRoutes({ Panel, controller }: FlowProps & { controller: Controll
   const previousView = useRef(view)
   useEffect(() => {
     if (previousView.current !== view) {
-      (view === 'comparison' ? comparisonRegion : searchRegion).current?.focus()
+      const searchTarget = parsePanelRoute(window.location.hash)
+        ? document.getElementById('recommendation-title') ?? searchRegion.current : searchRegion.current
+      const focusTarget = view === 'comparison' ? comparisonRegion.current : searchTarget
+      focusTarget?.focus()
       previousView.current = view
     }
   }, [view])
