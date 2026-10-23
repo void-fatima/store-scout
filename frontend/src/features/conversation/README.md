@@ -35,19 +35,51 @@ field from the contract can be corrected. Backend raw values, evidence, summary,
 notices and questions render as React text; budget normalization and ranking stay
 backend-owned. Technical suitability/contact/stock are never asserted.
 
-The center is currently entered as an explicit coordinate pair, with Persian/Arabic
-digit support, bounds checks, zero allowed, and a separate user acknowledgment.
-There is no geocoding, invented center, default radius, user-location picker or
-circle visualization. A retained location label is sent unchanged as
-`coordinates.for_location`. Changing the label without replacement coordinates
-lets the backend invalidate its previous point. Radius text requires a unit and
-is normalized/validated by the backend. The independent recorded-shop map in PR
-#23 is untouched and is a separate later integration; it is not a user-center
-picker.
+`SearchLocationPicker` makes explicit map selection the primary center input.
+Click/tap a point, or focus the map with Tab, pan with arrow keys, zoom with +/−,
+and press Enter/Space (or the labelled center button) to select the viewport's
+center. The initial Tehran viewport is never a selection. One marker represents
+the candidate. Opening, panning, zooming, cancelling or Escape never calls the
+editor's change handler. This is an inline disclosure with ordinary Tab navigation,
+not a modal/focus trap; closing returns focus to its trigger.
+
+Only «تأیید این مکان» changes unsaved editor state. Only the existing editor submit
+sends a single canonical `IntentPatch` through `useConversation.revise`, including
+`coordinates: { latitude, longitude, for_location }`. The exact applicable retained
+location label is bound at confirmation. Editing that label invalidates the binding,
+even if reverted: reconfirm the existing point or choose another. Saving without
+reconfirmation explicitly clears the old coordinates, with a visible explanation.
+Radius and all other criteria remain independent; overall revision consent must be
+renewed before recommendations. The existing stale-response/revision guards remain.
+
+Manual coordinate entry is a collapsed advanced/accessibility fallback inside the
+picker, with Persian/Arabic digit support, finite-pair/bounds validation and zero
+allowed. Tile errors, initialization failure and a 12-second loading timeout explain
+the fallback. Existing out-of-area points are retained; only the *viewport* clamps
+polar latitudes to the basemap's projection, with an explicit projection notice.
+No address is inferred, geocoding/geolocation invoked, or radius/center invented.
+There is no automatic search/confirmation or circle/routing computation.
+
+Leaflet 1.9.4 is used directly with bundled CSS, `@types/leaflet` and its GeoJSON
+types; no React wrapper. Every exploration session creates/removes its own map;
+cleanup also disconnects its ResizeObserver and clears the loading timer. Resizing
+or showing a previously hidden parent calls `invalidateSize({ pan: false })`.
+No user text enters Leaflet HTML/popups; labels render only as React text.
+
+Official references checked 2026-10-23:
+[Leaflet API](https://leafletjs.com/reference.html) (`remove`, `invalidateSize`,
+tile events, keyboard) and [OSM tile policy](https://operations.osmfoundation.org/policies/tiles/).
+The basemap uses the specified HTTPS `tile.openstreetmap.org/{z}/{x}/{y}.png`
+endpoint, visible on-map copyright attribution, browser User-Agent, origin Referer
+via `strict-origin-when-cross-origin`, normal browser caching and demand-only tiles.
+No offline download/prefetch or cache-bypass headers. Hosting must continue to allow
+that Referer. Public tiles are best effort; the fallback is usable without them.
+The independent, read-only `RecordedShopLocation` and its cross-origin iframe are
+unchanged and remain mounted in purchase/checklist flows; no iframe clicks are read.
 
 Canonical intent models are generated separately from immutable PR #22 source;
 see `../../contracts/intent/README.md`. Existing Catalog/Recommendation contracts,
-the reviewed legacy source pin and dependency versions remain unchanged.
+the reviewed legacy source pin and existing dependency versions remain unchanged.
 
 From `frontend/`:
 
@@ -71,8 +103,13 @@ in `scripts/pinned_intent.py`. The new HTTP checks require a loopback origin and
 the runner's fixture marker before submitting text. They never read provider
 configuration or access credentials. These fixtures do not evaluate model quality.
 
-Browser tests block all external assets and do not mount the map. Future map
-integration tests must intercept external frames. Playwright failure traces can
+Browser tests intercept tiles with visibly synthetic TEST TILE images or abort
+them; external recorded-map frames remain blocked. This verifies interaction and
+failure handling, not live public tiles/geographic coverage. The isolated
+`playwright.location-picker.config.ts` owns port 5196 without server reuse; run the
+fixture API with `--current-source --port 8036 --frontend-origin http://localhost:5196`
+and set the three API variables above to `http://127.0.0.1:8036` to reproduce the
+full suite on that config. Playwright failure traces can
 contain disposable per-draft capability headers; retain/share only fixture-server
 artifacts, never traces of a real/private draft. No provider credentials exist in
 the fixture runner.
