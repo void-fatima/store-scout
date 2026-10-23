@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, it, vi } from 'vitest'
 import { CriteriaForm } from './CriteriaForm'
@@ -23,7 +23,7 @@ it('exposes labels and mobile input modes, preserves invalid entries and submits
   expect(screen.getByLabelText('عرض جغرافیایی محل انتخابی')).toHaveValue('')
   await user.type(screen.getByLabelText('نام کالا'), 'گوشی')
   await user.type(screen.getByLabelText('حداکثر بودجه'), '۱۲۳٫۴۵۶۷۸۹')
-  await user.click(screen.getByRole('button', { name: 'جست‌وجوی پیشنهادها' }))
+  await user.click(screen.getByRole('button', { name: 'دیدن پیشنهادها' }))
   expect(submitted).not.toHaveBeenCalled()
   expect(screen.getByLabelText('حداکثر بودجه')).toHaveValue('۱۲۳٫۴۵۶۷۸۹')
   expect(screen.getByLabelText('واحد بودجه')).toHaveAttribute('aria-invalid', 'true')
@@ -31,6 +31,17 @@ it('exposes labels and mobile input modes, preserves invalid entries and submits
   await user.selectOptions(screen.getByLabelText('واحد بودجه'), 'IRR')
   await user.type(screen.getByLabelText('عرض جغرافیایی محل انتخابی'), '۳۵٫۷')
   await user.type(screen.getByLabelText('طول جغرافیایی محل انتخابی'), '۵۱٫۴')
-  await user.click(screen.getByRole('button', { name: 'جست‌وجوی پیشنهادها' }))
+  await user.click(screen.getByRole('button', { name: 'دیدن پیشنهادها' }))
   expect(submitted).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ max_budget: '123.456789', price_unit: 'IRR' }))
+})
+
+it('opens preferences and focuses associated asynchronous field errors without clearing input', async () => {
+  const draft = { ...emptyDraft(), query: 'گوشی', returnDays: '۱٫۵' }
+  const { rerender } = render(<CriteriaForm draft={draft} errors={{}} loading={false} onChange={() => {}} onSubmit={() => {}} />)
+  rerender(<CriteriaForm draft={draft} errors={{ returnDays: 'تعداد روز را بررسی کنید.' }} loading={false} onChange={() => {}} onSubmit={() => {}} />)
+  const field = screen.getByLabelText('مهلت بازگشت (روز، اختیاری)')
+  await waitFor(() => expect(field).toHaveFocus())
+  expect(field).toBeVisible()
+  expect(field).toHaveAttribute('aria-describedby', 'error-returnDays')
+  expect(field).toHaveValue('۱٫۵')
 })

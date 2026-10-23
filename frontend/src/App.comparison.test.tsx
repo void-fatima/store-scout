@@ -42,12 +42,12 @@ async function searchAndSelect(user: ReturnType<typeof userEvent.setup>) {
   await user.selectOptions(screen.getByLabelText('واحد بودجه'), 'TOMAN')
   await user.type(screen.getByLabelText('عرض جغرافیایی محل انتخابی'), '۳۵٫۷')
   await user.type(screen.getByLabelText('طول جغرافیایی محل انتخابی'), '۵۱٫۴')
-  await user.click(screen.getByRole('button', { name: 'جست‌وجوی پیشنهادها' }))
+  await user.click(screen.getByRole('button', { name: 'دیدن پیشنهادها' }))
   await waitFor(() => expect(screen.getByRole('button', { name: 'انتخاب برای مقایسه در تست' })).toBeEnabled())
   await user.click(screen.getByRole('button', { name: 'انتخاب برای مقایسه در تست' }))
 }
 async function compare(user: ReturnType<typeof userEvent.setup>) {
-  await user.click(within(screen.getByRole('navigation', { name: 'ناوبری اصلی' })).getByRole('link', { name: 'مقایسه' }))
+  await user.click(within(screen.getByRole('navigation', { name: 'ناوبری اصلی' })).getByRole('link', { name: /^مقایسه / }))
   await waitFor(() => expect(screen.getByRole('region', { name: 'مقایسهٔ خرید' })).toBeVisible())
 }
 
@@ -60,19 +60,21 @@ it('navigates without remounting or losing the draft, request, results or contro
   const user = userEvent.setup()
   render(<App />)
   await searchAndSelect(user)
+  expect(screen.getByRole('link', { name: 'مقایسه ۲ انتخاب' })).toBeInTheDocument()
   const form = screen.getByRole('form', { name: 'معیارهای خرید' })
   const mountId = screen.getByLabelText('نشانهٔ نصب تست').textContent
   const identity = screen.getByLabelText('شناسه و نسخهٔ تست').textContent
   await compare(user)
   expect(screen.getByRole('region', { name: 'مقایسهٔ خرید' })).toHaveFocus()
   expect(form).not.toBeVisible()
-  expect(screen.getByRole('link', { name: 'مقایسه' })).toHaveAttribute('aria-current', 'page')
+  expect(screen.getByRole('link', { name: /^مقایسه / })).toHaveAttribute('aria-current', 'page')
   expect(screen.getAllByRole('columnheader')).toHaveLength(3)
   const firstRemove = screen.getAllByRole('button', { name: /^حذف / })[0]
   if (!firstRemove) throw new Error('Expected comparison removal control')
   await user.click(firstRemove)
   await waitFor(() => expect(screen.getByRole('button', { name: /^حذف / })).toHaveFocus())
   expect(screen.getByText(/یک آفر انتخاب شده است/)).toBeVisible()
+  expect(screen.getByRole('link', { name: 'مقایسه ۱ انتخاب' })).toBeInTheDocument()
   await user.click(screen.getByRole('link', { name: 'بازگشت به جست‌وجو' }))
   await waitFor(() => expect(form).toBeVisible())
   expect(screen.getByRole('region', { name: 'جست‌وجوی خرید' })).toHaveFocus()
@@ -95,10 +97,26 @@ it('immediately removes comparison data after criteria edits without issuing an 
   await user.click(screen.getByRole('link', { name: 'بازگشت به جست‌وجو' }))
   await waitFor(() => expect(screen.getByLabelText('نام کالا')).toBeVisible())
   await user.type(screen.getByLabelText('نام کالا'), ' جدید')
+  expect(screen.getByRole('link', { name: 'مقایسه ۰ انتخاب' })).toBeInTheDocument()
   await compare(user)
   expect(screen.queryByRole('table')).not.toBeInTheDocument()
   expect(screen.getByText(/با تغییر معیارها یا داده‌ها/)).toBeVisible()
   expect(screen.getByLabelText('تعداد انتخاب تست')).toHaveTextContent('0')
+  expect(fetcher).toHaveBeenCalledTimes(1)
+})
+
+it('opens useful guidance from comparison without losing current criteria or issuing another request', async () => {
+  const fetcher = fetchSuccess()
+  vi.stubGlobal('fetch', fetcher)
+  const user = userEvent.setup()
+  render(<App />)
+  await searchAndSelect(user)
+  await compare(user)
+  await user.click(screen.getByRole('link', { name: 'راهنمای خرید' }))
+  await waitFor(() => expect(screen.getByRole('region', { name: 'راهنمای خرید' })).toHaveFocus())
+  expect(screen.getByLabelText('نام کالا')).toHaveValue('گوشی')
+  expect(screen.getByRole('heading', { name: 'نیازت را مشخص کن' })).toBeVisible()
+  expect(screen.getByRole('link', { name: 'مقایسه ۲ انتخاب' })).toBeInTheDocument()
   expect(fetcher).toHaveBeenCalledTimes(1)
 })
 
@@ -129,7 +147,7 @@ it('supports a direct comparison link, keyboard navigation and removal down to z
   const user = userEvent.setup()
   render(<App />)
   expect(screen.getByText(/هنوز انتخاب معتبری برای مقایسه ندارید/)).toBeVisible()
-  const searchLink = screen.getByRole('link', { name: 'راهنمای خرید' })
+  const searchLink = screen.getByRole('link', { name: 'پیشنهادها' })
   searchLink.focus()
   await user.keyboard('{Enter}')
   await waitFor(() => expect(screen.getByLabelText('نام کالا')).toBeVisible())
