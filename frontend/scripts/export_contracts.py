@@ -76,7 +76,9 @@ def main():
         # accepts string/number on input, but serializes to an exact decimal string.
         result = {
             "requestSchema": schema([ShoppingRequest, AlternativeAcceptance], "validation"),
-            "responseSchema": schema([JourneyRecommendations, ErrorResponse, ProductDetail], "serialization"),
+            "responseSchema": schema(
+                [JourneyRecommendations, ErrorResponse, ProductDetail], "serialization"
+            ),
             "fixtures": {
                 "alternativesFixture": fixture(AlternativesResponse, "alternatives_response.json"),
                 "recommendationFixture": fixture(
@@ -112,7 +114,9 @@ def main():
         import_dataset(ROOT / "datasets/sample", db, source_kind="sample")
         detail = CatalogRepository(db).product("sample_product_phone").model_dump(mode="json")
         detail["context"]["dataset"]["imported_at"] = "2026-10-01T00:00:00Z"
-        result["fixtures"]["productDetailFixture"] = ProductDetail.model_validate(detail).model_dump(mode="json")
+        result["fixtures"]["productDetailFixture"] = ProductDetail.model_validate(
+            detail
+        ).model_dump(mode="json")
         service_response = run_recommendations(CatalogRepository(db), request)
         envelope = service_response.model_dump(mode="json")
         envelope["result"]["original"]["context"]["dataset"]["imported_at"] = "2026-10-01T00:00:00Z"
