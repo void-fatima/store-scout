@@ -12,7 +12,9 @@ from pinned_intent import REFERENCE, ROOT, FixtureInterpreter, pinned_source
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=8018)
-    parser.add_argument("--current-source", action="store_true", help="Exercise this checkout's API")
+    parser.add_argument(
+        "--current-source", action="store_true", help="Exercise this checkout's API"
+    )
     args = parser.parse_args()
     if args.current_source:
         sys.path.insert(0, str(ROOT / "src"))
