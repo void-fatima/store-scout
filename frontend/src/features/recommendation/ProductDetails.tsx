@@ -87,7 +87,7 @@ export function ProductDetails({ entry, response, requestId, revision, previousH
           {validContext ? <ProductFit entry={entry} response={response} /> : <p role="alert">منبع یا شناسهٔ فعلی کالا سازگار نیست؛ دلیل‌های قبلی نمایش داده نمی‌شوند.</p>}
         </div>
         <div role="tabpanel" id={`${tabPrefix}-purchase-panel`} aria-labelledby={`${tabPrefix}-purchase-tab`} tabIndex={0} hidden={tab !== 'purchase'}>
-          {tab === 'purchase' && (validContext ? <ProductPurchaseReview entry={entry} /> : <p role="alert">منبع یا شناسهٔ فعلی کالا سازگار نیست؛ برنامهٔ قبلی نمایش داده نمی‌شود.</p>)}
+          {tab === 'purchase' && (validContext ? <ProductPurchaseReview entry={entry} context={context} /> : <p role="alert">منبع یا شناسهٔ فعلی کالا سازگار نیست؛ برنامهٔ قبلی نمایش داده نمی‌شود.</p>)}
         </div>
       </section>
       <section className="detail-surface product-selected-offer" aria-labelledby="selected-offer-title">

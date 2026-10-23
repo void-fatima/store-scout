@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import type { CatalogContext } from '../../contracts'
 import type { ResponseEntry } from '../../journey/operations'
 import { Icon } from '../../shell/Icon'
 import { OfferCard } from './OfferCard'
@@ -6,7 +7,8 @@ import { offerHash } from './presentation'
 import { useOwningVerification } from './useOwningVerification'
 import { RecordedVisitConditions, VerificationQuestions } from './VerificationContent'
 
-export function Checklist({ entry, selected, onToggle, selectionDisabled }: {
+export function Checklist({ entry, context, selected, onToggle, selectionDisabled }: {
+  context: CatalogContext
   entry: ResponseEntry; selected: boolean; selectionDisabled: boolean
   onToggle: NonNullable<Parameters<typeof OfferCard>[0]['onToggle']>
 }) {
@@ -28,7 +30,7 @@ export function Checklist({ entry, selected, onToggle, selectionDisabled }: {
     <div className="detail-grid checklist-grid"><div className="checklist-offer">
       {entry.source === 'alternative' && <p className="alternative-badge">جایگزین با معیارهای اولیه تأیید نشده؛ باز کردن این برنامه، پذیرش تغییرها نیست.</p>}
       <OfferCard result={entry.result} entry={entry} detail hideChecklist selected={selected} selectionDisabled={selectionDisabled} onToggle={onToggle} />
-      <RecordedVisitConditions entry={entry} plan={plan} />
+      <RecordedVisitConditions entry={entry} plan={plan} context={context} />
     </div><section className="detail-surface">
       <VerificationQuestions entry={entry} plan={plan} />
       <a className="outline-action" href="#results">بازگشت به پیشنهادها</a>
