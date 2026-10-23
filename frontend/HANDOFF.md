@@ -1,3 +1,120 @@
+# Search center picker — 2026-10-23
+
+The conversational editor now starts with «انتخاب محل روی نقشه». Click/tap one
+point or use the map's arrow/+/- keys and Enter/Space, then explicitly select
+«تأیید این مکان». A selected-point summary, «تغییر مکان», explicit removal and the
+existing radius field remain available. Numeric inputs are collapsed under an
+advanced/accessibility disclosure. Empty, existing, loading, disabled, tile/map
+failure and polar/out-of-area states are handled in Persian RTL with Vazirmatn.
+
+Exploring/cancelling never changes editor or saved criteria. Location confirmation
+only changes unsaved editor state; the existing submit sends one canonical patch
+with `coordinates: { latitude, longitude, for_location }`. Finite bounds and zero
+are supported. A changed location label invalidates its old binding until explicit
+reconfirmation, including after a label reversion; saving without reconfirmation
+clears that center with a visible explanation. The existing revise controller,
+current revision/stale-response guards and renewed overall confirmation remain.
+
+Only frontend paths change. `RecordedShopLocation`, its independent read-only
+iframe, backend/generated contracts, source pins, mode behavior, product details,
+comparison, checklists and recommendation interfaces are unchanged. No geocoding,
+geolocation, inferred address/coverage, automatic search/confirmation or deployment.
+
+## Source and session isolation
+
+Initially fetched and verified `origin/main` exactly at
+`9bebf38b0e0cf656637611b5538eb22e0a99142d`; inspected all worktrees/branches and
+location-related PRs before implementation. Existing work was the independent
+recorded-shop map and old manual-coordinate editor, not a search-center picker.
+There is no applicable ancestor/frontend AGENTS.md.
+
+Another session subsequently committed/pushed the unrelated accordion change on
+the initially requested topic branch; its PR #28 was merged externally. No commit,
+checkout or process from that session was altered. With explicit user agreement,
+copied only this task's changes into the fresh worktree
+`C:/Users/FATIMA/GitHub/store-scout-search-location-picker-isolated`, branch
+`feat/ui-search-location-picker-isolated`, from re-fetched/verified current main
+`5c9cdb177a720c82f91298cf3f59660a880ad5c8`. The old worktree remains untouched.
+This PR's diff excludes the already-merged accordion change.
+
+Draft PR: [#29](https://github.com/void-fatima/store-scout/pull/29) → `main`.
+Implementation commit: `8fdea56`; browser/fixture integration commit:
+`3510343a2cea80e621997d4e4465898fdecc8495`. This documentation/evidence commit
+follows those tested source commits. All commits use Conventional Commit messages.
+
+## Verification and evidence
+
+- Clean `npm.cmd ci`: 132 audited packages, zero vulnerabilities. Only Leaflet
+  1.9.4, its 1.9.21 types and required GeoJSON types are added; no existing upgrade.
+- Full `npm.cmd test -- --maxWorkers=2` with both local API variables set:
+  **189 passed, zero skips**, across 27 files. Includes the three actual local
+  HTTP tests, 16 picker/editor checks and 13 conversation/controller checks.
+- `typecheck`, `lint` (no warnings), `build`, `contracts:check`, `intent:check`:
+  **passed**. Ruff lint/format checks on the changed fixture runner passed.
+- Full `playwright.location-picker.config.ts` application regression:
+  **58 passed, zero skips** (4.9 minutes). Includes five new picker scenarios
+  and all 53 prior application scenarios. Four new intercepted UI checks cover
+  1440/390/360 px, native keyboard entry/exit, focus restoration, one marker,
+  exploration/cancellation, canonical patch/revision, renewed consent, touch,
+  invalid/zero fallback and exact changed-label rebinding. The fifth uses the
+  current checkout's actual HTTP API with deterministic fixture interpretation.
+- Full-browser coverage also retains the existing four-width product/detail,
+  comparison, alternatives, checklist, pending-plan and recorded-shop-map flows.
+  Checked Axe WCAG A/AA states have zero violations, controls are at least 44px,
+  and document overflow checks pass. Mobile testing uses browser emulation.
+- Final small CSS adjustments keep coordinate pairs together and the marker
+  visible beneath the viewport crosshair. Desktop and 390/360 px screenshots
+  were visually inspected; all **five final picker scenarios passed again**, along
+  with typecheck/lint/build. Final checks/evidence are captured separately
+  from the full regression report under `ui-artifacts/location-picker/`.
+
+Committed screenshot evidence uses synthetic, visibly labelled **TEST TILE**
+images or aborted tiles. This proves UI interaction/fallback/layout, **not live
+public-tile loading, map accuracy or geographic coverage**. Application HTTP tests
+use temporary synthetic Catalog/draft databases and fixture-only interpretation;
+no paid model requests, provider credentials or private drafts were used. Backend
+tests were not repeated because backend code/contracts are unchanged. No physical
+device, Safari or Firefox evidence is claimed.
+
+| State | 1440px | 390px | 360px |
+| --- | --- | --- | --- |
+| Candidate selection (intercepted tiles) | [Desktop](docs/search-location-picker/picker-1440-intercepted.png) | [Mobile](docs/search-location-picker/picker-390-intercepted.png) | [Narrow](docs/search-location-picker/picker-360-intercepted.png) |
+| Selected editor (intercepted API response) | [Desktop](docs/search-location-picker/selected-1440-intercepted.png) | [Mobile](docs/search-location-picker/selected-390-intercepted.png) | [Narrow](docs/search-location-picker/selected-360-intercepted.png) |
+| Tile failure and manual fallback | — | — | [Failure](docs/search-location-picker/failure-fallback-360-intercepted.png) |
+
+## Reproduce without paid interpretation
+
+From `frontend/`, start this task's disposable API in a terminal:
+
+```powershell
+npm.cmd run dev:sample-intent-api -- --current-source --port 8036 --frontend-origin http://localhost:5196
+```
+
+In a second terminal:
+
+```powershell
+$env:VITE_API_BASE_URL = 'http://127.0.0.1:8036'
+$env:STORE_SCOUT_INTENT_API = 'http://127.0.0.1:8036'
+$env:STORE_SCOUT_LIVE_API = 'http://127.0.0.1:8036'
+$env:STORE_SCOUT_CHROMIUM = 'C:/Program Files/Google/Chrome/Application/chrome.exe'
+npm.cmd test -- --maxWorkers=2
+npx.cmd playwright test --config playwright.location-picker.config.ts
+npm.cmd run typecheck
+npm.cmd run lint
+npm.cmd run build
+npm.cmd run contracts:check
+npm.cmd run intent:check
+```
+
+Vite owns 5196 with strict port/no reuse; the API owns 8036 and temporary databases.
+Stop only these task-owned processes when finished. Existing default test configs
+and CORS origins remain usable. Implementation/provider details and official
+[Leaflet](https://leafletjs.com/reference.html) / [OSM policy](https://operations.osmfoundation.org/policies/tiles/)
+references are in [the conversation guide](src/features/conversation/README.md).
+Leaflet uses bundled CSS, visible attribution, the policy's HTTPS tile endpoint,
+normal caching and an origin Referer. Public tiles remain best effort; fallback
+input remains usable when unavailable.
+
 # Integrated application — 2026-10-23
 
 The backend, typed search, Persian intent confirmation flow, comparison, product

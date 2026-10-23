@@ -27,10 +27,12 @@ async function open(page: Page, message: string) {
   await expect(page.getByText('نیاز به توضیح بیشتر', { exact: true })).toBeVisible()
 }
 async function coordinates(page: Page) {
+  await page.getByRole('button', { name: 'انتخاب محل روی نقشه' }).click()
+  await page.getByText('ورود دستی مختصات (پیشرفته / دسترس‌پذیری)').click()
   await page.getByLabel('عرض مرکز جست‌وجوی من').fill('۳۵٫۷')
   await page.getByLabel('طول مرکز جست‌وجوی من').fill('۵۱٫۴')
   await page.getByLabel('شعاع جست‌وجو با واحد').fill('۵ کیلومتر')
-  await page.getByRole('checkbox', { name: 'این مختصات را از محل انتخابی خودم وارد کرده‌ام.' }).check()
+  await page.getByRole('button', { name: 'تأیید این مکان' }).click()
   await page.getByRole('button', { name: 'ثبت اصلاح معیارها' }).click()
   await expect(page.getByText('آمادهٔ بازبینی و تأیید', { exact: true })).toBeVisible()
 }

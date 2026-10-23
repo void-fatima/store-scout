@@ -12,6 +12,7 @@ from pinned_intent import REFERENCE, ROOT, FixtureInterpreter, pinned_source
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=8018)
+    parser.add_argument("--frontend-origin", default="http://localhost:5189")
     parser.add_argument(
         "--current-source", action="store_true", help="Exercise this checkout's API"
     )
@@ -31,7 +32,14 @@ def main():
         db = Path(directory) / "sample.sqlite3"
         import_dataset(ROOT / "datasets/sample", db, source_kind="sample")
         app = create_app(
-            Settings(db_path=db, cors_origins=("http://localhost:5173", "http://localhost:5189"))
+            Settings(
+                db_path=db,
+                cors_origins=(
+                    "http://localhost:5173",
+                    "http://localhost:5189",
+                    args.frontend_origin,
+                ),
+            )
         )
         original_lifespan = app.router.lifespan_context
 
