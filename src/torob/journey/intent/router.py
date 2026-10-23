@@ -122,7 +122,14 @@ router = APIRouter(
     prefix="/api/v1/journey/intents",
     tags=["shopping-intent"],
     route_class=IntentRoute,
-    responses={code: {"model": ErrorResponse} for code in (404, 409, 413, 422, 429, 502, 503, 504)},
+    responses={
+        code: {
+            "model": ErrorResponse,
+            **({"description": "Content Too Large"} if code == 413 else {}),
+            **({"description": "Unprocessable Content"} if code == 422 else {}),
+        }
+        for code in (404, 409, 413, 422, 429, 502, 503, 504)
+    },
 )
 
 
