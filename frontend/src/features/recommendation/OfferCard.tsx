@@ -19,10 +19,11 @@ export function OfferFacts({ result }: { result: RecommendationResult }) {
   </div>
 }
 
-export function OfferCard({ result, entry, rank, selected = false, selectionDisabled = false, onToggle, detail = false }: {
+export function OfferCard({ result, entry, rank, selected = false, selectionDisabled = false, onToggle, detail = false, hideChecklist = false }: {
   result: RecommendationResult; entry?: ResponseEntry | undefined; rank?: number; selected?: boolean
   selectionDisabled?: boolean; onToggle?: ((key: ComparisonKey) => void) | undefined
   detail?: boolean
+  hideChecklist?: boolean
 }) {
   return <article className="offer-card" aria-label={`${result.candidate.product.persian_title}، ${result.candidate.shop.name}`}>
     <div className="offer-card-top">
@@ -36,6 +37,8 @@ export function OfferCard({ result, entry, rank, selected = false, selectionDisa
     </details>
     <div className="offer-card-actions">
       {entry && !detail && <a className="outline-action" data-offer-action={offerHash(entry.source === 'alternative' ? 'alternative' : 'explanation', entry.key)} href={offerHash(entry.source === 'alternative' ? 'alternative' : 'explanation', entry.key)}>{entry.source === 'alternative' ? 'بررسی تغییرهای این جایگزین' : 'دلیل این پیشنهاد'}</a>}
+      {entry?.plan && !hideChecklist && <a className="outline-action" href={offerHash('checklist', entry.key)} data-offer-action={offerHash('checklist', entry.key)}>چک‌لیست پیش از مراجعه</a>}
+      {entry && !entry.plan && <p className="field-help">برنامهٔ بررسی برای این آفر ثبت نشده است.</p>}
       {!entry && <p className="field-help">شناسهٔ منبع برای انتخاب و مقایسه در دسترس نیست.</p>}
     </div>
   </article>

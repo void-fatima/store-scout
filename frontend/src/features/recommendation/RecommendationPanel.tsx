@@ -9,19 +9,28 @@ import { Provenance, SourceBadge } from './Provenance'
 import { currencyLabel, editCriteria, exactMoney, parsePanelRoute } from './presentation'
 import { usePanelHash } from './usePanelHash'
 import { AlternativeReview, AlternativesList } from './Alternatives'
+import { Checklist } from './Checklist'
 import './recommendation.css'
 
 export function RecommendationPanel(props: RecommendationPanelProps) {
-  const { status, response, comparison, requestId, revision } = props
+  const { status, response, comparison, requestId, revision, onViewVerification } = props
   const hash = usePanelHash()
   const route = parsePanelRoute(hash)
   const previousRoute = useRef<string | null>(null)
   const previousStatus = useRef(status)
+  const selectedPlanContext = useRef<{ hash: string; requestId: string; revision: number; response: RecommendationPanelProps['response'] } | null>(null)
   const entries = response ? responseEntries(response) : []
   const originals = entries.filter(entry => entry.source === 'original')
-  const active = route && 'key' in route && entries.find(entry => sameValue(entry.key, route.key)
-    && (route.view === 'explanation' ? entry.source === 'original' : route.view === 'alternative' ? entry.source === 'alternative' : true))
+  const active = route && 'key' in route ? entries.find(entry => sameValue(entry.key, route.key)
+    && (route.view === 'explanation' ? entry.source === 'original' : route.view === 'alternative' ? entry.source === 'alternative' : true)) : undefined
   const suggestion = active && response?.suggestions.find(item => item.result === active.result)
+  useEffect(() => {
+    if (status !== 'ready' || route?.view !== 'checklist' || !active?.plan) { selectedPlanContext.current = null; return }
+    const previous = selectedPlanContext.current
+    if (previous?.hash === hash && previous.response === response && previous.requestId === requestId && previous.revision === revision) return
+    selectedPlanContext.current = { hash, requestId, revision, response }
+    onViewVerification(active.key, active.plan)
+  }, [active, hash, onViewVerification, requestId, response, revision, route?.view, status])
   useEffect(() => {
     // Do not steal focus from actionable backend field errors.
     const shouldFocus = (status === 'ready' && previousStatus.current !== 'ready') || previousRoute.current !== hash
@@ -56,6 +65,8 @@ export function RecommendationPanel(props: RecommendationPanelProps) {
     </div> : response ? <>
       {route ? route.view === 'alternatives' ? <AlternativesList response={response} entries={entries} comparison={comparison} onToggle={toggle} />
         : route.view === 'alternative' && active && suggestion ? <AlternativeReview key={JSON.stringify([requestId, revision, active.key])} suggestion={suggestion} entry={active} props={props} onToggle={toggle} />
+        : route.view === 'checklist' && active ? <Checklist key={JSON.stringify([requestId, revision, active.key])} entry={active}
+          selected={comparison.some(key => sameValue(key, active.key))} selectionDisabled={comparison.length >= 10} onToggle={toggle} />
         : route.view === 'explanation' && active ? <Explanation entry={active} rank={originals.indexOf(active) + 1} response={response}
         selected={comparison.some(key => sameValue(key, active.key))} selectionDisabled={comparison.length >= 10} onToggle={toggle} />
         : <div className="recommendation-state"><h2 id="recommendation-title" tabIndex={-1}>این پیشنهاد در نتیجهٔ فعلی در دسترس نیست</h2><p>ممکن است معیارها یا منبع داده تغییر کرده باشد.</p><a className="outline-action" href="#results">بازگشت به پیشنهادها</a></div>

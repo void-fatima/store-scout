@@ -146,3 +146,25 @@
 @media (max-width: 48rem) {
   .alternatives-callout { flex-direction: column; align-items: stretch; padding: var(--space-4); }
 }
+/* Before-visit questions remain canonical pending items; checks are personal only. */
+.checklist-grid { grid-template-columns: minmax(0, .8fr) minmax(0, 1.5fr); }
+.visit-location { margin-block-start: 20px; font-size: .8125rem; }
+.visit-location dl { display: grid; gap: 8px; }
+.visit-location dt { font-weight: 700; }
+.visit-location dd { margin: 0 0 12px; overflow-wrap: anywhere; }
+.visit-location summary { min-block-size: 44px; padding-block: 8px; }
+.pending-badge { display: inline-flex; padding: 5px 12px; border-radius: 999px; background: #fff2dc; color: var(--color-warning); font-size: .8125rem; font-weight: 700; }
+.reminder-help { margin-block: 16px; font-size: .875rem; color: var(--color-text-muted); }
+.verification-questions { list-style: none; padding: 0; margin-block: 24px; display: grid; gap: 16px; }
+.verification-questions > li { display: flex; align-items: start; gap: 12px; padding: 20px; border: var(--border-default); border-radius: var(--radius-md); background: linear-gradient(120deg, #f8faff, #fff); }
+.verification-questions > li > div { min-inline-size: 0; flex: 1; }
+.verification-questions p { font-weight: 700; font-size: .9375rem; }
+.question-number { flex-shrink: 0; display: grid; place-items: center; inline-size: 32px; block-size: 32px; border-radius: 50%; background: var(--color-lavender-soft); }
+.personal-reminder { display: flex; align-items: center; gap: 10px; min-block-size: 48px; margin-block-start: 12px; font-size: .8125rem; cursor: pointer; }
+.personal-reminder input { inline-size: 22px; block-size: 22px; flex-shrink: 0; accent-color: var(--color-accent); }
+.question-evidence { font-size: .75rem; color: var(--color-text-muted); overflow-wrap: anywhere; }
+.question-evidence summary { min-block-size: 44px; display: flex; align-items: center; }
+@media (max-width: 48rem) {
+  .checklist-grid { grid-template-columns: minmax(0, 1fr); }
+  .verification-questions > li { padding: 14px; gap: 8px; }
+}
