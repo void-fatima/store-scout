@@ -1,4 +1,4 @@
-import type { AlternativeAcceptance, AlternativesResponse, ComparisonKey, FollowupPlan } from '../contracts'
+import type { AlternativeAcceptance, AlternativesResponse, ComparisonKey, FollowupPlan, RecommendationResult } from '../contracts'
 import { isAlternativeAcceptance, isShoppingRequest } from '../api/validation'
 import type { CriteriaDraft } from './criteria'
 import { validateCriteria } from './criteria'
@@ -17,17 +17,24 @@ export function sameValue(left: unknown, right: unknown, depth = 0): boolean {
   return keys.length === Object.keys(b).length && keys.every(key => Object.hasOwn(b, key) && sameValue(a[key], b[key], depth + 1))
 }
 
-export function responseEntries(response: AlternativesResponse): { key: ComparisonKey; plan: FollowupPlan | null }[] {
+export type ResponseEntry = {
+  key: ComparisonKey
+  result: RecommendationResult
+  source: 'original' | 'alternative'
+  plan: FollowupPlan | null
+}
+
+export function responseEntries(response: AlternativesResponse): ResponseEntry[] {
   const dataset = response.original.context.dataset
   if (!dataset) return []
   return [
     ...response.original.recommendations.map(result => ({
-      result, plan: response.original_verification.find(plan => plan.offer_id === result.offer_id
+      result, source: 'original' as const, plan: response.original_verification.find(plan => plan.offer_id === result.offer_id
         && plan.product_id === result.product_id && plan.shop_id === result.shop_id) ?? null,
     })),
-    ...response.suggestions.map(suggestion => ({ result: suggestion.result, plan: suggestion.verification })),
-  ].map(({ result, plan }) => ({
-    key: { dataset_id: dataset.dataset_id, product_id: result.product_id, offer_id: result.offer_id }, plan,
+    ...response.suggestions.map(suggestion => ({ result: suggestion.result, source: 'alternative' as const, plan: suggestion.verification })),
+  ].map(({ result, source, plan }) => ({
+    key: { dataset_id: dataset.dataset_id, product_id: result.product_id, offer_id: result.offer_id }, result, source, plan,
   }))
 }
 

@@ -1,8 +1,10 @@
-# Frontend Journey handoff
+# Frontend Journey and comparison handoff
 
 ## Branches and ownership
 
-The complete parent flow is on `feat/frontend-journey-flow`, stacked on
+The comparison view is on `feat/frontend-comparison-view`, based on the complete
+parent-flow reference `6c4f6bfabc8c2034bf3a48fdb1b57db1ff015318` and stacked on
+`feat/frontend-journey-flow` (draft PR #11). The complete parent flow is stacked on
 `feat/frontend-journey-client`, which starts at the published foundation
 `da70cee27a5730512f09f971c10c77f7b881a9e9` on
 `feat/frontend-recommendation-contracts`. The final delivery message and draft
@@ -58,6 +60,7 @@ and mounts it at the existing `#recommendation-root`. `App.tsx` currently render
 `<JourneyFlow />`. There are no substitute cards, explanations, alternatives or
 checklists. The parent only acknowledges selection of a before-visit plan and
 keeps it available in controller state; it never claims stock was verified.
+That public integration interface is unchanged by the comparison work.
 
 `useJourneyController({client?, requestId?, initialDraft?})` returns:
 
@@ -90,6 +93,49 @@ Callback behavior:
   It neither calls an acceptance endpoint nor claims server-side consent storage.
   Setayesh's UI must display all changes and obtain explicit consent before
   invoking the callback. The callback payload cannot prove a user interaction.
+
+## Comparison view and shell navigation
+
+`src/journey/comparison/ComparisonView.tsx` is the owned, controlled comparison
+view. It receives the controller's current response/status/selections and
+`onComparisonChange`. It has no comparison store, cached offer snapshot, ranking,
+API requests, or new selection limit. Removal goes through the existing controller
+and `validComparison` validation (max 10 unique current identities).
+
+`responseEntries` in `src/journey/operations.ts` now also returns each owning
+`RecommendationResult` and `source` (`original` or `alternative`) alongside its
+existing key and verification plan. Comparison resolves the full
+`dataset_id/product_id/offer_id` tuple through this shared lookup. Identical titles
+never merge offers. Selected column order is preserved. Only current ready
+results are rendered; missing identities are explained and never filled with
+old or same-title data. Zero and single selections have explicit Persian guidance.
+
+The shell links to `#search` and `#comparison`. `useJourneyView` reads only the URL
+fragment; no shopping state is stored there. `JourneyFlow` keeps one controller
+and both route subtrees mounted, using `hidden` for the inactive route. Switching
+views preserves entered values, current results, selected keys, request/revision
+and the mounted Recommendation component. Returning from comparison does not
+search again. Changes to criteria and snapshots still invalidate state through
+the existing controller. Reload creates a new session as before.
+
+The table shows recorded product identity/brand/model/category, price in toman,
+seller identity/address, coordinates, direct distance, declared hours, payment,
+warranty, and provenance. Unknown values are explicit. Requested return-window
+preferences are never presented as an actual seller return policy; that policy
+remains unknown in this schema. No distance is inferred from coordinates and no
+travel time is calculated. Hours render only the canonical declared local-time
+structure, without calculating whether the shop is open. Unrecognized JSON
+structures remain unknown. Sample/synthetic identity and contact warnings,
+unconfirmed inventory, limited coverage, and price-change-versus-verification
+distinctions remain visible. Alternatives are identified as requiring acceptance;
+the comparison does not accept them or reproduce their recommendation UI.
+
+Keyboard navigation focuses the newly visible route. Removal controls include
+the offer ID in their accessible names and move focus to a remaining removal
+control or the comparison heading. The table lives in a named, focusable scroll
+region with visible instructions and contained horizontal scrolling. Its column
+sizes adapt at the existing mobile breakpoint; long identities wrap. This CSS
+has not been visually verified in a real browser in this session.
 
 ## API client and contracts
 
@@ -169,11 +215,17 @@ temporary data. No existing database is opened or replaced.
 
 - Clean npm lockfile installation; typecheck, Oxlint, production build and
   contract consistency checks passed on Node 24.21.0 / npm 11.19.0.
-- Standard suite: 40 tests passed, one opt-in live test skipped. Coverage includes
+- Standard suite after comparison: 50 tests passed, one opt-in live test skipped. Coverage includes
   canonical success/errors, malformed/unavailable routes, exact-money input and
   association, validation, all callbacks, out-of-order responses, cancellation,
   snapshot/dataset invalidation and explicit acceptance followed by a fresh POST.
-- Opt-in live test passed against the actual integration source at
+- Ten new comparison tests cover identical titles with distinct identities,
+  controlled removal, unknown/zero values, provenance and synthetic warnings,
+  stale offers/dataset replacement, zero/single selections, shell navigation
+  preserving controller and component state, keyboard focus, criteria edits,
+  loading invalidation and snapshot conflicts.
+- Historical parent-flow HTTP verification (not repeated for this comparison
+  task): the opt-in live test passed against the actual integration source at
   `45cfe9815ebfd78b0423ca321c2f61e51ea7fbdd`: parent submission, comparison,
   selected verification plan, explicit scripted acceptance/fresh result,
   canonical 422 error and allowed-origin POST preflight. No seller contact or
@@ -181,7 +233,10 @@ temporary data. No existing database is opened or replaced.
   integration commit, not a claim that main or production has the route.
 - Frontend Python scripts passed Ruff lint/format checks. The generated props
   interface and teammate-owned feature directory are untouched.
-- No real-browser visual or mobile-layout verification is claimed.
+- The browser inventory exposed no browsers; creating an in-app browser returned
+  `Browser is not available: iab`. Real mobile/desktop visual verification remains
+  unperformed. jsdom tests and the earlier HTTP test do not establish end-to-end
+  browser integration.
 
 ## Remaining coordination
 
@@ -192,12 +247,13 @@ the selected plan's checklist remains with her feature UI.
 
 Roham still needs to complete the pending backend stack/application rollout and
 confirm the intended API origin. During this task, adapter PR #5 was merged by
-its owner into main `e50c25b`; API PR #6 and application integration PR #7 remain
-open. The final reviewed integration head is
+its owner into main `e50c25b`. The comparison task's fetch also found API PR #6
+merged into main `2e16a88`; application integration PR #7 remains open.
+The reviewed integration head is
 `a3b94e2f06e51d7f06aa6998e9ff362c527771a3`. Its only differences from our pinned
 source are documentation; runtime/model code and API_HANDOFF.md are identical.
 The reproducible source pin therefore remains unchanged. Main still lacks the
 application route wiring. Reconcile/regenerate contracts after further owning
 backend changes land. No backend PR was merged or retargeted by this task. Full dashboard
-visuals, maps, comparison screens, seller contact, stock verification and
+visuals, maps, seller contact, stock verification and
 deployment remain outside this task.

@@ -1,6 +1,8 @@
 import { JourneyFlow } from './journey'
+import { useJourneyView } from './journey/useJourneyView'
 
 export default function App() {
+  const view = useJourneyView()
   return (
     <div className="app-shell">
       <a className="skip-link" href="#main-content">رفتن به محتوای اصلی</a>
@@ -10,7 +12,8 @@ export default function App() {
             استوراسکاوت
           </a>
           <nav aria-label="ناوبری اصلی">
-            <a href="#main-content" aria-current="page">راهنمای خرید</a>
+            <a href="#search" aria-current={view === 'search' ? 'page' : undefined}>راهنمای خرید</a>
+            <a href="#comparison" aria-current={view === 'comparison' ? 'page' : undefined}>مقایسه</a>
             <a href="#about">دربارهٔ این راهنما</a>
           </nav>
         </div>
