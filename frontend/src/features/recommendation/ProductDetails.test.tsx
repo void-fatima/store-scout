@@ -1,5 +1,6 @@
-import { act, render, screen, within } from '@testing-library/react'
+import { act, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { StrictMode } from 'react'
 import { afterEach, expect, it, vi } from 'vitest'
 import type { ProductDetail, RecommendationPanelProps } from '../../contracts'
 import type { ProductDetailClient, ProductDetailResult } from '../../api/productDetail'
@@ -74,6 +75,20 @@ it.each([false, true])('opens original/alternative details without acceptance or
   expect(screen.getAllByRole('link', { name: 'مشخصات کالا' })[0]).toHaveFocus()
 })
 
+it('starts one GET after StrictMode replay and does not fetch incompatible selected context', async () => {
+  const p = props()
+  const entry = responseEntries(p.response!)[0]!
+  const detailClient = vi.fn<ProductDetailClient>().mockResolvedValue({ ok: true, value: detailFor(p) })
+  const shared = { response: p.response!, requestId: p.requestId, revision: p.revision, selected: false, selectionDisabled: false, onToggle: vi.fn(), previousHash: '#results', detailClient }
+  const view = render(<StrictMode><ProductDetails {...shared} entry={entry} /></StrictMode>)
+  expect(await screen.findByText('ساختگی', { selector: 'bdi' })).toBeVisible()
+  expect(detailClient).toHaveBeenCalledTimes(1)
+  const invalidEntry = { ...entry, result: { ...entry.result, candidate: { ...entry.result.candidate, product: { ...entry.result.candidate.product, product_id: 'incompatible' } } } }
+  view.rerender(<StrictMode><ProductDetails {...shared} entry={invalidEntry} /></StrictMode>)
+  expect(screen.getByRole('alert')).toHaveTextContent('منبع یا شناسهٔ فعلی کالا سازگار نیست')
+  expect(detailClient).toHaveBeenCalledTimes(1)
+})
+
 it.each([404, 503, 200])('keeps offer/comparison while handling failure %s and retrying to empty specs', async status => {
   const p = props()
   const entry = responseEntries(p.response!)[0]!
@@ -113,12 +128,15 @@ it('ignores late responses when product, request/revision or response owner chan
   const second = entries.find(item => item.key.product_id !== first.key.product_id)!
   expect(second).toBeDefined()
   const view = render(<ProductDetails {...shared} entry={first} />)
+  await waitFor(() => expect(pending).toHaveLength(1))
   view.rerender(<ProductDetails {...shared} entry={second} />)
+  await waitFor(() => expect(pending).toHaveLength(2))
   expect(pending[0]!.signal.aborted).toBe(true)
   await act(async () => pending[0]!.resolve({ ok: true, value: { ...detailFor(p), item: { ...detailFor(p).item, specs: [{ value: 'OLD PRODUCT' }] } } }))
   expect(screen.queryByText('OLD PRODUCT')).toBeNull()
   const nextResponse = structuredClone(p.response!)
   view.rerender(<ProductDetails {...shared} response={nextResponse} entry={second} requestId="new-request" revision={4} />)
+  await waitFor(() => expect(pending).toHaveLength(3))
   expect(pending[1]!.signal.aborted).toBe(true)
   await act(async () => pending[1]!.resolve({ ok: true, value: { item: { ...second.result.candidate.product, specs: [{ value: 'OLD REVISION' }] }, context: shared.response.original.context } }))
   expect(screen.queryByText('OLD REVISION')).toBeNull()
@@ -138,6 +156,7 @@ it('cancels on editing criteria and rejects stale/missing route context without 
   window.history.replaceState(null, '', offerHash('product', entry.key))
   const view = render(<RecommendationPanel {...p} />)
   expect(screen.getByText('در حال دریافت مشخصات ثبت‌شده…')).toBeVisible()
+  await waitFor(() => expect(fetcher).toHaveBeenCalledTimes(1))
   navigate('#edit-search')
   expect(fetcher.mock.calls[0]![1]!.signal!.aborted).toBe(true)
   await act(async () => resolve(json(detailFor(p))))

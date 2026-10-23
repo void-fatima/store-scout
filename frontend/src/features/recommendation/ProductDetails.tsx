@@ -31,7 +31,7 @@ export function ProductDetails({ entry, response, requestId, revision, previousH
 }) {
   const context = response.original.context
   const identity = JSON.stringify([requestId, revision, entry.key, context])
-  const [returnHash] = useState(() => previousHash && !previousHash.startsWith('#product/') && previousHash !== '#edit-search'
+  const [returnHash] = useState(() => previousHash && !previousHash.startsWith('#product/') && !['#edit-search', '#comparison'].includes(previousHash)
     ? previousHash : entry.source === 'alternative' ? '#alternatives' : '#results')
   const [attempt, setAttempt] = useState(0)
   const [load, setLoad] = useState<Load | null>(null)
@@ -43,7 +43,11 @@ export function ProductDetails({ entry, response, requestId, revision, previousH
     if (!validContext) return
     const abort = new AbortController()
     let current = true
-    void detailClient(productId, context, abort.signal).then(result => {
+    // Start only after the effect is committed: StrictMode replay or an immediate
+    // navigation can cancel before any HTTP request is sent.
+    void Promise.resolve().then(async () => {
+      if (!current || abort.signal.aborted) return
+      const result = await detailClient(productId, context, abort.signal)
       if (current && !abort.signal.aborted) setLoad({ owner: response, identity, result })
     })
     return () => { current = false; abort.abort() }

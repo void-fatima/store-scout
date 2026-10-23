@@ -5,8 +5,28 @@ import { apiEndpoint, createJourneyClient } from '../api/journey'
 import { emptyDraft } from './criteria'
 import { responseEntries } from './operations'
 import { useJourneyController } from './useJourneyController'
+import { createProductDetailClient } from '../api/productDetail'
 
 const baseUrl = process.env.STORE_SCOUT_LIVE_API
+
+it.skipIf(!baseUrl)('GETs actual sample Catalog specifications for original and alternative results and a real 404', async () => {
+  const signal = new AbortController().signal
+  const journey = createJourneyClient({ baseUrl: baseUrl ?? '' })
+  const details = createProductDetailClient({ baseUrl: baseUrl ?? '' })
+  for (const budget of ['180000000', '200000000']) {
+    const response = await journey({ request_id: `catalog-live-${budget}`, revision: 0, criteria: {
+      q: 'گوشی سامسونگ', max_budget: budget, price_unit: 'IRR', latitude: 35.7, longitude: 51.4, max_distance_km: 5,
+    } }, signal)
+    expect(response.ok).toBe(true)
+    if (!response.ok) throw new Error('Real Journey response required')
+    const entry = responseEntries(response.value.result)[0]!
+    expect(entry.source).toBe(budget === '180000000' ? 'alternative' : 'original')
+    const detail = await details(entry.key.product_id, response.value.result.original.context, signal)
+    expect(detail).toMatchObject({ ok: true, value: { item: { product_id: entry.key.product_id, specs: [{ section: 'نمونه', key: 'داده', value: 'ساختگی' }] } } })
+    if (detail.ok) expect(detail.value.context.dataset).toEqual(response.value.result.original.context.dataset)
+    expect(await details('missing-stage3a-product', response.value.result.original.context, signal)).toMatchObject({ ok: false, failure: { status: 404 } })
+  }
+}, 30000)
 
 it.skipIf(!baseUrl)('uses the real temporary sample API for parent submission, acceptance, errors and POST preflight', async () => {
   const client = createJourneyClient({ baseUrl: baseUrl ?? '' })

@@ -1,6 +1,7 @@
 ﻿/* Production Recommendation experience; shared semantic tokens come from Stage 1. */
 .product-detail-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: var(--space-6); align-items: start; }
 .product-record-heading { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); align-items: center; gap: var(--space-4); margin-block-end: var(--space-8); }
+.product-record-heading .product-placeholder { color: var(--color-text-muted); }
 .product-detail-grid :is(h3, dd, dt, p, bdi) { overflow-wrap: anywhere; }
 .product-identity { display: grid; grid-template-columns: minmax(0, .7fr) minmax(0, 1fr); gap: var(--space-3); font-size: var(--font-size-sm); }
 .product-identity dt { color: var(--color-text-muted); }
@@ -95,7 +96,7 @@
 .provenance-content li { margin-block: 8px; }
 .provenance-content summary { min-block-size: 44px; }
 .provenance-content dd { margin-inline: 0; overflow-wrap: anywhere; }
-.detail-back { display: inline-flex; align-items: center; gap: 8px; min-block-size: 44px; margin-block: 8px 16px; text-decoration: none; font-size: .875rem; font-weight: 700; }
+.detail-back { display: inline-flex; align-items: center; gap: 8px; min-block-size: 44px; margin-block: 8px 16px; text-decoration: none; font-size: .875rem; font-weight: 700; color: var(--color-accent-hover); }
 .detail-heading { margin-block: 12px 24px; }
 .detail-heading p { color: var(--color-text-muted); }
 .detail-grid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.2fr); gap: 20px; align-items: start; }
