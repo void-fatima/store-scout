@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import type { AlternativesResponse, ComparisonKey, FollowupPlan, JourneySearchCriteria, RecommendationPanelProps } from '../contracts'
+import type { AlternativesResponse, ComparisonKey, FollowupPlan, JourneySearchCriteria, RecommendationPanelProps, ShoppingRequest } from '../contracts'
 import { createJourneyClient, localError, userError } from '../api/journey'
 import type { JourneyClient, JourneyFailure, JourneyResult } from '../api/journey'
-import { emptyDraft, fieldErrorsFromApi, validateCriteria } from './criteria'
+import { draftFromCriteria, emptyDraft, fieldErrorsFromApi, validateCriteria } from './criteria'
+import { isShoppingRequest } from '../api/validation'
 import type { CriteriaDraft, FieldErrors } from './criteria'
 import { acceptedDraft, responseEntries, sameValue, validComparison } from './operations'
 
@@ -29,6 +30,7 @@ export function useJourneyController(options: { client?: JourneyClient; requestI
   const active = useRef<AbortController | null>(null)
   const generation = useRef(0)
   const mounted = useRef(true)
+  const replay = useRef<{ criteria: JourneySearchCriteria; client: JourneyClient } | null>(null)
   function update(next: JourneyControllerState) { current.current = next; setState(next) }
   function invalidate() { generation.current += 1; active.current?.abort(); active.current = null }
   useEffect(() => {
@@ -39,14 +41,16 @@ export function useJourneyController(options: { client?: JourneyClient; requestI
   function changeDraft(draft: CriteriaDraft) {
     if (sameValue(draft, current.current.draft)) return
     invalidate()
+    replay.current = null
     const checked = validateCriteria(draft)
     update({ ...current.current, draft, revision: current.current.revision + 1,
       criteria: checked.ok ? checked.criteria : null, status: 'idle', response: null,
       comparison: [], selectedVerification: null, error: null, failure: null, fieldErrors: {}, notice: null })
   }
 
-  async function send(base: JourneyControllerState, criteria: JourneySearchCriteria) {
+  async function send(base: JourneyControllerState, criteria: JourneySearchCriteria, requestClient = client) {
     invalidate()
+    replay.current = { criteria, client: requestClient }
     const epoch = generation.current
     const controller = new AbortController()
     active.current = controller
@@ -54,7 +58,7 @@ export function useJourneyController(options: { client?: JourneyClient; requestI
       error: null, failure: null, fieldErrors: {}, notice: null })
     const request = { request_id: base.requestId, revision: base.revision, criteria, comparison: null }
     let result: JourneyResult
-    try { result = await client(request, controller.signal) }
+    try { result = await requestClient(request, controller.signal) }
     catch { result = { ok: false, failure: { kind: 'network', error: localError('network_unavailable', 'ارتباط با سرویس برقرار نشد.') } } }
     if (!mounted.current || epoch !== generation.current || controller.signal.aborted
       || current.current.requestId !== base.requestId || current.current.revision !== base.revision) return
@@ -107,7 +111,9 @@ export function useJourneyController(options: { client?: JourneyClient; requestI
     onRetry(requestId, revision) {
       if (requestId !== current.current.requestId || revision !== current.current.revision
         || revision !== state.revision || current.current.status === 'loading') return
-      submit()
+      const retry = replay.current
+      if (retry) void send(current.current, retry.criteria, retry.client)
+      else submit()
     },
     onAcceptAlternative(acceptance) {
       const base = current.current
@@ -119,6 +125,17 @@ export function useJourneyController(options: { client?: JourneyClient; requestI
       void send({ ...base, draft: nextDraft, revision: base.revision + 1 }, checked.criteria)
     },
   }
-  return { state, panelProps, changeDraft, submit,
+  function discardResults() {
+    invalidate()
+    replay.current = null
+    update({ ...current.current, status: 'idle', response: null, comparison: [], selectedVerification: null,
+      error: null, failure: null, fieldErrors: {}, notice: null })
+  }
+  async function submitConfirmedIntent(request: ShoppingRequest, execute: JourneyClient) {
+    if (!isShoppingRequest(request) || !request.criteria) return
+    await send({ ...current.current, requestId: request.request_id, revision: request.revision ?? 0,
+      draft: draftFromCriteria(request.criteria) }, request.criteria, execute)
+  }
+  return { state, panelProps, changeDraft, submit, discardResults, submitConfirmedIntent, requestEpoch: () => generation.current,
     clearVerification: () => update({ ...current.current, selectedVerification: null }) }
 }

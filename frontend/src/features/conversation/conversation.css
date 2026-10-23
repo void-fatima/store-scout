@@ -1,0 +1,36 @@
+.conversation-entry { margin-block: var(--space-4); border: var(--border-default); border-radius: var(--radius-md); background: var(--color-surface); }
+.conversation-entry > summary { min-block-size: 52px; padding: var(--space-4) var(--space-6); color: var(--color-accent-hover); font-weight: 700; cursor: pointer; }
+.conversation { padding: var(--space-6); border-block-start: var(--border-default); overflow-wrap: anywhere; }
+.conversation h2, .conversation h3 { margin-block: 0 var(--space-3); }
+.conversation h3 { font-size: 1rem; }
+.conversation form > label, .intent-editor label:not(.intent-check) { display: flex; flex-direction: column; gap: var(--space-2); }
+.conversation :is(input:not([type='checkbox']), textarea) { inline-size: 100%; min-inline-size: 0; min-block-size: 48px; border: var(--border-default); border-radius: var(--radius-sm); padding: var(--space-3); background: var(--color-surface); color: var(--color-text); }
+.conversation textarea { resize: vertical; }
+.conversation :is(button, summary) { min-block-size: 48px; white-space: normal; }
+.conversation button:disabled { opacity: .65; cursor: default; }
+.conversation .primary-button { background: var(--color-accent-hover); }
+.conversation :is(.secondary-button, .text-action) { color: var(--color-accent-hover); }
+.conversation__help { font-size: var(--font-size-sm); color: var(--color-text-muted); margin-block: var(--space-3); }
+.conversation__error { padding: var(--space-4); color: var(--color-error); border: 1px solid currentColor; border-radius: var(--radius-sm); }
+.conversation__status, .conversation__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); margin-block: var(--space-6); }
+.conversation__status { justify-content: space-between; }
+.conversation__question, .conversation__review, .conversation__confirm { padding: var(--space-4); margin-block: var(--space-4); background: var(--color-lavender-soft); border-radius: var(--radius-sm); }
+.conversation__review { background: var(--color-mint-soft); }
+.conversation dl { margin: 0; display: grid; gap: var(--space-3); }
+.conversation dt { color: var(--color-text-muted); font-size: var(--font-size-sm); }
+.conversation dd { margin: 0; white-space: pre-wrap; }
+.conversation ul { padding-inline-start: var(--space-6); }
+.conversation__evidence { margin-block: var(--space-4); }
+.intent-editor fieldset { margin: 0; min-inline-size: 0; padding: var(--space-4); border: var(--border-default); border-radius: var(--radius-sm); }
+.intent-editor legend { font-weight: 700; }
+.intent-editor__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); margin-block: var(--space-4); }
+.intent-check { display: flex; align-items: start; gap: var(--space-3); min-block-size: 48px; padding-block: var(--space-3); cursor: pointer; }
+.intent-check input { flex-shrink: 0; inline-size: 20px; block-size: 20px; margin-block-start: .35em; accent-color: var(--color-accent-hover); }
+.conversation__confirm button { margin-block-start: var(--space-3); }
+.conversation :is(a, summary) { display: inline-flex; align-items: center; min-block-size: 44px; color: var(--color-accent-hover); }
+.conversation summary { display: list-item; padding-block: var(--space-3); cursor: pointer; }
+@media (max-width: 767px) {
+  .conversation { padding: var(--space-4); }
+  .intent-editor__grid { grid-template-columns: 1fr; }
+  .conversation :is(.primary-button, .secondary-button) { inline-size: 100%; }
+}

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { lazy, Suspense, useEffect, useRef } from 'react'
 import type { ComponentType } from 'react'
 import type { RecommendationPanelProps } from '../contracts'
 import type { JourneyClient } from '../api/journey'
@@ -10,9 +10,13 @@ import { BuyingGuide, LandingHero } from '../shell/Landing'
 import { usePanelHash } from '../features/recommendation/usePanelHash'
 import { parsePanelRoute } from '../features/recommendation/presentation'
 import { VerificationContext } from '../features/recommendation/VerificationContext'
+import type { IntentClient } from '../api/intent'
+import '../features/conversation/conversation.css'
+
+const Conversation = lazy(() => import('../features/conversation/Conversation').then(module => ({ default: module.Conversation })))
 
 type Controller = ReturnType<typeof useJourneyController>
-type FlowProps = { Panel?: ComponentType<RecommendationPanelProps>; client?: JourneyClient; controller?: Controller }
+type FlowProps = { Panel?: ComponentType<RecommendationPanelProps>; client?: JourneyClient; controller?: Controller; intentClient?: IntentClient }
 
 /** Mount a controlled result component through the existing Panel boundary. */
 export function JourneyFlow(props: FlowProps) {
@@ -22,7 +26,7 @@ function StandaloneJourneyFlow(props: FlowProps) {
   const controller = useJourneyController(props.client ? { client: props.client } : {})
   return <JourneyRoutes {...props} controller={controller} />
 }
-function JourneyRoutes({ Panel, controller }: FlowProps & { controller: Controller }) {
+function JourneyRoutes({ Panel, controller, intentClient }: FlowProps & { controller: Controller }) {
   const { state, panelProps, changeDraft, submit, clearVerification } = controller
   const view = useJourneyView()
   const hash = usePanelHash()
@@ -48,6 +52,7 @@ function JourneyRoutes({ Panel, controller }: FlowProps & { controller: Controll
     <section id="search" className="journey-route" ref={searchRegion} tabIndex={-1} hidden={view !== 'search'} aria-label="جست‌وجوی خرید">
     <div hidden={explanation} className={activeResults && hash !== '#edit-search' && state.status === 'ready' ? 'search-controls compact-on-mobile' : 'search-controls'}>
       <LandingHero />
+      <details className="conversation-entry"><summary>خرید را با یک پیام شروع کن</summary><Suspense fallback={<p role="status">در حال آماده‌سازی گفت‌وگو…</p>}><Conversation controller={controller} {...(intentClient ? { client: intentClient } : {})} /></Suspense></details>
       <CriteriaForm draft={state.draft} errors={state.fieldErrors} loading={state.status === 'loading'} onChange={changeDraft} onSubmit={() => {
         if (Panel && hash === '#edit-search') window.location.hash = 'results'
         submit()
