@@ -3,6 +3,20 @@
 React + TypeScript + Vite. All frontend commands run from this directory.
 See [HANDOFF.md](HANDOFF.md) for ownership, contract imports, source pins and
 remaining integration work.
+
+API configuration: copy `.env.example` to untracked `.env.local` and set
+`VITE_API_BASE_URL` to an HTTP(S) backend origin (optionally with a path prefix).
+Leave it empty for same-origin `/api/v1/journey/recommendations`. Restart Vite
+after changing it. No deployed address or credentials are configured; requests
+omit credentials. Cross-origin use requires the backend owner's existing CORS
+configuration to allow your frontend origin. An unavailable route is reported
+explicitly; the client never substitutes fixtures or mock data.
+
+`src/api/journey.ts` exports `createJourneyClient`, `JourneyClient`,
+`JourneyResult`, and `JourneyFailure`. Responses are narrowed using Ajv and the
+generated canonical schemas ([Ajv type guards](https://ajv.js.org/guide/typescript.html)).
+Canonical errors remain typed; user-facing text comes from a reviewed local
+message mapping. Exceptions and unstructured HTTP bodies are never displayed.
 Supported runtime: Node 24 LTS, version 24.21.0 or newer within major 24;
 npm 11. The lockfile is authoritative. On Windows with restricted PowerShell
 execution policy, use `npm.cmd` in place of `npm`.
