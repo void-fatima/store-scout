@@ -1,4 +1,25 @@
-# Recommendation experience stage ? 2026-10-23
+# UI Stage 2 implementation — 2026-10-23
+
+The current user request supersedes the deferred alternatives/checklist/comparison
+scope below. Implement on two topics: `feat/ui-alternatives-checklist` from the
+verified PR #14 head, then `feat/ui-comparison-polish` from the completed first
+topic. Preserve all public interfaces and controller behavior. Only frontend
+source changes; the existing archive's sample facts are visual references.
+
+Desktop 05/06 and Mobile 12/13 use the existing palette, cards, tokens, typography
+and assets. Alternatives show full current/proposed query, budget/unit and radius,
+explicit modal consent and the existing callback/fresh POST. Checklist renders
+the existing controller-selected canonical plan, with pending questions and
+clearly separate personal reminders. Contact and inventory claims remain
+unverified. Comparison polish retains the existing table and controlled state.
+
+See the newest HANDOFF section for exact checks, screenshot paths and dependency
+details. Product details («مشخصات کالا»، «تناسب با نیاز من»، «قبل از خرید بررسی کن»)
+remain the next separately scoped stage, using recorded facts/backend explanations
+with unknowns and no invented suitability scores.
+
+---
+# Recommendation experience stage — 2026-10-23
 
 ## Current authorization and delivery scope
 

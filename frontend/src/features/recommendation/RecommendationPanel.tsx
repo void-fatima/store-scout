@@ -6,26 +6,36 @@ import { Icon } from '../../shell/Icon'
 import { Explanation } from './Explanation'
 import { OfferCard } from './OfferCard'
 import { Provenance, SourceBadge } from './Provenance'
-import { currencyLabel, editCriteria, exactMoney, offerHash, parsePanelRoute } from './presentation'
+import { currencyLabel, editCriteria, exactMoney, parsePanelRoute } from './presentation'
 import { usePanelHash } from './usePanelHash'
+import { AlternativeReview, AlternativesList } from './Alternatives'
+import { Checklist } from './Checklist'
 import './recommendation.css'
 
 export function RecommendationPanel(props: RecommendationPanelProps) {
-  const { status, response, comparison, requestId, revision } = props
+  const { status, response, comparison, requestId, revision, onViewVerification } = props
   const hash = usePanelHash()
   const route = parsePanelRoute(hash)
   const previousRoute = useRef<string | null>(null)
   const previousStatus = useRef(status)
-  const entries = response ? responseEntries(response).filter(entry => entry.source === 'original') : []
-  const active = route && entries.find(entry => sameValue(entry.key, route.key))
+  const selectedPlanContext = useRef<{ hash: string; requestId: string; revision: number; response: RecommendationPanelProps['response'] } | null>(null)
+  const entries = response ? responseEntries(response) : []
+  const originals = entries.filter(entry => entry.source === 'original')
+  const active = route && 'key' in route ? entries.find(entry => sameValue(entry.key, route.key)
+    && (route.view === 'explanation' ? entry.source === 'original' : route.view === 'alternative' ? entry.source === 'alternative' : true)) : undefined
+  const suggestion = active && response?.suggestions.find(item => item.result === active.result)
+  useEffect(() => {
+    if (status !== 'ready' || route?.view !== 'checklist' || !active?.plan) { selectedPlanContext.current = null; return }
+    const previous = selectedPlanContext.current
+    if (previous?.hash === hash && previous.response === response && previous.requestId === requestId && previous.revision === revision) return
+    selectedPlanContext.current = { hash, requestId, revision, response }
+    onViewVerification(active.key, active.plan)
+  }, [active, hash, onViewVerification, requestId, response, revision, route?.view, status])
   useEffect(() => {
     // Do not steal focus from actionable backend field errors.
     const shouldFocus = (status === 'ready' && previousStatus.current !== 'ready') || previousRoute.current !== hash
     if (shouldFocus && status === 'ready' && !['#comparison', '#guide', '#edit-search'].includes(hash)) {
-      const previous = previousRoute.current && parsePanelRoute(previousRoute.current)
-      const target = !parsePanelRoute(hash) && previous
-        ? [...document.querySelectorAll<HTMLElement>('[data-offer-action]')].find(node => node.dataset.offerAction === offerHash('explanation', previous.key))
-        : null
+      const target = [...document.querySelectorAll<HTMLElement>('[data-offer-action]')].find(node => node.dataset.offerAction === previousRoute.current)
       const focusTarget = target ?? document.getElementById('recommendation-title')
       focusTarget?.focus()
     }
@@ -53,7 +63,11 @@ export function RecommendationPanel(props: RecommendationPanelProps) {
       <p className="retained-criteria">اطلاعات جست‌وجوی تو حفظ شده است.</p>
       <div className="state-actions"><button className="primary-button" onClick={() => props.onRetry(requestId, revision)}><Icon name="retry" /> تلاش دوباره</button><button className="secondary-button" onClick={editCriteria}>ویرایش معیارها</button></div>
     </div> : response ? <>
-      {route ? active ? <Explanation entry={active} rank={entries.indexOf(active) + 1} response={response}
+      {route ? route.view === 'alternatives' ? <AlternativesList response={response} entries={entries} comparison={comparison} onToggle={toggle} />
+        : route.view === 'alternative' && active && suggestion ? <AlternativeReview key={JSON.stringify([requestId, revision, active.key])} suggestion={suggestion} entry={active} props={props} onToggle={toggle} />
+        : route.view === 'checklist' && active ? <Checklist key={JSON.stringify([requestId, revision, active.key])} entry={active}
+          selected={comparison.some(key => sameValue(key, active.key))} selectionDisabled={comparison.length >= 10} onToggle={toggle} />
+        : route.view === 'explanation' && active ? <Explanation entry={active} rank={originals.indexOf(active) + 1} response={response}
         selected={comparison.some(key => sameValue(key, active.key))} selectionDisabled={comparison.length >= 10} onToggle={toggle} />
         : <div className="recommendation-state"><h2 id="recommendation-title" tabIndex={-1}>این پیشنهاد در نتیجهٔ فعلی در دسترس نیست</h2><p>ممکن است معیارها یا منبع داده تغییر کرده باشد.</p><a className="outline-action" href="#results">بازگشت به پیشنهادها</a></div>
       : <>
@@ -65,7 +79,7 @@ export function RecommendationPanel(props: RecommendationPanelProps) {
         <SourceBadge response={response} />
         <p className="uncertainty-note">قیمت‌ها ثبت‌شده‌اند؛ موجودی تأیید نشده است. هویت فروشگاه‌ها ساختگی یا تأییدنشده و پوشش بازار محدود است.</p>
         {response.original.recommendations.length ? <div className="offer-grid">{response.original.recommendations.map((result, index) => {
-          const entry = entries.find(item => item.result === result)
+          const entry = originals.find(item => item.result === result)
           return <OfferCard key={JSON.stringify([response.original.context.dataset?.dataset_id, result.product_id, result.offer_id])} result={result} entry={entry} rank={index + 1}
             selected={!!entry && comparison.some(key => sameValue(key, entry.key))} selectionDisabled={comparison.length >= 10} onToggle={toggle} />
         })}</div> : <div className="recommendation-state">
@@ -77,6 +91,7 @@ export function RecommendationPanel(props: RecommendationPanelProps) {
           <button className="secondary-button" onClick={editCriteria}>ویرایش معیارها</button>
         </div>}
       </>}
+      {!route && response.suggestions.length > 0 && <div className="alternatives-callout"><div><h3>پیشنهادهای جایگزین با تغییر معیارها</h3><p>دیدن جایگزین‌ها تغییری ایجاد نمی‌کند؛ هر تغییر به پذیرش صریح تو نیاز دارد.</p></div><a className="outline-action" href="#alternatives" data-offer-action="#alternatives">دیدن جایگزین‌ها ({recordedNumber(response.suggestions.length)})</a></div>}
       {!!comparison.length && <aside className="comparison-tray" aria-label="انتخاب‌های مقایسه"><p role="status">{recordedNumber(comparison.length)} گزینه برای مقایسه انتخاب شده است</p><a href="#comparison"><Icon name="compare" />مقایسهٔ گزینه‌ها <Icon name="arrow" /></a></aside>}
       {comparison.length >= 10 && <p role="status">حداکثر ۱۰ آفر قابل انتخاب است؛ برای انتخاب تازه یکی را بردار.</p>}
       <Provenance response={response} />

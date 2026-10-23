@@ -9,6 +9,7 @@ import { useJourneyView } from './useJourneyView'
 import { BuyingGuide, LandingHero } from '../shell/Landing'
 import { usePanelHash } from '../features/recommendation/usePanelHash'
 import { parsePanelRoute } from '../features/recommendation/presentation'
+import { VerificationContext } from '../features/recommendation/VerificationContext'
 
 type Controller = ReturnType<typeof useJourneyController>
 type FlowProps = { Panel?: ComponentType<RecommendationPanelProps>; client?: JourneyClient; controller?: Controller }
@@ -62,12 +63,12 @@ function JourneyRoutes({ Panel, controller }: FlowProps & { controller: Controll
       </div>}
       </>}
       {state.notice && <p role="status" className="journey-notice">{state.notice}</p>}
-      {state.selectedVerification && <div className="journey-notice">
+      {state.selectedVerification && !hash.startsWith('#checklist/') && <div className="journey-notice">
         <p role="status">برنامهٔ پیش از مراجعه انتخاب شد؛ موجودی هنوز تأیید نشده است.</p>
-        <button className="secondary-button" onClick={clearVerification}>بستن انتخاب برنامه</button>
+        <button className="secondary-button" onClick={() => { clearVerification(); if (hash.startsWith('#checklist/')) window.location.hash = 'results' }}>بستن انتخاب برنامه</button>
       </div>}
       {/* This is the sole recommendation mounting boundary. */}
-      <div id="recommendation-root">{Panel && <Panel {...panelProps} />}</div>
+      <VerificationContext value={state.selectedVerification}><div id="recommendation-root">{Panel && <Panel {...panelProps} />}</div></VerificationContext>
     </section>
     <div hidden={activeResults && hash !== '#guide'}><BuyingGuide /></div>
     </section>

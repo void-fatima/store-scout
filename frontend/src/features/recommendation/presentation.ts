@@ -17,15 +17,17 @@ export function exactMoney(value: string): string {
 }
 export const currencyLabel = (unit: PriceUnit) => unit === 'IRR' ? 'ریال' : 'تومان'
 
-export function offerHash(view: 'explanation', key: ComparisonKey) {
+export type OfferView = 'explanation' | 'alternative' | 'checklist'
+export function offerHash(view: OfferView, key: ComparisonKey) {
   return `#${view}/${[key.dataset_id, key.product_id, key.offer_id].map(encodeURIComponent).join('/')}`
 }
-export type PanelRoute = { view: 'explanation'; key: ComparisonKey } | null
+export type PanelRoute = { view: OfferView; key: ComparisonKey } | { view: 'alternatives' } | null
 export function parsePanelRoute(hash: string): PanelRoute {
+  if (hash === '#alternatives') return { view: 'alternatives' }
   const [view, dataset, product, offer, extra] = hash.slice(1).split('/')
-  if (view !== 'explanation' || !dataset || !product || !offer || extra !== undefined) return null
+  if (!['explanation', 'alternative', 'checklist'].includes(view ?? '') || !dataset || !product || !offer || extra !== undefined) return null
   try {
-    return { view, key: { dataset_id: decodeURIComponent(dataset), product_id: decodeURIComponent(product), offer_id: decodeURIComponent(offer) } }
+    return { view: view as OfferView, key: { dataset_id: decodeURIComponent(dataset), product_id: decodeURIComponent(product), offer_id: decodeURIComponent(offer) } }
   } catch { return null }
 }
 export function editCriteria() {

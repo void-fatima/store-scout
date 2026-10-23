@@ -13,5 +13,7 @@ it('round trips full offer identity and rejects malformed presentation links', (
   expect(parsePanelRoute(offerHash('explanation', key))).toEqual({ view: 'explanation', key })
   expect(parsePanelRoute('#explanation/a/b/%broken')).toBeNull()
   expect(parsePanelRoute('#checklist/a/b/c/extra')).toBeNull()
-  expect(parsePanelRoute('#alternatives')).toBeNull()
+  expect(parsePanelRoute('#alternatives')).toEqual({ view: 'alternatives' })
+  expect(parsePanelRoute(offerHash('alternative', key))).toEqual({ view: 'alternative', key })
+  expect(parsePanelRoute(offerHash('checklist', key))).toEqual({ view: 'checklist', key })
 })

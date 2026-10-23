@@ -1,4 +1,130 @@
-# Recommendation experience handoff ? 2026-10-23
+# UI Stage 2: alternatives and before-visit checklist — 2026-10-23
+
+This section supersedes the previous stage's deferred-screen notes. This first
+topic implements Desktop 05/06 and Mobile 12/13 from the supplied archive.
+Comparison polish follows on a separate stacked topic. Authorization covers all
+frontend paths. Public panel props, API client, generated contracts, controller,
+ranking and acceptance behavior remain unchanged.
+
+## History and dependency
+
+Verified clean Stage 1/results head and origin at
+`4ea6034a2368954ab310232dfc5560005173d7d7` (`feat/ui-recommendation-experience`,
+draft PR #14). Fresh origin refs had no newer feature implementation. Read the
+current handoff and applicable instruction locations; there are no frontend or
+ancestor AGENTS.md files. Existing PR #8–#14 bases were verified through GitHub.
+
+Isolated worktree: `C:/Users/FATIMA/GitHub/store-scout-ui-stage2`.
+Branch: `feat/ui-alternatives-checklist`, targeting `feat/ui-recommendation-experience`.
+Three coherent commits: alternatives with tests, checklist with tests, and browser
+verification/focus fixes/handoff. Only tracked `frontend/` paths change. No
+main merge, rebase, force-push, dependency upgrade or deployment.
+
+## Alternatives and explicit acceptance
+
+Original results and alternatives remain separate. `#alternatives` lists backend
+suggestions in their returned order. `#alternative/<dataset>/<product>/<offer>`
+resolves a current alternative independently of original-only explanation lookup.
+Each review shows original/proposed query, exact budget and currency, and radius;
+changed and unchanged fields are explicit. Backend explanation, reasons,
+limitations and complete canonical identities are retained.
+
+A native modal reviews these values again. Its initial focus is the heading;
+Escape/cancel restore the triggering control without changing criteria or results.
+Confirmation requires an acknowledgement and calls the unchanged callback with
+request ID, expected revision, dataset ID, offer ID and all canonical changes.
+A synchronous guard prevents duplicate confirmation. Review state is bound to
+the request/revision/snapshot and is discarded when context changes. The existing
+controller advances revision, clears old results/comparison/plan and POSTs fresh
+criteria. A failed fresh request retries the accepted criteria and same revision;
+it does not re-accept the old suggestion or display old matches.
+
+## Canonical checklist and personal reminders
+
+`#checklist/<dataset>/<product>/<offer>` supports current original and alternative
+offers. Resolving that route invokes the real `onViewVerification` callback once
+per route/request context. `JourneyFlow` exposes its existing selected plan via a
+read-only React context; no second verification or selection store exists. The
+production screen only displays that controller-selected owning plan. Standalone
+panel consumers can display the owning response plan through the unchanged props.
+Missing plans and stale identities have explicit return paths.
+
+All backend questions, evidence paths and warnings remain available. Local checks
+are labelled personal reminders, never canonical verification; every question
+remains pending. Reminders reset on request, revision, plan/snapshot or identity
+changes and when leaving the checklist. The screen distinguishes recorded price,
+last price change, unconfirmed stock, declared hours, unknown conditions, synthetic
+contacts and direct distance. No call, navigation estimate or stock verification
+is performed. No contact action is enabled for synthetic information.
+
+## Verification and evidence
+
+- Clean `npm ci`: passed; zero audit vulnerabilities, lockfile unchanged.
+- `npm run typecheck`, `npm run lint`, `npm run build`,
+  `npm run contracts:check`, `git diff --check`: passed.
+- `npm test`: 72 passed, one opt-in live test skipped.
+- Separate disposable API `npm run test:live`: one passed.
+- `npm run test:ui -- stage2.browser.ts`: eight passed. Four viewport journeys
+  at 1440x900, 768x1024, 390x844 and 360x844 cover alternatives, dialog cancellation,
+  keyboard/focus restoration, controller checklist, personal reminders and comparing
+  an unaccepted alternative. Two intercepted desktop/mobile journeys cover exactly
+  one fresh request, failure, accepted-criteria retry and revision invalidation.
+  Two desktop/mobile journeys use real disposable HTTP for consent/fresh results
+  and controller-selected checklist, with no route interception.
+- Existing landing/results browser scenarios also passed in the full browser run;
+  that run identified checklist focus replacement while the canonical selection
+  arrived. The final focused rerun includes the correction. The complete stack is
+  checked again with comparison polish. No skipped check is counted as passed.
+- Axe WCAG A/AA scans on alternatives, native dialog and checklist report zero
+  violations at all four sizes. No page overflow or dialog-content overflow in
+  checked states; labelled reminder/link targets are at least 44×44.
+
+Actual HTTP uses the unchanged disposable helper, source pin
+`45cfe9815ebfd78b0423ca321c2f61e51ea7fbdd`. The two live browser journeys start with
+180,000,000 IRR, query «گوشی سامسونگ», coordinates 35.7/51.4 and radius 5. They
+receive two real HTTP 200 responses, with revision advanced once and returned
+criteria equal to the selected backend proposal. No seller contact occurs.
+Other scenarios explicitly intercept the transport and are UI evidence only.
+
+Reproduce from `frontend/` in two terminals:
+
+```powershell
+npm.cmd run dev:sample-api
+```
+
+```powershell
+$env:VITE_API_BASE_URL = 'http://127.0.0.1:8017'
+$env:STORE_SCOUT_LIVE_API = 'http://127.0.0.1:8017'
+$env:STORE_SCOUT_CHROMIUM = 'C:/Program Files/Google/Chrome/Application/chrome.exe'
+npm.cmd run test:live
+npm.cmd run test:ui
+```
+
+Let Playwright start Vite, using `http://localhost:5173` for existing CORS.
+Stop any earlier Vite before changing API environment. Without the live API
+variable the opt-in HTTP tests skip. All other checks remain independent.
+
+Screenshots were opened against the reference layouts and preserved, untracked,
+at `frontend/ui-artifacts/evidence/` in this worktree:
+`stage2-{alternatives,review,consent,checklist}-{desktop,tablet,mobile,narrow}.png`
+are intercepted scenarios; `stage2-live-{alternatives,checklist}-{desktop,mobile}.png`
+are actual HTTP. Tests regenerate originals in `ui-artifacts/results/`.
+Mobile questions precede the longer recorded-location details; exact long amounts
+stack at the narrow breakpoint. Chromium viewport testing only; no physical
+devices, Firefox, Safari or deployed backend was tested.
+
+## Next topics
+
+`feat/ui-comparison-polish` will be based on this completed topic and preserve the
+existing table's controlled selection, identity and scroll behavior.
+
+The next separately scoped product-detail stage is approved as:
+«مشخصات کالا»، «تناسب با نیاز من»، «قبل از خرید بررسی کن».
+It must use recorded specifications and backend-supported explanations, with
+explicit unknowns and no fabricated suitability scores. It is not implemented here.
+
+---
+# Recommendation experience handoff — 2026-10-23
 
 This section supersedes historical ownership and unmounted-feature notes below.
 The current user request authorizes all frontend paths, including
